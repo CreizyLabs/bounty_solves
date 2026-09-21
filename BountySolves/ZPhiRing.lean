@@ -1,42 +1,25 @@
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
 
-/-!
-# Module II: ℤ[φ] Exact Algebraic Integer Rings (Solve 13)
-Author: Jason Emerick (Creizy Labs)
-Grounded Mathematics: Exact Diophantine Ring Arithmetic, Minimal Polynomial
-Invariance, Galois Norm Multiplicativity, and the Unimodular Boundary Floor.
--/
-
 namespace ZPhi
 
-/-- Exact representation of elements x = a + bφ in the quadratic integer ring ℤ[φ]. -/
 @[ext]
 structure Element where
   a : ℤ
   b : ℤ
   deriving DecidableEq, Repr
 
-/-- Additive identity: 0 = 0 + 0φ. -/
 def zero : Element := ⟨0, 0⟩
-
-/-- Multiplicative identity: 1 = 1 + 0φ. -/
 def one : Element  := ⟨1, 0⟩
-
-/-- The canonical golden ratio generator: φ = 0 + 1φ. -/
 def phi : Element  := ⟨0, 1⟩
 
-/-- Ring addition: (a₁ + b₁φ) + (a₂ + b₂φ) = (a₁ + a₂) + (b₁ + b₂)φ. -/
 def add (x y : Element) : Element :=
   ⟨x.a + y.a, x.b + y.b⟩
 
-/-- Additive negation: -(a + bφ) = -a + (-b)φ. -/
 def neg (x : Element) : Element :=
   ⟨-x.a, -x.b⟩
 
-/-- Ring multiplication derived from the minimal polynomial φ² = φ + 1:
-    (a₁ + b₁φ)(a₂ + b₂φ) = (a₁a₂ + b₁b₂) + (a₁b₂ + b₁a₂ + b₁b₂)φ. -/
 def mul (x y : Element) : Element :=
   ⟨x.a * y.a + x.b * y.b, x.a * y.b + x.b * y.a + x.b * y.b⟩
 
@@ -47,58 +30,113 @@ instance : Neg Element  := ⟨neg⟩
 instance : Mul Element  := ⟨mul⟩
 instance : Sub Element  := ⟨fun x y => add x (neg y)⟩
 
-theorem add_assoc (x y z : Element) : (x + y) + z = x + (y + z) := by ext <;> ring
-theorem add_comm (x y : Element) : x + y = y + x := by ext <;> ring
-theorem zero_add (x : Element) : 0 + x = x := by ext <;> ring
-theorem add_zero (x : Element) : x + 0 = x := by ext <;> ring
-theorem add_left_neg (x : Element) : -x + x = 0 := by ext <;> ring
-theorem mul_assoc (x y z : Element) : (x * y) * z = x * (y * z) := by ext <;> ring
-theorem mul_comm (x y : Element) : x * y = y * x := by ext <;> ring
-theorem one_mul (x : Element) : 1 * x = x := by ext <;> ring
-theorem mul_one (x : Element) : x * 1 = x := by ext <;> ring
-theorem left_distrib (x y z : Element) : x * (y + z) = x * y + x * z := by ext <;> ring
-theorem right_distrib (x y z : Element) : (x + y) * z = x * z + y * z := by ext <;> ring
+theorem add_assoc (x y z : Element) : (x + y) + z = x + (y + z) := by
+  rcases x with ⟨xa, xb⟩; rcases y with ⟨ya, yb⟩; rcases z with ⟨za, zb⟩
+  apply Element.ext
+  · change (xa + ya) + za = xa + (ya + za); ring
+  · change (xb + yb) + zb = xb + (yb + zb); ring
 
-/-- Proof of the minimal polynomial identity: φ² = φ + 1 with zero drift. -/
+theorem add_comm (x y : Element) : x + y = y + x := by
+  rcases x with ⟨xa, xb⟩; rcases y with ⟨ya, yb⟩
+  apply Element.ext
+  · change xa + ya = ya + xa; ring
+  · change xb + yb = yb + xb; ring
+
+theorem zero_add (x : Element) : 0 + x = x := by
+  rcases x with ⟨xa, xb⟩
+  apply Element.ext
+  · change 0 + xa = xa; ring
+  · change 0 + xb = xb; ring
+
+theorem add_zero (x : Element) : x + 0 = x := by
+  rcases x with ⟨xa, xb⟩
+  apply Element.ext
+  · change xa + 0 = xa; ring
+  · change xb + 0 = xb; ring
+
+theorem add_left_neg (x : Element) : -x + x = 0 := by
+  rcases x with ⟨xa, xb⟩
+  apply Element.ext
+  · change -xa + xa = 0; ring
+  · change -xb + xb = 0; ring
+
+theorem mul_assoc (x y z : Element) : (x * y) * z = x * (y * z) := by
+  rcases x with ⟨xa, xb⟩; rcases y with ⟨ya, yb⟩; rcases z with ⟨za, zb⟩
+  apply Element.ext
+  · change (xa * ya + xb * yb) * za + (xa * yb + xb * ya + xb * yb) * zb =
+           xa * (ya * za + yb * zb) + xb * (ya * zb + yb * za + yb * zb); ring
+  · change (xa * ya + xb * yb) * zb + (xa * yb + xb * ya + xb * yb) * za + (xa * yb + xb * ya + xb * yb) * zb =
+           xa * (ya * zb + yb * za + yb * zb) + xb * (ya * za + yb * zb) + xb * (ya * zb + yb * za + yb * zb); ring
+
+theorem mul_comm (x y : Element) : x * y = y * x := by
+  rcases x with ⟨xa, xb⟩; rcases y with ⟨ya, yb⟩
+  apply Element.ext
+  · change xa * ya + xb * yb = ya * xa + yb * xb; ring
+  · change xa * yb + xb * ya + xb * yb = ya * xb + yb * xa + yb * xb; ring
+
+theorem one_mul (x : Element) : 1 * x = x := by
+  rcases x with ⟨xa, xb⟩
+  apply Element.ext
+  · change 1 * xa + 0 * xb = xa; ring
+  · change 1 * xb + 0 * xa + 0 * xb = xb; ring
+
+theorem mul_one (x : Element) : x * 1 = x := by
+  rcases x with ⟨xa, xb⟩
+  apply Element.ext
+  · change xa * 1 + xb * 0 = xa; ring
+  · change xa * 0 + xb * 1 + xb * 0 = xb; ring
+
+theorem left_distrib (x y z : Element) : x * (y + z) = x * y + x * z := by
+  rcases x with ⟨xa, xb⟩; rcases y with ⟨ya, yb⟩; rcases z with ⟨za, zb⟩
+  apply Element.ext
+  · change xa * (ya + za) + xb * (yb + zb) = (xa * ya + xb * yb) + (xa * za + xb * zb); ring
+  · change xa * (yb + zb) + xb * (ya + za) + xb * (yb + zb) =
+           (xa * yb + xb * ya + xb * yb) + (xa * zb + xb * za + xb * zb); ring
+
+theorem right_distrib (x y z : Element) : (x + y) * z = x * z + y * z := by
+  rcases x with ⟨xa, xb⟩; rcases y with ⟨ya, yb⟩; rcases z with ⟨za, zb⟩
+  apply Element.ext
+  · change (xa + ya) * za + (xb + yb) * zb = (xa * za + xb * zb) + (ya * za + yb * zb); ring
+  · change (xa + ya) * zb + (xb + yb) * za + (xb + yb) * zb =
+           (xa * zb + xb * za + xb * zb) + (ya * zb + yb * za + yb * zb); ring
+
 theorem phi_squared_identity : phi * phi = phi + 1 := by
-  ext <;> decide
+  apply Element.ext
+  · change 0 * 0 + 1 * 1 = 0 + 1; ring
+  · change 0 * 1 + 1 * 0 + 1 * 1 = 1 + 0; ring
 
-/-- The Diophantine Galois field norm: N(a + bφ) = a² + ab - b² ∈ ℤ. -/
 def norm (x : Element) : ℤ :=
   x.a^2 + x.a * x.b - x.b^2
 
-/-- Theorem: Multiplicativity of the Diophantine Galois field norm.
-    N(x * y) = N(x) * N(y) holds unconditionally across the entire ring. -/
 theorem norm_mul (x y : Element) : norm (x * y) = norm x * norm y := by
-  unfold norm mul
+  rcases x with ⟨xa, xb⟩
+  rcases y with ⟨ya, yb⟩
+  change (xa * ya + xb * yb)^2 + (xa * ya + xb * yb) * (xa * yb + xb * ya + xb * yb) - (xa * yb + xb * ya + xb * yb)^2 =
+         (xa^2 + xa * xb - xb^2) * (ya^2 + ya * yb - yb^2)
   ring
 
-/-- The fundamental totally positive unimodular unit: φ⁻² = 2 - φ. -/
 def phi_inv_sq : Element := ⟨2, -1⟩
-
-/-- The quadratic power unit: φ² = 1 + φ. -/
 def phi_sq     : Element := ⟨1, 1⟩
 
-/-- Theorem: Unimodular Galois field norm of φ⁻² is identically +1. -/
 theorem norm_phi_inv_sq : norm phi_inv_sq = 1 := by
   decide
 
-/-- Theorem: φ⁻² is an authentic unit with two-sided inverse φ². -/
 theorem phi_inv_sq_is_unit : phi_inv_sq * phi_sq = 1 ∧ phi_sq * phi_inv_sq = 1 := by
-  constructor <;> decide
+  constructor
+  · apply Element.ext
+    · change 2 * 1 + (-1) * 1 = 1; ring
+    · change 2 * 1 + (-1) * 1 + (-1) * 1 = 0; ring
+  · apply Element.ext
+    · change 1 * 2 + 1 * (-1) = 1; ring
+    · change 1 * (-1) + 1 * 2 + 1 * (-1) = 0; ring
 
-/-- Theorem: Invariant Unit Floor.
-    A unimodular integer unit can never continuously collapse to 0 in ℤ. -/
 theorem unit_floor_non_vanishing (x : Element) (hx : norm x = 1) : norm x ≠ 0 := by
   linarith
 
-/-- Canonical realization of an element x = a + bφ in the real continuum ℝ. -/
 def toReal (φ_val : ℝ) (x : Element) : ℝ :=
   (x.a : ℝ) + (x.b : ℝ) * φ_val
 
-/-- Theorem: The physical realization of φ⁻² = 2 - φ is strictly positive
-    for any real golden-ratio parameter satisfying 1 < φ < 2. -/
-theorem phi_inv_sq_real_positive (φ_val : ℝ) (h1 : 1 < φ_val) (h2 : φ_val < 2) :
+theorem phi_inv_sq_real_positive (φ_val : ℝ) (_h1 : 1 < φ_val) (_h2 : φ_val < 2) :
     0 < toReal φ_val phi_inv_sq := by
   unfold toReal phi_inv_sq
   push_cast
