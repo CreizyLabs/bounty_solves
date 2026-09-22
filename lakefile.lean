@@ -19,3 +19,6 @@ lean_lib "VacuumDecoupling" where
 
 lean_lib "ErdosDistinctSubsetSums" where
   srcDir := "BountySolves"
+
+lean_lib "LowerBoundMaxElement" where
+  srcDir := "BountySolves"
