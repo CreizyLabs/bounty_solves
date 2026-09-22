@@ -19,3 +19,12 @@ lean_lib "VacuumDecoupling" where
 
 lean_lib "LowerBoundMaxElement" where
   srcDir := "BountySolves"
+
+lean_lib "E8Obstruction" where
+  srcDir := "BountySolves"
+
+lean_lib "KaplanskyRefutation" where
+  srcDir := "BountySolves"
+
+lean_lib "FranklConjecture" where
+  srcDir := "BountySolves"
