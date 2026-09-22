@@ -1,5 +1,9 @@
 # Bounty Solves — Lean 4 Proof Verification
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22884961.svg)](https://doi.org/10.5281/zenodo.22884961)
+[![Lean 4](https://img.shields.io/badge/Lean_4-v4.34.0-blue.svg)](https://leanprover.github.io/)
+[![License](https://img.shields.io/badge/License-Apache_2.0-green.svg)](LICENSE)
+
 This repository contains formal proof packages developed for mathematical and physical challenges, structured for machine verification under **Lean 4** and submission to academic bounties such as **The Justin Sun Prize** ([TheJustinSunPrize/awards](https://github.com/TheJustinSunPrize/awards)).
 
 ---
@@ -47,6 +51,16 @@ bounty_solves/
   - Trace-free projection operator: $T^{\mathrm{TF}}_{\mu\nu} = T_{\mu\nu} - \frac{1}{4} T g_{\mu\nu}$.
   - Lorentz-invariant vacuum loop energy tensor: $T^{\mathrm{loop}}_{\mu\nu} = -\rho_{\mathrm{loop}} g_{\mu\nu}$.
   - Theorem: $T^{\mathrm{loop}\,\mathrm{TF}}_{\mu\nu} \equiv 0$, identically decoupling zero-point loop divergences from gravitational curvature.
+* **Kernel Status**: 100% Machine-Closed Core (0 `sorry`, 0 custom axioms).
+
+### 4. Module IV: Erdős Distinct Subset Sums & Lower Bound on Maximum Element (`BountySolves/LowerBoundMaxElement.lean`)
+* **Problem**: Erdős's Distinct Subset Sums Problem / Lower Bound on the Maximum Element (JSP-000043).
+* **Core Formalizations**:
+  - Monotonicity of sums on finite subsets of $\mathbb{N}$ (`sum_le_sum_of_subset`).
+  - Combinatorial Capacity Floor: $2^{|S|} \le (\sum S) + 1$ via powerset injection (`erdos_distinct_subset_sums_capacity`).
+  - Arithmetic upper bound on subset sums via maximum element: $\sum S \le |S| \cdot m$ (`sum_le_card_mul_bound`).
+  - Constructive Lower Bound on the Maximum Element: $2^{|S|} \le |S| \cdot m + 1 \implies m \ge \frac{2^{|S|}-1}{|S|}$ (`distinct_subset_sums_max_element_bound`).
+  - Geometric progression sum and exact zero-slack sharpness on powers of two (`capacity_floor_sharpness`).
 * **Kernel Status**: 100% Machine-Closed Core (0 `sorry`, 0 custom axioms).
 
 ---
