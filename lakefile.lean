@@ -16,3 +16,6 @@ lean_lib "ZPhiRing" where
 
 lean_lib "VacuumDecoupling" where
   srcDir := "BountySolves"
+
+lean_lib "ErdosDistinctSubsetSums" where
+  srcDir := "BountySolves"
