@@ -53,11 +53,11 @@ bounty_solves/
   - Theorem: $T^{\mathrm{loop}\,\mathrm{TF}}_{\mu\nu} \equiv 0$, identically decoupling zero-point loop divergences from gravitational curvature.
 * **Kernel Status**: 100% Machine-Closed Core (0 `sorry`, 0 custom axioms).
 
-### 4. Module IV: Erdős Distinct Subset Sums & Lower Bound on Maximum Element (`BountySolves/LowerBoundMaxElement.lean`)
-* **Problem**: Erdős's Distinct Subset Sums Problem / Lower Bound on the Maximum Element (JSP-000043).
+### 4. Module IV: Lower Bound on Maximum Element (`BountySolves/LowerBoundMaxElement.lean`)
+* **Problem**: Lower Bound on the Maximum Element of Sets with Distinct Subset Sums (JSP-000043).
 * **Core Formalizations**:
   - Monotonicity of sums on finite subsets of $\mathbb{N}$ (`sum_le_sum_of_subset`).
-  - Combinatorial Capacity Floor: $2^{|S|} \le (\sum S) + 1$ via powerset injection (`erdos_distinct_subset_sums_capacity`).
+  - Combinatorial Capacity Floor: $2^{|S|} \le (\sum S) + 1$ via powerset injection (`combinatorial_capacity_floor`).
   - Arithmetic upper bound on subset sums via maximum element: $\sum S \le |S| \cdot m$ (`sum_le_card_mul_bound`).
   - Constructive Lower Bound on the Maximum Element: $2^{|S|} \le |S| \cdot m + 1 \implies m \ge \frac{2^{|S|}-1}{|S|}$ (`distinct_subset_sums_max_element_bound`).
   - Geometric progression sum and exact zero-slack sharpness on powers of two (`capacity_floor_sharpness`).

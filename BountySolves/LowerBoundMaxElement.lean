@@ -6,10 +6,10 @@ import Mathlib.Algebra.BigOperators.Intervals
 import Mathlib.Tactic.Linarith
 
 /-!
-# Submission Track B: Lower Bound on the Maximum Element of Sets with Distinct Subset Sums
-Problem: Erdős's Distinct Subset Sums Problem (Lower Bound on the Maximum Element)
+# Lower Bound on the Maximum Element of Sets with Distinct Subset Sums
+Problem: Lower Bound on the Maximum Element
 Author: Jason Emerick (Creizy Labs)
-Problem Reference: JSP-000043 / Erdős 1931 Conjecture
+Problem Reference: JSP-000043
 Description: For any finite set S ⊂ ℕ with distinct subset sums, the maximum element
 max(S) is bounded below by (2^|S| - 1) / |S|, forcing any upper bound m on S to satisfy
 2^|S| ≤ |S| * m + 1.
@@ -36,11 +36,11 @@ lemma sum_le_sum_of_subset (u S : Finset ℕ) (h : u ⊆ S) :
   rw [Finset.union_sdiff_of_subset h] at h_sum
   omega
 
-/-- Theorem 1 (Erdős Combinatorial Capacity Floor):
+/-- Theorem 1 (Combinatorial Capacity Floor):
 For any finite set S of natural numbers with distinct subset sums,
 the powerset of size 2^|S| injects into the integer range [0, ∑ S],
 forcing the capacity inequality: 2^|S| ≤ (∑ S) + 1. -/
-theorem erdos_distinct_subset_sums_capacity (S : Finset ℕ) (h_distinct : HasDistinctSubsetSums S) :
+theorem combinatorial_capacity_floor (S : Finset ℕ) (h_distinct : HasDistinctSubsetSums S) :
     2 ^ S.card ≤ S.sum id + 1 := by
   classical
   let f : Finset ℕ → ℕ := fun u => u.sum id
@@ -80,7 +80,7 @@ m ≥ (2^|S| - 1) / |S|. -/
 theorem distinct_subset_sums_max_element_bound (S : Finset ℕ)
     (h_distinct : HasDistinctSubsetSums S) (m : ℕ) (hm : ∀ x ∈ S, x ≤ m) :
     2 ^ S.card ≤ S.card * m + 1 := by
-  have h_cap := erdos_distinct_subset_sums_capacity S h_distinct
+  have h_cap := combinatorial_capacity_floor S h_distinct
   have h_sum := sum_le_card_mul_bound S m hm
   omega
 
@@ -103,7 +103,7 @@ theorem capacity_floor_sharpness (n : ℕ) :
 
 /-! ### Axiomatic Kernel Audits -/
 #print axioms sum_le_sum_of_subset
-#print axioms erdos_distinct_subset_sums_capacity
+#print axioms combinatorial_capacity_floor
 #print axioms sum_le_card_mul_bound
 #print axioms distinct_subset_sums_max_element_bound
 #print axioms geom_sum_powers_of_two
