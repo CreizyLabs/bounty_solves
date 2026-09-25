@@ -119,6 +119,9 @@ lean_lib "ErdosSidonSets" where
 lean_lib "AdditiveComplementSquares" where
   srcDir := "BountySolves"
 
+lean_lib "RiemannHypothesisSpectral" where
+  srcDir := "BountySolves"
+
 
 
 

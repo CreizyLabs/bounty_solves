@@ -34,4 +34,5 @@ import PoincareSphere
 import FranklConjecture
 import ErdosSidonSets
 import AdditiveComplementSquares
+import RiemannHypothesisSpectral
 
