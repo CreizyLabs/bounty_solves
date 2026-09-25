@@ -53,3 +53,6 @@ lean_lib "PowerOfTwoCycles" where
 
 lean_lib "JacobsthalFunction" where
   srcDir := "BountySolves"
+
+lean_lib "InfiniteSidonDensity" where
+  srcDir := "BountySolves"

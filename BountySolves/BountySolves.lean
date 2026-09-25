@@ -12,3 +12,4 @@ import PoincareSphere
 import SzemerediProgressions
 import PowerOfTwoCycles
 import JacobsthalFunction
+import InfiniteSidonDensity
