@@ -107,10 +107,45 @@ theorem zmod8_valuation_floor (x y d : ZMod 8)
     _ = 0 := by ring
   exact zmod8_sq_zero_imp_div4 y hy2
 
+/-! ### 5. The 2-Adic and 3-Adic Valuation Obstructions -/
+
+/-- Theorem (2-Adic Valuation Floor):
+In ZMod 4, the grid denominator W must be even: W ≡ 0 (mod 2).
+If W were odd, no choice of parities for (X, Y) can prevent at least one of the
+squared distances from being congruent to 2 modulo 4, which is impossible for any square. -/
+theorem zmod4_denominator_must_be_even (X Y W D₁ D₂ D₃ D₄ : ZMod 4)
+    (h₁ : D₁^2 = X^2 + Y^2)
+    (h₂ : D₂^2 = (X - W)^2 + Y^2)
+    (h₃ : D₃^2 = (X - W)^2 + (Y - W)^2)
+    (h₄ : D₄^2 = X^2 + (Y - W)^2) :
+    W = 0 ∨ W = 2 := by
+  revert X Y W D₁ D₂ D₃ D₄ h₁ h₂ h₃ h₄
+  decide
+
+/-- No element in ZMod 3 has square equal to 2. -/
+lemma zmod3_no_square_eq_two (d : ZMod 3) : d^2 ≠ 2 := by
+  fin_cases d <;> decide
+
+/-- Theorem (3-Adic Valuation Floor):
+In ZMod 3, any integer grid configuration satisfying all four square distance relations
+forces the grid denominator W to vanish modulo 3: 3 | W. -/
+theorem zmod3_denominator_must_be_zero (X Y W D₁ D₂ D₃ D₄ : ZMod 3)
+    (h₁ : D₁^2 = X^2 + Y^2)
+    (h₂ : D₂^2 = (X - W)^2 + Y^2)
+    (h₃ : D₃^2 = (X - W)^2 + (Y - W)^2)
+    (h₄ : D₄^2 = X^2 + (Y - W)^2) :
+    W = 0 := by
+  revert X Y W D₁ D₂ D₃ D₄ h₁ h₂ h₃ h₄
+  decide
+
+/-! ### Axiomatic Kernel Audits -/
 #print axioms british_flag_real
 #print axioms british_flag_int
 #print axioms coordinate_rationality
 #print axioms mod4_sum_of_odd_squares_not_square
 #print axioms zmod8_valuation_floor
+#print axioms zmod4_denominator_must_be_even
+#print axioms zmod3_no_square_eq_two
+#print axioms zmod3_denominator_must_be_zero
 
 end GuysProblemD19
