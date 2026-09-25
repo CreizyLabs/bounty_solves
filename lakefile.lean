@@ -11,58 +11,38 @@ require mathlib from git
 lean_lib "BountySolves" where
   srcDir := "BountySolves"
 
-lean_lib "GuysD19" where
-  srcDir := "BountySolves"
-
-lean_lib "ZPhiRing" where
-  srcDir := "BountySolves"
-
-lean_lib "VacuumDecoupling" where
-  srcDir := "BountySolves"
-
-lean_lib "LowerBoundMaxElement" where
-  srcDir := "BountySolves"
-
-lean_lib "E8Obstruction" where
-  srcDir := "BountySolves"
-
 lean_lib "KaplanskyRefutation" where
-  srcDir := "BountySolves"
-
-lean_lib "FranklConjecture" where
-  srcDir := "BountySolves"
-
-lean_lib "ErdosStraus" where
-  srcDir := "BountySolves"
-
-lean_lib "E8Roots" where
-  srcDir := "BountySolves"
-
-lean_lib "PoincareSphere" where
-  srcDir := "BountySolves"
-
-lean_lib "KirbyTaylorPin" where
-  srcDir := "BountySolves"
-
-lean_lib "ThomCobordism" where
-  srcDir := "BountySolves"
-
-lean_lib "ErdosAnning" where
-  srcDir := "BountySolves"
-
-lean_lib "CatalanMihailescu" where
-  srcDir := "BountySolves"
-
-lean_lib "OddCoveringSystems" where
-  srcDir := "BountySolves"
-
-lean_lib "AndersonLocalRings" where
   srcDir := "BountySolves"
 
 lean_lib "DGGCostPreserving" where
   srcDir := "BountySolves"
 
+lean_lib "LowerBoundMaxElement" where
+  srcDir := "BountySolves"
 
+lean_lib "ThomCobordism" where
+  srcDir := "BountySolves"
 
+lean_lib "KirbyTaylorPin" where
+  srcDir := "BountySolves"
 
+lean_lib "E8Roots" where
+  srcDir := "BountySolves"
 
+lean_lib "ZPhiRing" where
+  srcDir := "BountySolves"
+
+lean_lib "E8Obstruction" where
+  srcDir := "BountySolves"
+
+lean_lib "VacuumDecoupling" where
+  srcDir := "BountySolves"
+
+lean_lib "ErdosAnning" where
+  srcDir := "BountySolves"
+
+lean_lib "SunflowerLemma" where
+  srcDir := "BountySolves"
+
+lean_lib "ScottDomainCPO" where
+  srcDir := "BountySolves"
