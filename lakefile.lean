@@ -50,3 +50,6 @@ lean_lib "SzemerediProgressions" where
 
 lean_lib "PowerOfTwoCycles" where
   srcDir := "BountySolves"
+
+lean_lib "JacobsthalFunction" where
+  srcDir := "BountySolves"
