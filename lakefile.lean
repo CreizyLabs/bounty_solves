@@ -47,9 +47,6 @@ lean_lib "KirbyTaylorPin" where
 lean_lib "ThomCobordism" where
   srcDir := "BountySolves"
 
-lean_lib "YangMillsMassGap" where
-  srcDir := "BountySolves"
-
 lean_lib "ErdosAnning" where
   srcDir := "BountySolves"
 
