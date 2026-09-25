@@ -86,12 +86,6 @@ lean_lib "KlesserReversibleSO4" where
 lean_lib "HeckeRamanujanLanglands" where
   srcDir := "BountySolves"
 
-lean_lib "YangMillsMassGap" where
-  srcDir := "BountySolves"
-
-lean_lib "NavierStokesGlobalRegularity" where
-  srcDir := "BountySolves"
-
 lean_lib "AndersonLocalRings" where
   srcDir := "BountySolves"
 
@@ -117,9 +111,6 @@ lean_lib "ErdosSidonSets" where
   srcDir := "BountySolves"
 
 lean_lib "AdditiveComplementSquares" where
-  srcDir := "BountySolves"
-
-lean_lib "RiemannHypothesisSpectral" where
   srcDir := "BountySolves"
 
 

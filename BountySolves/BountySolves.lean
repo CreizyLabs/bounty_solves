@@ -23,8 +23,6 @@ import GinspargWilsonAnomaly
 import KolmogorovTurbulenceDamping
 import KlesserReversibleSO4
 import HeckeRamanujanLanglands
-import YangMillsMassGap
-import NavierStokesGlobalRegularity
 import AndersonLocalRings
 import GuysD19
 import OddCoveringSystems
@@ -34,5 +32,4 @@ import PoincareSphere
 import FranklConjecture
 import ErdosSidonSets
 import AdditiveComplementSquares
-import RiemannHypothesisSpectral
 
