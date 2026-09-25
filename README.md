@@ -1,10 +1,15 @@
 # Bounty Solves — Lean 4 Proof Verification
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22884961.svg)](https://doi.org/10.5281/zenodo.22884961)
-[![Lean 4](https://img.shields.io/badge/Lean_4-v4.34.0-blue.svg)](https://leanprover.github.io/)
+[![Lean 4](https://img.shields.io/badge/Lean_4-v4.35.0--rc2-blue.svg)](https://leanprover.github.io/)
 [![License](https://img.shields.io/badge/License-Apache_2.0-green.svg)](LICENSE)
 
-This repository contains formal proof packages developed for mathematical and physical challenges, structured for machine verification under **Lean 4** and submission to academic bounties such as **The Justin Sun Prize** ([TheJustinSunPrize/awards](https://github.com/TheJustinSunPrize/awards)).
+This repository contains verified mathematical solutions and formal proof packages developed for academic bounties, including **The Justin Sun Prize** ([`TheJustinSunPrize/awards`](https://github.com/TheJustinSunPrize/awards)).
+
+Every official submission package in this repository satisfies three strict criteria:
+1. **A Complete Informal Paper**: A full mathematical proof from first principles without omitted cases or hand-waving.
+2. **A Complete End-to-End Lean 4 Formalization**: Exactly matching the catalog statement, kernel-verified with 0 `sorry` and 0 custom axioms.
+3. **Reproducible Repository Packaging**: Verified build commands, axiom audits, and explicit mapping between paper sections and Lean declarations.
 
 ---
 
@@ -13,98 +18,55 @@ This repository contains formal proof packages developed for mathematical and ph
 ```
 bounty_solves/
 ├── lakefile.lean             # Lake build configuration specifying mathlib & targets
-├── lean-toolchain            # Pinned Lean 4 toolchain (v4.34.0)
-├── .gitignore                # Standard Lake build exclusions
-├── verify.bat                # Automated 1-click verification script
-├── BountySolves/
-│   ├── GuysD19.lean          # Module I: Guy's Problem D19 (Four-Distance Problem)
-│   ├── ZPhiRing.lean         # Module II: ℤ[φ] Exact Algebraic Integer Rings (Solve 13)
-│   └── VacuumDecoupling.lean # Module III: Unimodular Trace-Free Loop Decoupling
-└── README.md                 # Documentation & submission guide
+├── lake-manifest.json        # Pinned dependency manifest
+├── lean-toolchain            # Pinned Lean 4 toolchain (v4.35.0-rc2)
+├── papers/                   # Complete informal mathematical papers
+│   └── JSP-000301-Golomb-Consecutive-Powerful-Numbers.md
+├── BountySolves/             # Lean 4 formalization modules
+│   └── GolombPowerful.lean   # Machine-checked disproof of Golomb conjecture
+└── README.md                 # Documentation & mapping guide
 ```
 
 ---
 
-## 🧮 Solved Modules Overview
+## 🏆 Featured Submission: JSP-000301 (Golomb Powerful Numbers)
 
-### 1. Module I: Guy's Problem D19 (`BountySolves/GuysD19.lean`)
-* **Problem**: Rational Distances from the Vertices of a Unit Square (Richard K. Guy, *Unsolved Problems in Number Theory*, D19).
-* **Core Formalizations**:
-  - `british_flag_real` & `british_flag_int`: Euler-British Flag invariant on $\mathbb{R}$ and cleared-denominator $\mathbb{Z}$-grid.
-  - `coordinate_rationality`: Proves any point with rational distances to 3 vertices has strictly rational coordinates $(x, y) \in \mathbb{Q}^2$.
-  - `mod4_sum_of_odd_squares_not_square`: Modulo 4 parity descent barrier ($x^2 + y^2 \equiv 2 \not\equiv d^2 \pmod 4$).
-  - `zmod8_valuation_floor`: Modulo 8 2-adic valuation floor ($v_2(Y) \ge 2$).
-* **Kernel Status**: 100% Machine-Closed Core (0 `sorry`, 0 custom axioms).
+* **Problem**: *If two consecutive positive integers are powerful, must at least one be a perfect square?*
+* **Catalog ID**: [JSP-000301](https://github.com/TheJustinSunPrize/awards/blob/main/problems/catalog-0301-0400.md#JSP-000301)
+* **Mathematical Solver**: Solomon W. Golomb (1970), *Powerful Numbers*, American Mathematical Monthly 77(8): 848–852; Erdős Problem #365.
+* **Formalization Author**: Jason Emerick (`@CreizyLabs`)
+* **Informal Paper**: [`papers/JSP-000301-Golomb-Consecutive-Powerful-Numbers.md`](papers/JSP-000301-Golomb-Consecutive-Powerful-Numbers.md)
+* **Lean 4 Module**: [`BountySolves/GolombPowerful.lean`](BountySolves/GolombPowerful.lean)
+* **PR on Awards Repo**: [TheJustinSunPrize/awards#4516](https://github.com/TheJustinSunPrize/awards/pull/4516)
 
-### 2. Module II: $\mathbb{Z}[\varphi]$ Ring Arithmetic (`BountySolves/ZPhiRing.lean`)
-* **Core Formalizations**:
-  - Exact discrete ring representation for $x = a + b\varphi \in \mathbb{Z}[\varphi]$.
-  - Monic minimal polynomial invariance: $\varphi^2 = \varphi + 1$ with zero numerical drift.
-  - Multiplicativity of the Diophantine Galois norm: $N(x \cdot y) = N(x) N(y)$.
-  - Unimodular unit floor: Invertibility and non-vanishing boundary conditions for fundamental unit $\varphi^{-2} = 2 - \varphi$.
-* **Kernel Status**: 100% Machine-Closed Core (0 `sorry`, 0 custom axioms).
+### One-to-One Paper to Lean Declaration Mapping
 
-### 3. Module III: Unimodular Loop Decoupling (`BountySolves/VacuumDecoupling.lean`)
-* **Problem**: Cosmological Constant Problem / Vacuum Catastrophe Resolution.
-* **Core Formalizations**:
-  - Spacetime 4-tensor algebra and rank-2 contractions over metric $g_{\mu\nu}$.
-  - Trace-free projection operator: $T^{\mathrm{TF}}_{\mu\nu} = T_{\mu\nu} - \frac{1}{4} T g_{\mu\nu}$.
-  - Lorentz-invariant vacuum loop energy tensor: $T^{\mathrm{loop}}_{\mu\nu} = -\rho_{\mathrm{loop}} g_{\mu\nu}$.
-  - Theorem: $T^{\mathrm{loop}\,\mathrm{TF}}_{\mu\nu} \equiv 0$, identically decoupling zero-point loop divergences from gravitational curvature.
-* **Kernel Status**: 100% Machine-Closed Core (0 `sorry`, 0 custom axioms).
+| Paper Section | Mathematical Statement | Lean 4 Identifier | Method |
+| :--- | :--- | :--- | :--- |
+| **Section 2.1** | Canonical powerful number form $x^2 y^3$ | `GolombPowerful.IsPowerful` | Definition |
+| **Section 2.2** | Perfect square definition $k^2 = n$ | `GolombPowerful.IsSquare` | Definition |
+| **Lemma 3.1** | $12168 - 12167 = 1$ | `GolombPowerful.consecutive_12167_12168` | `by decide` |
+| **Lemma 3.2** | $12167 = 1^2 \cdot 23^3$ is powerful | `GolombPowerful.powerful_12167` | `by use 1, 23; decide` |
+| **Lemma 3.3** | $12168 = 39^2 \cdot 2^3$ is powerful | `GolombPowerful.powerful_12168` | `by use 39, 2; decide` |
+| **Lemma 3.4** | $110^2 < 12167 < 111^2 \implies \neg \text{IsSquare}(12167)$ | `GolombPowerful.not_square_12167` | `by omega; decide` |
+| **Lemma 3.5** | $110^2 < 12168 < 111^2 \implies \neg \text{IsSquare}(12168)$ | `GolombPowerful.not_square_12168` | `by omega; decide` |
+| **Theorem 4.1** | Exact prize conjecture is False | `GolombPowerful.consecutive_powerful_squares_conjecture_false` | Machine-Closed |
 
-### 4. Module IV: Lower Bound on Maximum Element (`BountySolves/LowerBoundMaxElement.lean`)
-* **Problem**: Lower Bound on the Maximum Element of Sets with Distinct Subset Sums (JSP-000043).
-* **Core Formalizations**:
-  - Monotonicity of sums on finite subsets of $\mathbb{N}$ (`sum_le_sum_of_subset`).
-  - Combinatorial Capacity Floor: $2^{|S|} \le (\sum S) + 1$ via powerset injection (`combinatorial_capacity_floor`).
-  - Arithmetic upper bound on subset sums via maximum element: $\sum S \le |S| \cdot m$ (`sum_le_card_mul_bound`).
-  - Constructive Lower Bound on the Maximum Element: $2^{|S|} \le |S| \cdot m + 1 \implies m \ge \frac{2^{|S|}-1}{|S|}$ (`distinct_subset_sums_max_element_bound`).
-  - Geometric progression sum and exact zero-slack sharpness on powers of two (`capacity_floor_sharpness`).
-* **Kernel Status**: 100% Machine-Closed Core (0 `sorry`, 0 custom axioms).
+### Verification & Reproduction
 
----
+```bash
+lake build GolombPowerful
+```
 
-## ⚙️ How to Build & Verify Locally
+Kernel verification output:
+```text
+info: BountySolves/GolombPowerful.lean:85:0: 'GolombPowerful.powerful_12167' depends on axioms: [propext]
+info: BountySolves/GolombPowerful.lean:86:0: 'GolombPowerful.powerful_12168' depends on axioms: [propext]
+info: BountySolves/GolombPowerful.lean:87:0: 'GolombPowerful.not_square_12167' depends on axioms: [propext, Quot.sound]
+info: BountySolves/GolombPowerful.lean:88:0: 'GolombPowerful.not_square_12168' depends on axioms: [propext, Quot.sound]
+info: BountySolves/GolombPowerful.lean:89:0: 'GolombPowerful.golomb_powerful_counterexample' depends on axioms: [propext, Quot.sound]
+info: BountySolves/GolombPowerful.lean:90:0: 'GolombPowerful.consecutive_powerful_squares_conjecture_false' depends on axioms: [propext, Quot.sound]
+Build completed successfully (829 jobs).
+```
 
-1. Open PowerShell or Command Prompt in this folder:
-   ```bash
-   cd C:\Users\User\Desktop\bounty_solves
-   ```
-
-2. Fetch dependencies and precompiled Mathlib caches:
-   ```bash
-   lake update
-   lake exe cache get
-   ```
-   *(Note: `lake exe cache get` downloads prebuilt Mathlib artifacts, saving hours of local compilation.)*
-
-3. Compile and verify all three libraries:
-   ```bash
-   lake build
-   ```
-
-4. Alternatively, double-click `verify.bat` to run the verification process automatically.
-
----
-
-## 🏆 Submitting to The Justin Sun Prize
-
-1. **Fork the Official Awards Repository**:
-   Visit [TheJustinSunPrize/awards](https://github.com/TheJustinSunPrize/awards) on GitHub and click **Fork**.
-
-2. **Clone and Branch**:
-   ```bash
-   git clone https://github.com/<your-username>/awards.git
-   cd awards
-   git checkout -b solve-guys-d19-and-vacuum
-   ```
-
-3. **Add Your Formalization Files & lakefile Configuration**:
-   Place the `BountySolves/` files or link to your verified repository as required by the specific prize issue / guidelines.
-
-4. **Run Kernel Audit**:
-   Each file contains `#print axioms` commands at the end to generate machine-verifiable proof logs confirming that no `sorry` or unofficial axioms are used.
-
-5. **Open a Pull Request**:
-   Push your branch and open a PR against `TheJustinSunPrize/awards`. Reference the target challenge/issue in your PR description.
+Zero `sorry`, zero custom axioms.

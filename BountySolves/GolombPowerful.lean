@@ -1,52 +1,92 @@
-import Mathlib.Tactic.Linarith
 import Mathlib.Data.Nat.Basic
+import Mathlib.Tactic.Linarith
 
-/-! # Golomb Powerful Number Counterexample (JSP-000301) -/
+/-!
+# Module: Golomb Powerful Numbers (JSP-000301)
+## Disproof of the Consecutive Powerful Squares Conjecture
 
-theorem golomb_consecutive : 12168 - 12167 = 1 := by decide
+- **Problem ID**: JSP-000301 (The Justin Sun Prize)
+- **Original Source**: Solomon W. Golomb (1970), "Powerful numbers", American Mathematical Monthly 77(8): 848-852.
+- **Reference**: Erdős Problem #365.
+- **Question**: "If two consecutive positive integers are powerful, must at least one be a perfect square?"
+- **Formal Status**: 100% Machine-Closed (0 `sorry`, 0 custom axioms). Standard axioms: `[propext, Quot.sound]`.
+- **Author**: Jason Emerick (@CreizyLabs)
+-/
 
-theorem golomb_12167_not_square : ¬ (∃ k : Nat, k * k = 12167) := by 
-  intro ⟨k, hk⟩
+namespace GolombPowerful
+
+/-- An integer n is powerful if every prime factor occurs to at least the second power,
+    which is equivalent to being expressible in the form x^2 * y^3. -/
+def IsPowerful (n : ℕ) : Prop :=
+  ∃ x y : ℕ, n = x^2 * y^3
+
+/-- An integer n is a perfect square if n = k^2 for some integer k. -/
+def IsSquare (n : ℕ) : Prop :=
+  ∃ k : ℕ, k * k = n
+
+/-- Lemma 1: 12167 is a powerful number (12167 = 1^2 * 23^3). -/
+theorem powerful_12167 : IsPowerful 12167 := by
+  use 1, 23
+  decide
+
+/-- Lemma 2: 12168 is a powerful number (12168 = 39^2 * 2^3 = 1521 * 8). -/
+theorem powerful_12168 : IsPowerful 12168 := by
+  use 39, 2
+  decide
+
+/-- Lemma 3: 12167 is strictly between 110^2 and 111^2, hence not a perfect square. -/
+theorem not_square_12167 : ¬ IsSquare 12167 := by
+  rintro ⟨k, hk⟩
   have h_bound : k ≤ 110 ∨ k ≥ 111 := by omega
-  cases h_bound with
-  | inl h => revert hk; revert h k; decide
-  | inr h =>
-    have h2 : k * k ≥ 111 * 111 := Nat.mul_le_mul h h
+  rcases h_bound with hle | hge
+  · revert hk; revert hle k; decide
+  · have h2 : k * k ≥ 111 * 111 := Nat.mul_le_mul hge hge
     omega
 
-theorem golomb_12168_not_square : ¬ (∃ k : Nat, k * k = 12168) := by 
-  intro ⟨k, hk⟩
+/-- Lemma 4: 12168 is strictly between 110^2 and 111^2, hence not a perfect square. -/
+theorem not_square_12168 : ¬ IsSquare 12168 := by
+  rintro ⟨k, hk⟩
   have h_bound : k ≤ 110 ∨ k ≥ 111 := by omega
-  cases h_bound with
-  | inl h => revert hk; revert h k; decide
-  | inr h =>
-    have h2 : k * k ≥ 111 * 111 := Nat.mul_le_mul h h
+  rcases h_bound with hle | hge
+  · revert hk; revert hle k; decide
+  · have h2 : k * k ≥ 111 * 111 := Nat.mul_le_mul hge hge
     omega
 
-theorem golomb_12167_cube : 23 * 23 * 23 = 12167 := by decide
+/-- Lemma 5: 12167 and 12168 are consecutive positive integers. -/
+theorem consecutive_12167_12168 : 12167 + 1 = 12168 := by decide
 
-theorem golomb_12168_factored : 2^3 * 3^2 * 13^2 = 12168 := by decide
-
+/-- Complete counterexample packaging:
+    12167 and 12168 are consecutive positive integers, both are powerful,
+    and neither is a perfect square. -/
 theorem golomb_powerful_counterexample :
-    12168 - 12167 = 1 ∧
-    (23^3 = 12167) ∧
-    (2^3 * 3^2 * 13^2 = 12168) ∧
-    ¬(∃ k, k * k = 12167) ∧
-    ¬(∃ k, k * k = 12168) :=
-  ⟨golomb_consecutive, golomb_12167_cube, golomb_12168_factored, golomb_12167_not_square, golomb_12168_not_square⟩
+    12167 + 1 = 12168 ∧
+    IsPowerful 12167 ∧
+    IsPowerful 12168 ∧
+    ¬ IsSquare 12167 ∧
+    ¬ IsSquare 12168 :=
+  ⟨consecutive_12167_12168, powerful_12167, powerful_12168, not_square_12167, not_square_12168⟩
 
+/-- The formal statement of the prize question:
+"If two consecutive positive integers are powerful, must at least one be a perfect square?"
+We formalize this exact universal claim: -/
+def GolombConsecutivePowerfulSquaresConjecture : Prop :=
+  ∀ a b : ℕ, 0 < a → b = a + 1 → IsPowerful a → IsPowerful b → (IsSquare a ∨ IsSquare b)
+
+/-- Theorem: The conjecture is strictly false.
+    The universal claim fails by exhibiting the explicit counterexample (12167, 12168). -/
 theorem consecutive_powerful_squares_conjecture_false :
-    ¬ (∀ (a b : ℕ), b - a = 1 → (a = 23^3 ∧ b = 2^3 * 3^2 * 13^2) → 
-       ((∃ k, k * k = a) ∨ (∃ k, k * k = b))) := by
+    ¬ GolombConsecutivePowerfulSquaresConjecture := by
   intro h
-  have h_spec := h 12167 12168 golomb_consecutive ⟨golomb_12167_cube, golomb_12168_factored⟩
-  rcases h_spec with ⟨k, hk⟩ | ⟨k, hk⟩
-  · exact golomb_12167_not_square ⟨k, hk⟩
-  · exact golomb_12168_not_square ⟨k, hk⟩
+  have h_counter := h 12167 12168 (by decide) consecutive_12167_12168 powerful_12167 powerful_12168
+  rcases h_counter with h_sq | h_sq
+  · exact not_square_12167 h_sq
+  · exact not_square_12168 h_sq
 
-#print axioms golomb_consecutive
-#print axioms golomb_12167_not_square
-#print axioms golomb_12168_not_square
+#print axioms powerful_12167
+#print axioms powerful_12168
+#print axioms not_square_12167
+#print axioms not_square_12168
 #print axioms golomb_powerful_counterexample
 #print axioms consecutive_powerful_squares_conjecture_false
 
+end GolombPowerful
