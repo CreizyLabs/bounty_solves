@@ -49,3 +49,7 @@ lean_lib "ThomCobordism" where
 
 lean_lib "YangMillsMassGap" where
   srcDir := "BountySolves"
+
+lean_lib "ErdosAnning" where
+  srcDir := "BountySolves"
+
