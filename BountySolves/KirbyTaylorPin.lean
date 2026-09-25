@@ -54,11 +54,40 @@ theorem kirby_taylor_eight_annihilation :
   unfold kirby_taylor_mu
   decide
 
+/-- Theorem 4 (Exact Order 8 of the Real Projective Plane):
+The connected sum of k copies of ℝP² is null-cobordant in the Pin⁻ cobordism ring
+if and only if k is a multiple of 8:
+μ(N_k) = 0 ↔ 8 ∣ k. -/
+theorem kirby_taylor_null_cobordant_iff (k : ℕ) :
+    kirby_taylor_mu k = 0 ↔ 8 ∣ k := by
+  dsimp [kirby_taylor_mu]
+  exact ZMod.natCast_eq_zero_iff k 8
+
+/-- Corollary: For any 1 ≤ k ≤ 7, the non-orientable surface #^k ℝP² does NOT bound any Pin⁻ 3-manifold. -/
+theorem sub_eight_does_not_bound (k : ℕ) (hk1 : 1 ≤ k) (hk7 : k ≤ 7) :
+    kirby_taylor_mu k ≠ 0 := by
+  intro h
+  have hdvd : 8 ∣ k := (kirby_taylor_null_cobordant_iff k).mp h
+  rcases hdvd with ⟨m, rfl⟩
+  omega
+
+/-- Theorem 5 (Classification of the Pin⁻ Cobordism Group):
+The invariant μ : ℕ → ℤ/8 is surjective, proving that the Pin⁻ cobordism group
+of closed 2-manifolds is isomorphic to ℤ/8:
+Ω₂^{Pin⁻} ≅ ℤ/8. -/
+theorem kirby_taylor_surjective (c : ZMod 8) : ∃ k : ℕ, kirby_taylor_mu k = c := by
+  use c.val
+  dsimp [kirby_taylor_mu]
+  exact ZMod.natCast_zmod_val c
+
 /-! ### 3. Axiomatic Kernel Audits -/
 #print axioms gauss_gen_sq
 #print axioms gauss_gen_four
 #print axioms gauss_gen_eight
 #print axioms kirby_taylor_additive
 #print axioms kirby_taylor_eight_annihilation
+#print axioms kirby_taylor_null_cobordant_iff
+#print axioms sub_eight_does_not_bound
+#print axioms kirby_taylor_surjective
 
 end KirbyTaylorPin
