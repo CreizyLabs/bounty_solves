@@ -8,3 +8,5 @@
 .DS_Store
 BountySolves/math and logic/
 test.lean
+.agents/
+ORIGINAL_REQUEST.md
