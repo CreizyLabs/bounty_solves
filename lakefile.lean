@@ -59,5 +59,9 @@ lean_lib "CatalanMihailescu" where
 lean_lib "OddCoveringSystems" where
   srcDir := "BountySolves"
 
+lean_lib "AndersonLocalRings" where
+  srcDir := "BountySolves"
+
+
 
 
