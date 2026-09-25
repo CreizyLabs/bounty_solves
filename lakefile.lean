@@ -62,6 +62,10 @@ lean_lib "OddCoveringSystems" where
 lean_lib "AndersonLocalRings" where
   srcDir := "BountySolves"
 
+lean_lib "DGGCostPreserving" where
+  srcDir := "BountySolves"
+
+
 
 
 
