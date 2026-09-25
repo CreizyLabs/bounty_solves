@@ -21,15 +21,17 @@ bounty_solves/
 ├── lake-manifest.json        # Pinned dependency manifest
 ├── lean-toolchain            # Pinned Lean 4 toolchain (v4.35.0-rc2)
 ├── papers/                   # Complete informal mathematical papers
-│   └── JSP-000301-Golomb-Consecutive-Powerful-Numbers.md
+│   ├── JSP-000301-Golomb-Consecutive-Powerful-Numbers.md
+│   └── JSP-000288-Minimal-Stably-Complete-Sequences.md
 ├── BountySolves/             # Lean 4 formalization modules
-│   └── GolombPowerful.lean   # Machine-checked disproof of Golomb conjecture
+│   ├── GolombPowerful.lean
+│   └── StablyCompleteGoldenRatio.lean
 └── README.md                 # Documentation & mapping guide
 ```
 
 ---
 
-## 🏆 Featured Submission: JSP-000301 (Golomb Powerful Numbers)
+## 🏆 Submission 1: JSP-000301 (Golomb Powerful Numbers)
 
 * **Problem**: *If two consecutive positive integers are powerful, must at least one be a perfect square?*
 * **Catalog ID**: [JSP-000301](https://github.com/TheJustinSunPrize/awards/blob/main/problems/catalog-0301-0400.md#JSP-000301)
@@ -53,20 +55,39 @@ bounty_solves/
 | **Theorem 4.1** | Exact prize conjecture is False | `GolombPowerful.consecutive_powerful_squares_conjecture_false` | Machine-Closed |
 
 ### Verification & Reproduction
-
 ```bash
 lake build GolombPowerful
 ```
+Kernel verification: depends only on standard `[propext, Quot.sound]` (0 `sorry`, 0 custom axioms).
 
-Kernel verification output:
-```text
-info: BountySolves/GolombPowerful.lean:85:0: 'GolombPowerful.powerful_12167' depends on axioms: [propext]
-info: BountySolves/GolombPowerful.lean:86:0: 'GolombPowerful.powerful_12168' depends on axioms: [propext]
-info: BountySolves/GolombPowerful.lean:87:0: 'GolombPowerful.not_square_12167' depends on axioms: [propext, Quot.sound]
-info: BountySolves/GolombPowerful.lean:88:0: 'GolombPowerful.not_square_12168' depends on axioms: [propext, Quot.sound]
-info: BountySolves/GolombPowerful.lean:89:0: 'GolombPowerful.golomb_powerful_counterexample' depends on axioms: [propext, Quot.sound]
-info: BountySolves/GolombPowerful.lean:90:0: 'GolombPowerful.consecutive_powerful_squares_conjecture_false' depends on axioms: [propext, Quot.sound]
-Build completed successfully (829 jobs).
+---
+
+## 🏆 Submission 2: JSP-000288 (Minimal Stably Complete Sequences)
+
+* **Problem**: *Must ratios of consecutive terms in the specified minimal stably complete sequences converge to the golden ratio?*
+* **Catalog ID**: [JSP-000288](https://github.com/TheJustinSunPrize/awards/blob/main/problems/catalog-0201-0300.md#JSP-000288)
+* **Mathematical Solver**: Ronald L. Graham (1964) / Paul Erdős & Ronald L. Graham (1980); Erdős Problem #346.
+* **Formalization Author**: Jason Emerick (`@CreizyLabs`)
+* **Informal Paper**: [`papers/JSP-000288-Minimal-Stably-Complete-Sequences.md`](papers/JSP-000288-Minimal-Stably-Complete-Sequences.md)
+* **Lean 4 Module**: [`BountySolves/StablyCompleteGoldenRatio.lean`](BountySolves/StablyCompleteGoldenRatio.lean)
+
+### One-to-One Paper to Lean Declaration Mapping
+
+| Paper Section | Mathematical Statement | Lean 4 Identifier | Method |
+| :--- | :--- | :--- | :--- |
+| **Section 2.1** | Subset Sums Definition | `Erdos346.subsetSums` | Definition |
+| **Section 2.2** | Completeness on Index Set | `Erdos346.IsCompleteOn` | Definition |
+| **Section 2.3** | Finite Deletion Completeness | `Erdos346.ValueFiniteDeletionComplete` | Definition |
+| **Section 2.4** | Infinite Deletion Incompleteness | `Erdos346.ValueInfiniteDeletionIncomplete` | Definition |
+| **Section 2.5** | Uniform Ratio Gap | `Erdos346.HasUniformRatioGap` | Definition |
+| **Lemma 3.1** | Threshold Monotonicity | `Erdos346.subsetSums_mono` | Proved |
+| **Lemma 3.2** | Exponential Growth Lower Bound | `Erdos346.ratio_lower_bound` | Proved |
+| **Lemma 3.3** | Golden Ratio Rigidity | `Erdos346.main` | Proved |
+| **Theorem 4.1** | Main Characterization Theorem | `Erdos346.main_valueDeletion` | Proved (0 `sorry`) |
+| **Theorem 4.1 (Expanded)**| Explicit Public Statement | `Erdos346.main_valueDeletion_expanded` | Proved (0 `sorry`) |
+
+### Verification & Reproduction
+```bash
+lake build StablyCompleteGoldenRatio
 ```
-
-Zero `sorry`, zero custom axioms.
+Kernel verification: depends only on standard `[propext, Quot.sound, Classical.choice]` (0 `sorry`, 0 custom axioms).

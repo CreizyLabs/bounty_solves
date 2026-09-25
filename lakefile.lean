@@ -53,6 +53,9 @@ lean_lib "BeltramiAdvection" where
 lean_lib "GolombPowerful" where
   srcDir := "BountySolves"
 
+lean_lib "StablyCompleteGoldenRatio" where
+  srcDir := "BountySolves"
+
 lean_lib "GoldbachSingular" where
   srcDir := "BountySolves"
 
