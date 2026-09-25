@@ -91,3 +91,36 @@ Kernel verification: depends only on standard `[propext, Quot.sound]` (0 `sorry`
 lake build StablyCompleteGoldenRatio
 ```
 Kernel verification: depends only on standard `[propext, Quot.sound, Classical.choice]` (0 `sorry`, 0 custom axioms).
+
+---
+
+## 3. JSP-000465: Erdős–Simonovits Compactness Conjecture Refutation
+
+* **Problem ID**: [JSP-000465](https://github.com/TheJustinSunPrize/awards/blob/main/problems/catalog-0401-0500.md#JSP-000465)
+* **Mathematical Solvers**: Internal OpenAI model (Astra); Erdős Problem #180
+* **Formalization Author**: Jason Emerick (`@CreizyLabs`)
+* **Informal Paper**: [`papers/JSP-000465-Erdos-Simonovits-Compactness-Conjecture.md`](papers/JSP-000465-Erdos-Simonovits-Compactness-Conjecture.md)
+* **Lean 4 Module**: [`BountySolves/ErdosSimonovitsCompactness.lean`](BountySolves/ErdosSimonovitsCompactness.lean)
+
+### One-to-One Paper to Lean Declaration Mapping
+
+| Paper Section | Mathematical Statement | Lean 4 Identifier | Method |
+| :--- | :--- | :--- | :--- |
+| **Section 2.1** | Family-Free Subgraph Definition | `CompactnessConjecture.FamilyFree` | Definition |
+| **Section 2.2** | Extremal Number for Family | `CompactnessConjecture.familyExtremal` | Definition |
+| **Section 2.3** | Cyclic Family Definition | `CompactnessConjecture.IsCyclicFamily` | Definition |
+| **Section 2.4** | Compact Family Definition | `CompactnessConjecture.IsCompactFamily` | Definition |
+| **Section 2.5** | Compactness Conjecture Statement | `CompactnessConjecture.CompactnessConjectureStatement` | Definition |
+| **Construction 3.1** | Proposed Bipartite Family | `CompactnessConjecture.proposedFamily` | Construction |
+| **Lemma 3.2** | Uniform Member Lower Bound | `CompactnessConjecture.proposedFamily_uniformMemberLower` | Proved |
+| **Lemma 3.3** | Sixteenth-Power Host Bound | `CompactnessConjecture.proposedFamily_familyExtremal_sixteenth_power_le` | Proved |
+| **Theorem 3.4** | Non-Compactness of Family | `CompactnessConjecture.proposedFamily_not_compact` | Proved |
+| **Corollary 3.5** | Main Refutation Theorem | `CompactnessConjecture.not_erdos_180` | Proved (0 `sorry`) |
+| **Theorem 4.1** | Quantitative Counterexample | `CompactnessConjecture.quantitativeCompactnessCounterexample` | Proved (0 `sorry`) |
+| **Theorem 4.2** | Asymptotic Big-O Form | `CompactnessConjecture.compactnessCounterexample_bigO` | Proved (0 `sorry`) |
+
+### Verification & Reproduction
+```bash
+lake build ErdosSimonovitsCompactness
+```
+Kernel verification: depends only on standard `[propext, Quot.sound, Classical.choice]` (0 `sorry`, 0 custom axioms).

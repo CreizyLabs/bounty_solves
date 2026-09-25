@@ -56,6 +56,9 @@ lean_lib "GolombPowerful" where
 lean_lib "StablyCompleteGoldenRatio" where
   srcDir := "BountySolves"
 
+lean_lib "ErdosSimonovitsCompactness" where
+  srcDir := "BountySolves"
+
 lean_lib "GoldbachSingular" where
   srcDir := "BountySolves"
 
