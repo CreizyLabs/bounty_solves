@@ -47,3 +47,6 @@ lean_lib "PoincareSphere" where
 
 lean_lib "SzemerediProgressions" where
   srcDir := "BountySolves"
+
+lean_lib "PowerOfTwoCycles" where
+  srcDir := "BountySolves"
