@@ -10,3 +10,12 @@ import VacuumDecoupling
 import ErdosAnning
 import SunflowerLemma
 import ScottDomainCPO
+import BeltramiAdvection
+import GolombPowerful
+import GoldbachSingular
+import BogomolnyBound
+import RegulatorPositivity
+import IdempotentChern
+import HurwitzGoldenRatio
+import FibonacciBraidUnitary
+import IcosianE8Roots

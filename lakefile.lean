@@ -46,3 +46,30 @@ lean_lib "SunflowerLemma" where
 
 lean_lib "ScottDomainCPO" where
   srcDir := "BountySolves"
+
+lean_lib "BeltramiAdvection" where
+  srcDir := "BountySolves"
+
+lean_lib "GolombPowerful" where
+  srcDir := "BountySolves"
+
+lean_lib "GoldbachSingular" where
+  srcDir := "BountySolves"
+
+lean_lib "BogomolnyBound" where
+  srcDir := "BountySolves"
+
+lean_lib "RegulatorPositivity" where
+  srcDir := "BountySolves"
+
+lean_lib "IdempotentChern" where
+  srcDir := "BountySolves"
+
+lean_lib "HurwitzGoldenRatio" where
+  srcDir := "BountySolves"
+
+lean_lib "FibonacciBraidUnitary" where
+  srcDir := "BountySolves"
+
+lean_lib "IcosianE8Roots" where
+  srcDir := "BountySolves"
