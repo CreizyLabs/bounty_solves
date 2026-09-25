@@ -19,3 +19,7 @@ import IdempotentChern
 import HurwitzGoldenRatio
 import FibonacciBraidUnitary
 import IcosianE8Roots
+import GinspargWilsonAnomaly
+import KolmogorovTurbulenceDamping
+import KlesserReversibleSO4
+import HeckeRamanujanLanglands

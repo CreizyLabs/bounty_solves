@@ -73,3 +73,16 @@ lean_lib "FibonacciBraidUnitary" where
 
 lean_lib "IcosianE8Roots" where
   srcDir := "BountySolves"
+
+lean_lib "GinspargWilsonAnomaly" where
+  srcDir := "BountySolves"
+
+lean_lib "KolmogorovTurbulenceDamping" where
+  srcDir := "BountySolves"
+
+lean_lib "KlesserReversibleSO4" where
+  srcDir := "BountySolves"
+
+lean_lib "HeckeRamanujanLanglands" where
+  srcDir := "BountySolves"
+
