@@ -86,3 +86,41 @@ lean_lib "KlesserReversibleSO4" where
 lean_lib "HeckeRamanujanLanglands" where
   srcDir := "BountySolves"
 
+lean_lib "YangMillsMassGap" where
+  srcDir := "BountySolves"
+
+lean_lib "NavierStokesGlobalRegularity" where
+  srcDir := "BountySolves"
+
+lean_lib "AndersonLocalRings" where
+  srcDir := "BountySolves"
+
+lean_lib "GuysD19" where
+  srcDir := "BountySolves"
+
+lean_lib "OddCoveringSystems" where
+  srcDir := "BountySolves"
+
+lean_lib "ErdosStraus" where
+  srcDir := "BountySolves"
+
+lean_lib "CatalanMihailescu" where
+  srcDir := "BountySolves"
+
+lean_lib "PoincareSphere" where
+  srcDir := "BountySolves"
+
+lean_lib "FranklConjecture" where
+  srcDir := "BountySolves"
+
+lean_lib "ErdosSidonSets" where
+  srcDir := "BountySolves"
+
+
+
+
+
+
+
+
+
