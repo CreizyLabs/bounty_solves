@@ -116,6 +116,10 @@ lean_lib "FranklConjecture" where
 lean_lib "ErdosSidonSets" where
   srcDir := "BountySolves"
 
+lean_lib "AdditiveComplementSquares" where
+  srcDir := "BountySolves"
+
+
 
 
 
