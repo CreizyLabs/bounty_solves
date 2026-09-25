@@ -84,6 +84,47 @@ theorem distinct_subset_sums_max_element_bound (S : Finset ℕ)
   have h_sum := sum_le_card_mul_bound S m hm
   omega
 
+/-- Theorem 2b: Exact Product Lower Bound:
+For any set S with distinct subset sums and upper bound m,
+|S| * m ≥ 2^|S| - 1. -/
+theorem max_element_product_lower_bound (S : Finset ℕ)
+    (h_distinct : HasDistinctSubsetSums S) (m : ℕ) (hm : ∀ x ∈ S, x ≤ m) :
+    S.card * m ≥ 2 ^ S.card - 1 := by
+  have h := distinct_subset_sums_max_element_bound S h_distinct m hm
+  omega
+
+/-- Equivalence between distinct subset sums and injection on the powerset finset. -/
+theorem distinct_subset_sums_iff_powerset (S : Finset ℕ) :
+    HasDistinctSubsetSums S ↔ ∀ u ∈ S.powerset, ∀ v ∈ S.powerset, u.sum id = v.sum id → u = v := by
+  dsimp [HasDistinctSubsetSums]
+  constructor
+  · intro h u hu v hv heq
+    rw [Finset.mem_powerset] at hu hv
+    exact h hu hv heq
+  · intro h u v hu hv heq
+    rw [← Finset.mem_powerset] at hu hv
+    exact h u hu v hv heq
+
+/-- Theorem 3 (Conway-Guy / Erdős Sub-Power-of-Two Phenomenon):
+The naive conjecture that max(S) ≥ 2^(|S|-1) fails:
+The set S = {3, 5, 6, 7} has |S| = 4 and distinct subset sums,
+with maximum element 7 < 2^(4-1) = 8,
+while strictly satisfying the capacity bound 4 * 7 + 1 = 29 ≥ 2^4 = 16. -/
+def ConwayGuySet : Finset ℕ := {3, 5, 6, 7}
+
+theorem conway_guy_card : ConwayGuySet.card = 4 := by
+  decide
+
+theorem conway_guy_distinct_subset_sums : HasDistinctSubsetSums ConwayGuySet := by
+  rw [distinct_subset_sums_iff_powerset]
+  decide
+
+theorem conway_guy_max_bound : ∀ x ∈ ConwayGuySet, x ≤ 7 := by
+  decide
+
+theorem conway_guy_beats_power_of_two : (7 : ℕ) < 2 ^ (ConwayGuySet.card - 1) := by
+  decide
+
 /-- Geometric sum: ∑_{i=0}^{n-1} 2^i = 2^n - 1. -/
 lemma geom_sum_powers_of_two (n : ℕ) :
     (Finset.range n).sum (fun i => 2 ^ i) = 2 ^ n - 1 := by
@@ -106,6 +147,12 @@ theorem capacity_floor_sharpness (n : ℕ) :
 #print axioms combinatorial_capacity_floor
 #print axioms sum_le_card_mul_bound
 #print axioms distinct_subset_sums_max_element_bound
+#print axioms max_element_product_lower_bound
+#print axioms distinct_subset_sums_iff_powerset
+#print axioms conway_guy_card
+#print axioms conway_guy_distinct_subset_sums
+#print axioms conway_guy_max_bound
+#print axioms conway_guy_beats_power_of_two
 #print axioms geom_sum_powers_of_two
 #print axioms capacity_floor_sharpness
 
