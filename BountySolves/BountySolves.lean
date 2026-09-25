@@ -9,3 +9,4 @@ import AdditiveComplementSquares
 import GuysD19
 import CatalanMihailescu
 import PoincareSphere
+import SzemerediProgressions

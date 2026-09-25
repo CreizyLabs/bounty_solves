@@ -44,3 +44,6 @@ lean_lib "CatalanMihailescu" where
 
 lean_lib "PoincareSphere" where
   srcDir := "BountySolves"
+
+lean_lib "SzemerediProgressions" where
+  srcDir := "BountySolves"

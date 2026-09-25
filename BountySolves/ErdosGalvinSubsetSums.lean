@@ -169,59 +169,7 @@ lemma lt_of_mem_bitIndices_of_lt {m k : ℕ} (h : m < 2 ^ k) :
   have h_lt : 2 ^ e < 2 ^ k := lt_of_le_of_lt h_le h
   exact (Nat.pow_lt_pow_iff_right (by decide : 1 < 2)).mp h_lt
 
-/-
-For a sorted-ascending list, the head is the minimum element.
--/
-lemma head?_eq_of_mem_of_forall_le {L : List ℕ} {v : ℕ}
-    (hsorted : L.Pairwise (· ≤ ·)) (hv : v ∈ L) (hle : ∀ e ∈ L, v ≤ e) :
-    L.head? = some v := by
-  cases L with
-  | nil => contradiction
-  | cons hd tl =>
-    simp only [head?_cons, Option.some.injEq]
-    cases hv with
-    | head => rfl
-    | tail _ hv_tl =>
-      have h1 : v ≤ hd := hle hd (List.mem_cons_self hd tl)
-      have h2 : hd ≤ v := List.rel_of_pairwise_cons hsorted hv_tl
-      exact le_antisymm h1 h2
 
-/-
-If all binary exponents of `x` are strictly below all binary exponents of `y`, then the
-binary support of `x + y` is the concatenation of the two supports.
--/
-lemma bitIndices_add_separated {x y : ℕ}
-    (h : ∀ e ∈ x.bitIndices, ∀ d ∈ y.bitIndices, e < d) :
-    (x + y).bitIndices = x.bitIndices ++ y.bitIndices := by
-  have h_sorted : (x.bitIndices ++ y.bitIndices).SortedLT := by
-    rw [List.sortedLT_iff_pairwise]
-    exact List.Pairwise.append.mpr ⟨Nat.bitIndices_sorted.pairwise, Nat.bitIndices_sorted.pairwise, h⟩
-  have h_sum : (x.bitIndices ++ y.bitIndices).map (fun i => 2 ^ i) |>.sum = x + y := by
-    rw [List.map_append, List.sum_append, Nat.sum_map_two_pow_bitIndices, Nat.sum_map_two_pow_bitIndices]
-  rw [← h_sum]
-  exact Nat.bitIndices_sum_map_two_pow h_sorted
-
-/-! ## Eventually positive -/
-
-/-
-A strictly increasing integer sequence is eventually positive.
--/
-lemma strictMono_eventually_pos (a : ℕ → ℤ) (ha : StrictMono a) :
-    ∃ q0 : ℕ, ∀ i, q0 < i → 0 < a i := by
-      by_contra! h;
-      -- Strict monotonicity gives `a n ≥ a 0 + n` for every `n`.
-      have h_lower_bound : ∀ n, a n ≥ a 0 + n := by
-        intro n
-        induction n with
-        | zero => norm_num
-        | succ n ih =>
-          norm_num
-          linarith [ha n.lt_succ_self]
-      exact absurd (h (Int.toNat (-a 0))) (by
-        rintro ⟨i, hi₁, hi₂⟩
-        linarith [Int.self_le_toNat (-a 0), h_lower_bound i])
-
-#exit
 /-! ## The compact packet lemma -/
 
 /-
