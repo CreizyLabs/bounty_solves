@@ -20,3 +20,27 @@ lean_lib "ErdosSimonovitsCompactness" where
 
 lean_lib "ErdosGalvinSubsetSums" where
   srcDir := "BountySolves"
+
+lean_lib "SunflowerLemma" where
+  srcDir := "BountySolves"
+
+lean_lib "ErdosSidonSets" where
+  srcDir := "BountySolves"
+
+lean_lib "LowerBoundMaxElement" where
+  srcDir := "BountySolves"
+
+lean_lib "OddCoveringSystems" where
+  srcDir := "BountySolves"
+
+lean_lib "AdditiveComplementSquares" where
+  srcDir := "BountySolves"
+
+lean_lib "GuysD19" where
+  srcDir := "BountySolves"
+
+lean_lib "CatalanMihailescu" where
+  srcDir := "BountySolves"
+
+lean_lib "PoincareSphere" where
+  srcDir := "BountySolves"
