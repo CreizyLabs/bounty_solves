@@ -53,3 +53,7 @@ lean_lib "YangMillsMassGap" where
 lean_lib "ErdosAnning" where
   srcDir := "BountySolves"
 
+lean_lib "CatalanMihailescu" where
+  srcDir := "BountySolves"
+
+
