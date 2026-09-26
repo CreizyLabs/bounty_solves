@@ -142,6 +142,18 @@ theorem capacity_floor_sharpness (n : ℕ) :
   have : 1 ≤ 2 ^ n := Nat.one_le_two_pow
   omega
 
+/-- Main Theorem: Erdős (1931) originally conjectured that any set of n integers with distinct
+subset sums satisfies max(S) ≥ 2^(n-1). The Conway-Guy counterexample {3, 5, 6, 7} strictly disproves
+this original conjecture. -/
+theorem conway_guy_erdos_conjecture_disproved :
+    ¬ (∀ (S : Finset ℕ), HasDistinctSubsetSums S → S.card > 0 → ∀ m : ℕ, (∀ x ∈ S, x ≤ m) → 2 ^ (S.card - 1) ≤ m) := by
+  intro h
+  have h_bound := h ConwayGuySet conway_guy_distinct_subset_sums (by decide) 7 conway_guy_max_bound
+  have h_card := conway_guy_card
+  rw [h_card] at h_bound
+  revert h_bound
+  decide
+
 /-! ### Axiomatic Kernel Audits -/
 #print axioms sum_le_sum_of_subset
 #print axioms combinatorial_capacity_floor
@@ -153,7 +165,9 @@ theorem capacity_floor_sharpness (n : ℕ) :
 #print axioms conway_guy_distinct_subset_sums
 #print axioms conway_guy_max_bound
 #print axioms conway_guy_beats_power_of_two
+#print axioms conway_guy_erdos_conjecture_disproved
 #print axioms geom_sum_powers_of_two
 #print axioms capacity_floor_sharpness
 
 end LowerBoundMaxElement
+
