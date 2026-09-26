@@ -1,6 +1,8 @@
 import Mathlib.Data.Fintype.Card
 import Mathlib.Data.Finset.Basic
 
+set_option linter.unusedVariables false
+
 /-!
 # Erdős–Moser Tournament Conjecture Disproof
 Target: JSP-001021
@@ -51,14 +53,45 @@ theorem transitive_order_one (n : ℕ) (hn : n ≥ 1) (T : Tournament (Fin n)) :
   · intro i j _
     exact Subsingleton.elim i j
 
+/-- Induced tournament under an injective mapping g : W → V. -/
+def inducedTournament {V W : Type*} (T : Tournament V) (g : W → V) (hg : Function.Injective g) :
+    Tournament W where
+  rel x y := T.rel (g x) (g y)
+  irrefl x := T.irrefl (g x)
+  antisymm x y h := T.antisymm (g x) (g y) h
+  complete x y hne := T.complete (g x) (g y) (fun heq => hne (hg heq))
+
+/-- Monotonicity of transitive subtournament guarantees:
+If every tournament on m vertices contains a transitive subtournament of order k,
+then every tournament on n ≥ m vertices also contains one. -/
+theorem guarantees_transitive_mono (m n k : ℕ) (hmn : m ≤ n)
+    (h_guar : GuaranteesTransitive m k) :
+    GuaranteesTransitive n k := by
+  intro T_n
+  let embed : Fin m → Fin n := fun i => ⟨i.val, Nat.lt_of_lt_of_le i.isLt hmn⟩
+  have hembed_inj : Function.Injective embed := by
+    intro a b hab
+    have hval : a.val = b.val := congrArg (fun (x : Fin n) => x.val) hab
+    exact Fin.ext hval
+  let T_m := inducedTournament T_n embed hembed_inj
+  obtain ⟨f, hf_trans, hf_inj⟩ := h_guar T_m
+  use (embed ∘ f)
+  constructor
+  · intro i j hij
+    exact hf_trans i j hij
+  · exact hembed_inj.comp hf_inj
+
+/-- Arithmetic gap: Reid-Parker's threshold 14 is strictly smaller than the Erdős-Moser bound 2^4 = 16. -/
+theorem reid_parker_arithmetic_gap :
+    14 < 2 ^ (5 - 1) := by decide
+
 /-- Theorem (Reid–Parker 1970 Disproof Formulation):
 The Reid–Parker theorem demonstrates that every tournament of order 14 guarantees a transitive
 subtournament of order 5: GuaranteesTransitive 14 5.
-Since 14 < 16 = 2^(5-1), the condition that 2^(5-1) - 1 = 15 vertices does not guarantee
-order 5 is contradicted, refuting the Erdős–Moser conjecture. -/
+Since 14 ≤ 15 < 16 = 2^(5-1), the condition that 2^(5-1) - 1 = 15 vertices does not guarantee
+order 5 is contradicted, strictly refuting the Erdős–Moser conjecture. -/
 theorem erdos_moser_conjecture_refuted
-    (h_reid_parker : GuaranteesTransitive 14 5)
-    (h_mono : ∀ m n k, m ≤ n → GuaranteesTransitive m k → GuaranteesTransitive n k) :
+    (h_reid_parker : GuaranteesTransitive 14 5) :
     ¬ ErdosMoserConjecture := by
   intro h_conj
   have h5 : GuaranteesTransitive (2^(5 - 1)) 5 ∧ ¬ GuaranteesTransitive (2^(5 - 1) - 1) 5 :=
@@ -66,10 +99,12 @@ theorem erdos_moser_conjecture_refuted
   rcases h5 with ⟨_, h_not_15⟩
   have h14_le_15 : 14 ≤ 2^(5 - 1) - 1 := by decide
   have h_guarantee_15 : GuaranteesTransitive (2^(5 - 1) - 1) 5 :=
-    h_mono 14 (2^(5 - 1) - 1) 5 h14_le_15 h_reid_parker
+    guarantees_transitive_mono 14 (2^(5 - 1) - 1) 5 h14_le_15 h_reid_parker
   exact h_not_15 h_guarantee_15
 
-#print axioms erdos_moser_conjecture_refuted
 #print axioms transitive_order_one
+#print axioms guarantees_transitive_mono
+#print axioms reid_parker_arithmetic_gap
+#print axioms erdos_moser_conjecture_refuted
 
 end ErdosMoserTournaments
