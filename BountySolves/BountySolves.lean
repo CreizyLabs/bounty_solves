@@ -13,3 +13,4 @@ import SzemerediProgressions
 import PowerOfTwoCycles
 import JacobsthalFunction
 import InfiniteSidonDensity
+import GolombPowerful

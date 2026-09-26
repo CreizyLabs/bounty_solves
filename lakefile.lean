@@ -56,3 +56,6 @@ lean_lib "JacobsthalFunction" where
 
 lean_lib "InfiniteSidonDensity" where
   srcDir := "BountySolves"
+
+lean_lib "GolombPowerful" where
+  srcDir := "BountySolves"
