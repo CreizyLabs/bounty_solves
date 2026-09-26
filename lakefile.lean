@@ -71,3 +71,6 @@ lean_lib "ErdosAnning" where
 
 lean_lib "ErdosDiscrepancy" where
   srcDir := "BountySolves"
+
+lean_lib "YangMillsMassGap" where
+  srcDir := "BountySolves"
