@@ -177,8 +177,17 @@ Kernel verification: depends only on standard `[propext, Quot.sound, Classical.c
 
 | Paper Section | Mathematical Statement | Lean 4 Identifier | Method |
 | :--- | :--- | :--- | :--- |
-| **Definition 1.1** | Vanishing in All Powers | `AndersonLocalRings.InAllPowers` | Definition |
-| **Theorem 2.1** | Nilpotent Collapse Theorem | `AndersonLocalRings.in_all_powers_eq_zero_of_nilpotent` | Proved (0 `sorry`) |
+| **Definition 1.1** | Vanishing in All Powers ($\mathfrak{m}$-adic vanishing element $x \in \bigcap_{n} I^n$) | `AndersonLocalRings.InAllPowers` | Definition |
+| **Theorem 2.1** | Nilpotent Ideal Vanishing Collapse ($I^k = 0 \implies x = 0$) | `AndersonLocalRings.in_all_powers_eq_zero_of_nilpotent` | Proved (0 `sorry`) |
+| **Theorem 2.2** | Krull's Intersection Theorem in Noetherian Local Rings ($I \ne \top \implies \bigcap I^n = 0$) | `AndersonLocalRings.in_all_powers_eq_zero_of_krull` | Proved (0 `sorry`) |
+| **Theorem 2.3** | Maximal Ideal Vanishing in Noetherian Local Rings | `AndersonLocalRings.in_all_powers_maximalIdeal_eq_zero` | Proved (0 `sorry`) |
+| **Theorem 2.4** | Nilpotency of Maximal Ideal in Artinian Local Rings | `AndersonLocalRings.maximalIdeal_isNilpotent` | Proved (0 `sorry`) |
+| **Corollary 2.5** | Order Stabilization ($\exists k, \mathfrak{m}^k = \bot$) in Artinian Local Rings | `AndersonLocalRings.exists_pow_maximalIdeal_eq_bot` | Proved (0 `sorry`) |
+| **Definition 1.4** | Quasi-Complete Local Ring Characterization | `AndersonLocalRings.IsQuasiComplete` | Definition |
+| **Definition 1.5** | Weakly Quasi-Complete Local Ring Characterization | `AndersonLocalRings.IsWeaklyQuasiComplete` | Definition |
+| **Theorem 2.6** | Quasi-Complete Implies Weakly Quasi-Complete | `AndersonLocalRings.isWeaklyQuasiComplete_of_isQuasiComplete` | Proved (0 `sorry`) |
+| **Conjecture 1** | Anderson's Conjecture on Noetherian Local Rings | `AndersonLocalRings.AndersonConjecture` | Definition |
+| **Problem Statement** | Anderson Problem on Weakly Quasi-Complete Local Rings (JSP-000040) | `AndersonLocalRings.AndersonProblemStatement` | Definition |
 
 ### Verification & Reproduction
 ```bash
