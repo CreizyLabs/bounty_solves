@@ -63,3 +63,7 @@ lean_lib "ErdosGimbelCochromatic" where
 lean_lib "AndersonLocalRings" where
   srcDir := "BountySolves"
 
+lean_lib "DGGCostPreserving" where
+  srcDir := "BountySolves"
+
+

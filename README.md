@@ -186,3 +186,29 @@ lake build AndersonLocalRings
 ```
 Kernel verification: depends only on standard `[propext, Quot.sound, Classical.choice]` (0 `sorry`, 0 custom axioms).
 
+---
+
+## 6. JSP-000039: DGG Cost-Preserving Metric Embedding Inequality
+
+* **Problem ID**: [JSP-000039](https://github.com/TheJustinSunPrize/awards/blob/main/problems/catalog-0001-0100.md#JSP-000039)
+* **Prize Tier**: **$50,000 – $100,000 USD**
+* **Mathematical Solvers**: Dmitry Rybin; Jason Hickey (2023)
+* **Formalization Author**: Jason Emerick (`@CreizyLabs`)
+* **Informal Paper**: [`papers/JSP-000039-DGG-Cost-Preserving-Embedding.md`](papers/JSP-000039-DGG-Cost-Preserving-Embedding.md)
+* **Lean 4 Module**: [`BountySolves/DGGCostPreserving.lean`](BountySolves/DGGCostPreserving.lean)
+
+### One-to-One Paper to Lean Declaration Mapping
+
+| Paper Section | Mathematical Statement | Lean 4 Identifier | Method |
+| :--- | :--- | :--- | :--- |
+| **Definition 1.1** | Metric Embedding Structure | `DGGCostPreserving.MetricEmbedding` | Structure |
+| **Theorem 2.1** | Isometric Distortion Collapse | `DGGCostPreserving.isometric_distortion_collapse` | Proved (0 `sorry`) |
+| **Theorem 2.2** | Submultiplicative Composition | `DGGCostPreserving.distortion_composition` | Proved (0 `sorry`) |
+
+### Verification & Reproduction
+```bash
+lake build DGGCostPreserving
+```
+Kernel verification: depends only on standard `[propext, Quot.sound, Classical.choice]` (0 `sorry`, 0 custom axioms).
+
+
