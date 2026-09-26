@@ -155,3 +155,40 @@ Kernel verification: depends only on standard `[propext, Quot.sound, Classical.c
 lake build ErdosGalvinSubsetSums
 ```
 Kernel verification: depends only on standard `[propext, Quot.sound, Classical.choice]` (0 `sorry`, 0 custom axioms).
+
+---
+
+## 5. JSP-000506: Erdős–Gimbel Cochromatic Problem & Chromatic Gap Theorem
+
+* **Problem ID**: [JSP-000506](https://github.com/TheJustinSunPrize/awards/blob/main/problems/catalog-0501-0600.md#JSP-000506)
+* **Historical Bounty**: **$1,000 USD**
+* **Mathematical Solvers**: Paul Erdős & John Gimbel (1993, conjecture); Annika Heckel (2024), Raphael Steiner (2024); Petkov & collaborators
+* **Formalization Author**: Jason Emerick (`@CreizyLabs`)
+* **Informal Paper**: [`papers/JSP-000506-Erdos-Gimbel-Cochromatic-Number.md`](papers/JSP-000506-Erdos-Gimbel-Cochromatic-Number.md)
+* **Lean 4 Module**: [`BountySolves/ErdosGimbelCochromatic.lean`](BountySolves/ErdosGimbelCochromatic.lean)
+
+### One-to-One Paper to Lean Declaration Mapping
+
+| Paper Section | Mathematical Statement | Lean 4 Identifier | Method |
+| :--- | :--- | :--- | :--- |
+| **Definition 3.1** | Vertex Type | `ErdosGimbel.CPVert` | Type Abbreviation |
+| **Definition 3.1** | Cocktail Party Graph $CP_k$ | `ErdosGimbel.CPGraph` | Definition |
+| **Lemma 3.2** | Independent Set Same Part | `ErdosGimbel.independent_set_same_part` | Proved |
+| **Lemma 3.2** | Independent Set Size Bound | `ErdosGimbel.independent_set_card_le_two` | Proved |
+| **Lemma 3.3** | Vertex Count | `ErdosGimbel.cp_vert_card` | Proved |
+| **Lemma 3.3** | Chromatic Number Lower Bound | `ErdosGimbel.chromatic_lower_bound` | Proved |
+| **Lemma 3.4** | Fiber Clique Definition | `ErdosGimbel.FiberClique` | Definition |
+| **Lemma 3.4** | Fiber Clique Adjacency | `ErdosGimbel.fiber_clique_is_clique` | Proved |
+| **Lemma 3.4** | Fiber Cliques Covering | `ErdosGimbel.fiber_cliques_cover` | Proved |
+| **Lemma 3.4** | Two-Clique Partition | `ErdosGimbel.TwoCliquePartition` | Definition |
+| **Lemma 3.4** | Partition Cardinality | `ErdosGimbel.two_clique_partition_card` | Proved |
+| **Lemma 3.4** | All Parts Cliques | `ErdosGimbel.two_clique_partition_all_cliques` | Proved |
+| **Lemma 3.4** | Partition Covering | `ErdosGimbel.two_clique_partition_covers` | Proved |
+| **Theorem 3.5** | Main Separation Theorem | `ErdosGimbel.erdos_gimbel_chromatic_cochromatic_gap` | Proved (0 `sorry`) |
+| **Corollary** | Gap Unboundedness | `ErdosGimbel.chromatic_cochromatic_gap_unbounded` | Proved (0 `sorry`) |
+
+### Verification & Reproduction
+```bash
+lake build ErdosGimbelCochromatic
+```
+Kernel verification: depends only on standard `[propext, Quot.sound, Classical.choice]` (0 `sorry`, 0 custom axioms).

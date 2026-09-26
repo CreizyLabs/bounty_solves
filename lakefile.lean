@@ -59,3 +59,6 @@ lean_lib "InfiniteSidonDensity" where
 
 lean_lib "GolombPowerful" where
   srcDir := "BountySolves"
+
+lean_lib "ErdosGimbelCochromatic" where
+  srcDir := "BountySolves"
