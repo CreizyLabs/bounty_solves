@@ -18,9 +18,6 @@ lean_lib "StablyCompleteGoldenRatio" where
 lean_lib "ErdosSimonovitsCompactness" where
   srcDir := "BountySolves"
 
-lean_lib "ErdosGalvinSubsetSums" where
-  srcDir := "BountySolves"
-
 lean_lib "SunflowerLemma" where
   srcDir := "BountySolves"
 

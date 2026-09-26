@@ -127,38 +127,7 @@ Kernel verification: depends only on standard `[propext, Quot.sound, Classical.c
 
 ---
 
-## 4. JSP-000788: Erdős–Galvin Subset Sums Conjecture Refutation
-
-* **Problem ID**: [JSP-000788](https://github.com/TheJustinSunPrize/awards/blob/main/problems/catalog-0701-0800.md#JSP-000788)
-* **Mathematical Solvers**: Paul Erdős and Fred Galvin (1991); negative answer by Lisa Price & GPT Pro; Erdős Problem #948
-* **Formalization Author**: Jason Emerick (`@CreizyLabs`)
-* **Informal Paper**: [`papers/JSP-000788-Erdos-Galvin-Subset-Sums.md`](papers/JSP-000788-Erdos-Galvin-Subset-Sums.md)
-* **Lean 4 Module**: [`BountySolves/ErdosGalvinSubsetSums.lean`](BountySolves/ErdosGalvinSubsetSums.lean)
-
-### One-to-One Paper to Lean Declaration Mapping
-
-| Paper Section | Mathematical Statement | Lean 4 Identifier | Method |
-| :--- | :--- | :--- | :--- |
-| **Section 3.1** | Non-Decreasing Envelope | `Erdos948.Fenv` | Definition |
-| **Section 3.2** | Threshold Growth Operator | `Erdos948.Gfun` | Definition |
-| **Section 3.3** | Greedy Support Clustering | `Erdos948.clusterAux2`, `Erdos948.rho` | Definition |
-| **Section 3.4** | Universal Integer Coloring | `Erdos948.chi` | Definition |
-| **Lemma 4.1** | Block Decoupling Under Gap Growth | `Erdos948.clusterAux2_ge_bound` | Proved |
-| **Lemma 4.2** | Countable Surjectivity on Finite Sums | `Erdos948.countable` | Proved |
-| **Theorem 4.3** | All Colors Hit on Finite Integer Palette | `Erdos948.finite` | Proved |
-| **Theorem 4.3 (Nat)** | All Colors Hit on Natural Palette | `Erdos948.finite_nat` | Proved |
-| **Corollary 4.4 (Int)** | Main Refutation of Conjecture | `Erdos948.not_erdos_948` | Proved (0 `sorry`) |
-| **Corollary 4.4 (Nat)** | Natural-Number Statement Refutation | `Erdos948.erdos_948_nat` | Proved (0 `sorry`) |
-
-### Verification & Reproduction
-```bash
-lake build ErdosGalvinSubsetSums
-```
-Kernel verification: depends only on standard `[propext, Quot.sound, Classical.choice]` (0 `sorry`, 0 custom axioms).
-
----
-
-## 5. JSP-000506: Erdős–Gimbel Cochromatic Problem & Chromatic Gap Theorem
+## 4. JSP-000506: Erdős–Gimbel Cochromatic Problem & Chromatic Gap Theorem
 
 * **Problem ID**: [JSP-000506](https://github.com/TheJustinSunPrize/awards/blob/main/problems/catalog-0501-0600.md#JSP-000506)
 * **Historical Bounty**: **$1,000 USD**
