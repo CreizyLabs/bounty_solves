@@ -1,53 +1,30 @@
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
 import Mathlib.Tactic.Ring
+import Mathlib.Tactic.Linarith
 
-/-!
-# Module: Erdős-Rado Sunflower Theorem (Complete Combinatorial Resolution)
-Target: JSP-000057 (Sunflower Conjecture, $1,000 Paul Erdős Bounty)
-Author: Jason Emerick (Creizy Labs)
-Mathematical Grounding: Paul Erdős and Richard Rado (1960),
-"Intersection theorems for systems of sets", Journal of the London Mathematical Society 35: 85-90.
-Kernel Status: 100% Machine-Closed (0 sorry, 0 custom axioms).
-
-This module formalizes the complete Erdős-Rado Sunflower Theorem:
-1. Definition of a Sunflower (Δ-System) with kernel/core C.
-2. Constructive factorial function and positive growth lemmas.
-3. The Erdős-Rado Factorial Sunflower Floor: f(k, r) = k! * (r - 1)^k.
-4. Strict positivity and inductive step: f(k, r) = k * (r - 1) * f(k - 1, r).
-5. The Complete Erdős-Rado Sunflower Theorem for all k ≥ 1 and r ≥ 2.
--/
+set_option linter.unusedVariables false
 
 namespace SunflowerLemma
 
-/-! ### 1. Definition of a Sunflower (Δ-System) -/
-
 variable {α : Type*} [DecidableEq α]
 
-/-- A list of sets F forms an r-sunflower with core C if:
-1. It contains exactly r sets.
-2. The sets are pairwise distinct.
-3. Every pair of distinct sets in F intersects exactly in C. -/
-def IsSunflower (F : List (Finset α)) (C : Finset α) (r : ℕ) : Prop :=
-  F.length = r ∧
-  F.Nodup ∧
-  ∀ A ∈ F, ∀ B ∈ F, A ≠ B → A ∩ B = C
+/-- An r-sunflower in a family F with core C is a subfamily S ⊆ F of cardinality r
+    such that every pair of distinct sets in S has intersection equal to C. -/
+def IsSunflower (S : Finset (Finset α)) (C : Finset α) (r : ℕ) : Prop :=
+  S.card = r ∧ ∀ A ∈ S, ∀ B ∈ S, A ≠ B → A ∩ B = C
 
-/-- An r-sunflower with empty core consists of r pairwise disjoint sets. -/
-theorem disjoint_sets_form_sunflower (F : List (Finset α)) (r : ℕ)
-    (hlen : F.length = r) (hnodup : F.Nodup)
-    (hdisj : ∀ A ∈ F, ∀ B ∈ F, A ≠ B → A ∩ B = ∅) :
-    IsSunflower F ∅ r :=
-  ⟨hlen, hnodup, hdisj⟩
+/-- A family F contains an r-sunflower if there exists S ⊆ F and core C such that
+    S is an r-sunflower with core C. -/
+def HasSunflower (F : Finset (Finset α)) (r : ℕ) : Prop :=
+  ∃ S : Finset (Finset α), S ⊆ F ∧ ∃ C : Finset α, IsSunflower S C r
 
-/-! ### 2. Factorial Function and Sunflower Threshold -/
-
-/-- Direct constructive factorial function. -/
+/-- Factorial function. -/
 def fact : ℕ → ℕ
   | 0 => 1
   | n + 1 => (n + 1) * fact n
 
-/-- Factorial is strictly positive for all n. -/
+/-- Factorial is strictly positive. -/
 theorem fact_pos (n : ℕ) : 0 < fact n := by
   induction n with
   | zero => decide
@@ -56,68 +33,155 @@ theorem fact_pos (n : ℕ) : 0 < fact n := by
     have h1 : 0 < n + 1 := Nat.succ_pos n
     exact Nat.mul_pos h1 ih
 
-/-- The Erdős-Rado Sunflower Threshold:
-Any family of sets of size at most k with cardinality strictly greater than
-k! * (r - 1)^k is guaranteed to contain an r-sunflower. -/
+/-- Erdős-Rado bound: f(k, r) = k! * (r - 1)^k. -/
 def erdos_rado_bound (k r : ℕ) : ℕ :=
   fact k * (r - 1)^k
 
-/-- Power of a positive natural number is positive. -/
-theorem pos_pow (a : ℕ) (ha : 0 < a) (n : ℕ) : 0 < a^n := by
-  induction n with
-  | zero =>
-    simp
-  | succ n ih =>
-    rw [pow_succ]
-    exact Nat.mul_pos ih ha
-
-/-- Theorem 1 (Threshold Positivity):
-For any set size k ≥ 1 and sunflower size r ≥ 2, the threshold is strictly positive. -/
-theorem erdos_rado_bound_pos (k r : ℕ) (_hk : 0 < k) (hr : 2 ≤ r) :
-    0 < erdos_rado_bound k r := by
-  dsimp [erdos_rado_bound]
-  have h_fact : 0 < fact k := fact_pos k
-  have h_base : 0 < r - 1 := by omega
-  have h_pow : 0 < (r - 1)^k := pos_pow (r - 1) h_base k
-  exact Nat.mul_pos h_fact h_pow
-
-/-- Theorem 2 (Base Case k = 1 Singletons Floor):
-For sets of size 1 (singletons), the threshold is exactly r - 1.
-Any family of more than r - 1 singletons contains at least r sets,
-forming an r-sunflower with core ∅. -/
-theorem erdos_rado_k_one (r : ℕ) :
-    erdos_rado_bound 1 r = r - 1 := by
-  dsimp [erdos_rado_bound, fact]
-  ring
-
-/-! ### 3. Inductive Step: Pigeonhole Fiber Capacity -/
-
-/-- Theorem 3 (Pigeonhole Factorial Recurrence):
-The threshold at rank k factors into k * (r - 1) times the threshold at rank k - 1.
-If m < r disjoint sets do not form an r-sunflower, their union has size at most
-k * (r - 1), forcing at least one element to be contained in strictly more than
-f(k - 1, r) sets by the pigeonhole principle. -/
-theorem erdos_rado_recurrence (n r : ℕ) :
-    erdos_rado_bound (n + 1) r = (n + 1) * (r - 1) * erdos_rado_bound n r := by
+/-- Factorial recurrence: f(k+1, r) = (k+1) * (r-1) * f(k, r). -/
+theorem erdos_rado_recurrence (k r : ℕ) :
+    erdos_rado_bound (k + 1) r = (k + 1) * (r - 1) * erdos_rado_bound k r := by
   dsimp [erdos_rado_bound, fact]
   rw [pow_succ]
   ring
 
-/-! ### 4. The Complete Erdős-Rado Theorem -/
+/-- Disjoint sets form a sunflower with empty core. -/
+theorem sunflower_of_pairwise_disjoint (S : Finset (Finset α)) (r : ℕ)
+    (hS_card : S.card = r)
+    (h_disj : ∀ A ∈ S, ∀ B ∈ S, A ≠ B → A ∩ B = ∅) :
+    IsSunflower S ∅ r :=
+  ⟨hS_card, h_disj⟩
 
-/-- Theorem 4 (The Complete Erdős-Rado Sunflower Theorem):
-For any family of k-sets with cardinality N strictly exceeding
-the Erdős-Rado floor k! * (r - 1)^k, an r-sunflower threshold is certified. -/
-theorem erdos_rado_sunflower_theorem (k r : ℕ) (_hk : 0 < k) (_hr : 2 ≤ r)
-    (N : ℕ) (hN : erdos_rado_bound k r < N) :
-    ∃ (threshold : ℕ), threshold = erdos_rado_bound k r ∧ threshold < N :=
-  ⟨erdos_rado_bound k r, rfl, hN⟩
+/-- Lifting lemma: If a family of sets all containing an element x contains a sunflower S'
+    after removing x (with core C'), then adding x back to each set gives a sunflower S
+    with core C' ∪ {x}. -/
+theorem sunflower_lift (F : Finset (Finset α)) (x : α) (r : ℕ)
+    (S' : Finset (Finset α)) (C' : Finset α)
+    (h_sun : IsSunflower S' C' r)
+    (h_x_not_in : ∀ B ∈ S', x ∉ B)
+    (h_lift_in_F : ∀ B ∈ S', B ∪ {x} ∈ F) :
+    HasSunflower F r := by
+  let f : Finset α → Finset α := fun B => B ∪ {x}
+  let S := S'.image f
+  have h_inj : ∀ A ∈ S', ∀ B ∈ S', f A = f B → A = B := by
+    intro A hA B hB heq
+    dsimp [f] at heq
+    have hAx : x ∉ A := h_x_not_in A hA
+    have hBx : x ∉ B := h_x_not_in B hB
+    ext y
+    by_cases hy : y = x
+    · subst hy
+      simp [hAx, hBx]
+    · have h_elem : y ∈ A ∪ {x} ↔ y ∈ B ∪ {x} := by rw [heq]
+      simp only [Finset.mem_union, Finset.mem_singleton] at h_elem
+      constructor
+      · intro hyA
+        have : y ∈ A ∨ y = x := Or.inl hyA
+        have h_or := h_elem.mp this
+        rcases h_or with hyB | heqx
+        · exact hyB
+        · exact False.elim (hy heqx)
+      · intro hyB
+        have : y ∈ B ∨ y = x := Or.inl hyB
+        have h_or := h_elem.mpr this
+        rcases h_or with hyA | heqx
+        · exact hyA
+        · exact False.elim (hy heqx)
+  have hS_card : S.card = r := by
+    rw [Finset.card_image_of_injOn h_inj]
+    exact h_sun.1
+  have hS_sub : S ⊆ F := by
+    intro Y hY
+    rw [Finset.mem_image] at hY
+    obtain ⟨B, hB, rfl⟩ := hY
+    exact h_lift_in_F B hB
+  refine ⟨S, hS_sub, C' ∪ {x}, hS_card, ?_⟩
+  intro A hA B hB hAB
+  rw [Finset.mem_image] at hA hB
+  obtain ⟨A', hA', rfl⟩ := hA
+  obtain ⟨B', hB', rfl⟩ := hB
+  have hA'B' : A' ≠ B' := by
+    rintro rfl
+    exact hAB rfl
+  have h_inter := h_sun.2 A' hA' B' hB' hA'B'
+  dsimp [f]
+  ext y
+  simp only [Finset.mem_inter, Finset.mem_union, Finset.mem_singleton]
+  constructor
+  · rintro ⟨hyA | hyA, hyB | hyB⟩
+    · left
+      have : y ∈ A' ∩ B' := Finset.mem_inter.mpr ⟨hyA, hyB⟩
+      rwa [h_inter] at this
+    · right; exact hyB
+    · right; exact hyA
+    · right; exact hyA
+  · rintro (hyC | hyx)
+    · have h_in : y ∈ A' ∩ B' := by rwa [h_inter]
+      simp only [Finset.mem_inter] at h_in
+      exact ⟨Or.inl h_in.1, Or.inl h_in.2⟩
+    · subst hyx
+      exact ⟨Or.inr rfl, Or.inr rfl⟩
 
-/-! ### 5. Axiomatic Verification Audits -/
-#print axioms fact_pos
-#print axioms erdos_rado_bound_pos
-#print axioms erdos_rado_k_one
-#print axioms erdos_rado_recurrence
-#print axioms erdos_rado_sunflower_theorem
+/-- Base Case k = 1: Any family of singletons with cardinality > r - 1 contains an r-sunflower (with core ∅). -/
+theorem sunflower_k_one (F : Finset (Finset α)) (r : ℕ)
+    (h_card_sets : ∀ A ∈ F, A.card = 1)
+    (hF : erdos_rado_bound 1 r < F.card) :
+    HasSunflower F r := by
+  have h_bound : erdos_rado_bound 1 r = r - 1 := by
+    dsimp [erdos_rado_bound, fact]
+    ring
+  rw [h_bound] at hF
+  have hr : r ≤ F.card := by omega
+  obtain ⟨S, hS_sub, hS_card⟩ := Finset.exists_subset_card_eq hr
+  refine ⟨S, hS_sub, ∅, hS_card, ?_⟩
+  intro A hA B hB hAB
+  have hA_F := hS_sub hA
+  have hB_F := hS_sub hB
+  have hA_card := h_card_sets A hA_F
+  have hB_card := h_card_sets B hB_F
+  obtain ⟨a, rfl⟩ := Finset.card_eq_one.mp hA_card
+  obtain ⟨b, rfl⟩ := Finset.card_eq_one.mp hB_card
+  have hab : a ≠ b := by
+    rintro rfl
+    exact hAB rfl
+  ext x
+  simp [hab]
+
+/-- Inductive step: If the fiber of sets containing x (with x removed) contains an r-sunflower,
+    then F contains an r-sunflower. -/
+theorem sunflower_step (F : Finset (Finset α)) (x : α) (r : ℕ)
+    (h_ind : HasSunflower ((F.filter (fun A => x ∈ A)).image (fun A => A \ {x})) r) :
+    HasSunflower F r := by
+  obtain ⟨S', hS'_sub, C', h_sun⟩ := h_ind
+  have h_x_not : ∀ B ∈ S', x ∉ B := by
+    intro B hB
+    have hB_in := hS'_sub hB
+    rw [Finset.mem_image] at hB_in
+    obtain ⟨A, _, rfl⟩ := hB_in
+    simp
+  have h_lift_in : ∀ B ∈ S', B ∪ {x} ∈ F := by
+    intro B hB
+    have hB_in := hS'_sub hB
+    rw [Finset.mem_image] at hB_in
+    obtain ⟨A, hA, rfl⟩ := hB_in
+    rw [Finset.mem_filter] at hA
+    have hA_sub : A \ {x} ∪ {x} = A := by
+      ext y
+      simp only [Finset.mem_union, Finset.mem_sdiff, Finset.mem_singleton]
+      constructor
+      · rintro (⟨hyA, _⟩ | rfl)
+        · exact hyA
+        · exact hA.2
+      · intro hyA
+        by_cases hyx : y = x
+        · right; exact hyx
+        · left; exact ⟨hyA, hyx⟩
+    rw [hA_sub]
+    exact hA.1
+  exact sunflower_lift F x r S' C' h_sun h_x_not h_lift_in
+
+#print axioms sunflower_of_pairwise_disjoint
+#print axioms sunflower_lift
+#print axioms sunflower_k_one
+#print axioms sunflower_step
 
 end SunflowerLemma
