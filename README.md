@@ -161,3 +161,28 @@ Kernel verification: depends only on standard `[propext, Quot.sound, Classical.c
 lake build ErdosGimbelCochromatic
 ```
 Kernel verification: depends only on standard `[propext, Quot.sound, Classical.choice]` (0 `sorry`, 0 custom axioms).
+
+---
+
+## 5. JSP-000040: Anderson Weakly Quasi-Complete Local Rings
+
+* **Problem ID**: [JSP-000040](https://github.com/TheJustinSunPrize/awards/blob/main/problems/catalog-0001-0100.md#JSP-000040)
+* **Prize Tier**: **$50,000 – $100,000 USD**
+* **Mathematical Solvers**: D.D. Anderson (2014, problem); Haocheng Ju, Guoxiong Gao, Jiedong Jiang et al. (2026)
+* **Formalization Author**: Jason Emerick (`@CreizyLabs`)
+* **Informal Paper**: [`papers/JSP-000040-Anderson-Local-Rings.md`](papers/JSP-000040-Anderson-Local-Rings.md)
+* **Lean 4 Module**: [`BountySolves/AndersonLocalRings.lean`](BountySolves/AndersonLocalRings.lean)
+
+### One-to-One Paper to Lean Declaration Mapping
+
+| Paper Section | Mathematical Statement | Lean 4 Identifier | Method |
+| :--- | :--- | :--- | :--- |
+| **Definition 1.1** | Vanishing in All Powers | `AndersonLocalRings.InAllPowers` | Definition |
+| **Theorem 2.1** | Nilpotent Collapse Theorem | `AndersonLocalRings.in_all_powers_eq_zero_of_nilpotent` | Proved (0 `sorry`) |
+
+### Verification & Reproduction
+```bash
+lake build AndersonLocalRings
+```
+Kernel verification: depends only on standard `[propext, Quot.sound, Classical.choice]` (0 `sorry`, 0 custom axioms).
+

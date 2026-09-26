@@ -59,3 +59,7 @@ lean_lib "GolombPowerful" where
 
 lean_lib "ErdosGimbelCochromatic" where
   srcDir := "BountySolves"
+
+lean_lib "AndersonLocalRings" where
+  srcDir := "BountySolves"
+
