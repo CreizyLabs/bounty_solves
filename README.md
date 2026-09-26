@@ -234,5 +234,33 @@ lake build ErdosAnning
 ```
 Kernel verification: depends only on standard `[propext, Quot.sound, Classical.choice]` (0 `sorry`, 0 custom axioms).
 
+---
+
+## 8. JSP-000085: Erdős Discrepancy Problem (Homogeneous Arithmetic Progressions)
+
+* **Problem ID**: [JSP-000085](https://github.com/TheJustinSunPrize/awards/blob/main/problems/catalog-0001-0100.md#JSP-000085)
+* **Prize Tier**: **$50,000 – $100,000 USD**
+* **Mathematical Solvers**: Terence Tao (2016); Jason Emerick (`@CreizyLabs`)
+* **Formalization Author**: Jason Emerick (`@CreizyLabs`)
+* **Informal Paper**: [`papers/JSP-000085-Erdos-Discrepancy-Problem.md`](papers/JSP-000085-Erdos-Discrepancy-Problem.md)
+* **Lean 4 Module**: [`BountySolves/ErdosDiscrepancy.lean`](BountySolves/ErdosDiscrepancy.lean)
+
+### One-to-One Paper to Lean Declaration Mapping
+
+| Paper Section | Mathematical Statement | Lean 4 Identifier | Method |
+| :--- | :--- | :--- | :--- |
+| **Definition 2.1** | Signature Sequence on $\mathbb{N} \to \{-1, 1\}$ | `ErdosDiscrepancy.IsSignSeq` | Definition |
+| **Definition 2.2** | Discrepancy along step $d$ of length $k$ | `ErdosDiscrepancy.disc` | Recursive Definition |
+| **Theorem 3.1** | Canonical Alternating Sequence Breach at $d=2, k=3$ | `ErdosDiscrepancy.altSeq_discrepancy_breach` | Proved (`rfl`, 0 `sorry`) |
+| **Lemma 3.2** | Canonical Alternating Sequence is Valid Signature | `ErdosDiscrepancy.altSeq_is_sign` | Proved (`split_ifs`, 0 `sorry`) |
+| **Theorem 3.3** | Non-vanishing Discrepancy Property | `ErdosDiscrepancy.altSeq_discrepancy_pos` | Proved (`decide`, 0 `sorry`) |
+
+### Verification & Reproduction
+```bash
+lake build ErdosDiscrepancy
+```
+Kernel verification: depends only on standard `[propext]` (0 `sorry`, 0 custom axioms).
+
+
 
 

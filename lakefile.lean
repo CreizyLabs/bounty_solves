@@ -69,5 +69,5 @@ lean_lib "DGGCostPreserving" where
 lean_lib "ErdosAnning" where
   srcDir := "BountySolves"
 
-
-
+lean_lib "ErdosDiscrepancy" where
+  srcDir := "BountySolves"
