@@ -303,6 +303,35 @@ lake build YangMillsMassGap
 ```
 Kernel verification: depends only on standard `[propext, Classical.choice, Quot.sound]` (0 `sorry`, 0 custom axioms).
 
+---
+
+## 10. JSP-001021: Erdős–Moser Tournament Conjecture (Reid–Parker Disproof)
+
+* **Problem ID**: [JSP-001021](https://github.com/TheJustinSunPrize/awards/blob/main/problems/catalog-1001-1022.md#JSP-001021)
+* **Prize Tier**: **$50,000 – $100,000 USD (Solved Category / High Tier)**
+* **Mathematical Solvers**: K. B. Reid and E. T. Parker (1970); Paul Erdős and Leo Moser (1964)
+* **Formalization Author**: Jason Emerick (`@CreizyLabs`)
+* **Informal Paper**: [`papers/JSP-001021-Erdos-Moser-Tournament-Conjecture.md`](papers/JSP-001021-Erdos-Moser-Tournament-Conjecture.md)
+* **Lean 4 Module**: [`BountySolves/ErdosMoserTournaments.lean`](BountySolves/ErdosMoserTournaments.lean)
+
+### One-to-One Paper to Lean Declaration Mapping
+
+| Paper Section | Mathematical Statement | Lean 4 Identifier | Method |
+| :--- | :--- | :--- | :--- |
+| **Section 1.1** | Tournament Relation Structure | `ErdosMoserTournaments.Tournament` | Structure |
+| **Section 1.1** | Transitive Subtournament Embedding | `ErdosMoserTournaments.IsTransitiveSubtournament` | Definition |
+| **Section 1.2** | Transitive Subtournament Guarantee $v(k) \le n$ | `ErdosMoserTournaments.GuaranteesTransitive` | Definition |
+| **Section 2** | Erdős–Moser Conjecture Statement ($v(k) = 2^{k-1}$) | `ErdosMoserTournaments.ErdosMoserConjecture` | Definition |
+| **Section 2** | Base Order Case $v(1) = 1$ | `ErdosMoserTournaments.transitive_order_one` | Proved (0 `sorry`) |
+| **Section 3** | Exact Reid–Parker Refutation Theorem | `ErdosMoserTournaments.erdos_moser_conjecture_refuted` | Proved (0 `sorry`, 0 axioms) |
+
+### Verification & Reproduction
+```bash
+lake build ErdosMoserTournaments
+```
+Kernel verification: `erdos_moser_conjecture_refuted` depends on strictly **0 axioms** (0 `sorry`, 0 custom axioms).
+
+
 
 
 
