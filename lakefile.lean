@@ -66,4 +66,8 @@ lean_lib "AndersonLocalRings" where
 lean_lib "DGGCostPreserving" where
   srcDir := "BountySolves"
 
+lean_lib "ErdosAnning" where
+  srcDir := "BountySolves"
+
+
 

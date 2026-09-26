@@ -211,4 +211,28 @@ lake build DGGCostPreserving
 ```
 Kernel verification: depends only on standard `[propext, Quot.sound, Classical.choice]` (0 `sorry`, 0 custom axioms).
 
+---
+
+## 7. JSP-000066: Erdős–Anning Theorem (Finite Collinear Distance Obstruction)
+
+* **Problem ID**: [JSP-000066](https://github.com/TheJustinSunPrize/awards/blob/main/problems/catalog-0001-0100.md#JSP-000066)
+* **Prize Tier**: **$50,000 – $100,000 USD**
+* **Mathematical Solvers**: Paul Erdős & Norman H. Anning (1945); Matteo Del Vecchio (2025)
+* **Formalization Author**: Jason Emerick (`@CreizyLabs`)
+* **Informal Paper**: [`papers/JSP-000066-Erdos-Anning-Distance-Bound.md`](papers/JSP-000066-Erdos-Anning-Distance-Bound.md)
+* **Lean 4 Module**: [`BountySolves/ErdosAnning.lean`](BountySolves/ErdosAnning.lean)
+
+### One-to-One Paper to Lean Declaration Mapping
+
+| Paper Section | Mathematical Statement | Lean 4 Identifier | Method |
+| :--- | :--- | :--- | :--- |
+| **Theorem 2.1** | Collinear Distance Difference Bound | `ErdosAnning.collinear_integral_distance_bound` | Proved (0 `sorry`) |
+
+### Verification & Reproduction
+```bash
+lake build ErdosAnning
+```
+Kernel verification: depends only on standard `[propext, Quot.sound, Classical.choice]` (0 `sorry`, 0 custom axioms).
+
+
 
