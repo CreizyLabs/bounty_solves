@@ -79,7 +79,6 @@ theorem disc_of_constant_on_progression (f : ℕ → ℤ) (d : ℕ) (c : ℤ)
     rw [ih]
     have h_step := h_const (n + 1) (by omega)
     rw [h_step]
-    push_cast
     ring
 
 /-- Theorem 2 (Unbounded Discrepancy from Constant Step):
@@ -121,11 +120,17 @@ def IsPeriodic (f : ℕ → ℤ) (p : ℕ) : Prop :=
 /-- Periodicity implies that multiples of p have identical values: f(j * p) = f(p). -/
 theorem periodic_multiple (f : ℕ → ℤ) (p : ℕ) (hper : IsPeriodic f p) :
     ∀ j : ℕ, 1 ≤ j → f (j * p) = f p := by
-  intro j hj
-  induction' hj with k hk ih
-  · rw [one_mul]
-  · have heq : (k + 1) * p = k * p + p := by ring
-    rw [heq, hper.2 (k * p), ih]
+  intro j
+  induction j with
+  | zero => intro hj; omega
+  | succ k ih =>
+    intro hj
+    cases k with
+    | zero => rw [Nat.one_mul]
+    | succ m =>
+      have hm : 1 ≤ m + 1 := by omega
+      have heq : (m + 2) * p = (m + 1) * p + p := by ring
+      rw [heq, hper.2 ((m + 1) * p), ih hm]
 
 /-- Theorem 3 (Universal Periodic Discrepancy Unboundedness):
 Every periodic sign sequence f : ℕ → {-1, 1} with period p has unbounded discrepancy

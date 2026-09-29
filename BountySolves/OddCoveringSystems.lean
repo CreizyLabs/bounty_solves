@@ -88,20 +88,20 @@ theorem odd_moduli_chain_step_bound (M : ℕ) (k : ℕ) (m : Fin k → ℕ)
     (h0 : ∀ i : Fin k, i.val = 0 → M ≤ m i)
     (hstep : ∀ i j : Fin k, i.val + 1 = j.val → m i + 2 ≤ m j) :
     ∀ i : Fin k, M + 2 * i.val ≤ m i := by
-  intro i
-  induction' h : i.val with n ih
-  · have hzero : i.val = 0 := h
-    have := h0 i hzero
+  intro ⟨ival, h_lt⟩
+  suffices ∀ n (hn : n < k), M + 2 * n ≤ m ⟨n, hn⟩ from this ival h_lt
+  intro n
+  induction n with
+  | zero =>
+    intro hn
+    have := h0 ⟨0, hn⟩ rfl
     omega
-  · rcases i with ⟨ival, hi_lt⟩
-    dsimp at h
-    subst h
-    have hn_lt : n < k := by omega
-    let prev : Fin k := ⟨n, hn_lt⟩
-    have hprev_val : prev.val = n := rfl
-    have h_step_rel : prev.val + 1 = (⟨n + 1, hi_lt⟩ : Fin k).val := by rfl
-    have h_step_val := hstep prev ⟨n + 1, hi_lt⟩ h_step_rel
-    have ih_prev := ih prev hprev_val
+  | succ n ih =>
+    intro hn
+    have hn_prev : n < k := by omega
+    have h_prev := ih hn_prev
+    have h_step_rel : (⟨n, hn_prev⟩ : Fin k).val + 1 = (⟨n + 1, hn⟩ : Fin k).val := rfl
+    have h_step_val := hstep ⟨n, hn_prev⟩ ⟨n + 1, hn⟩ h_step_rel
     omega
 
 /-- Theorem 3 (Distinct Odd Chain Floor):

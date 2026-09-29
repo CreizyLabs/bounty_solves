@@ -92,33 +92,35 @@ theorem transitive_order_two (n : ℕ) (hn : 2 ≤ n) (T : Tournament (Fin n)) :
     dsimp [v0, v1] at this
     omega
   rcases T.complete v0 v1 hne with h01 | h10
-  · use fun i => if i.val = 0 then v0 else v1
+  · use fun i => if i = 0 then v0 else v1
     constructor
     · intro i j hij
       fin_cases i <;> fin_cases j
       · contradiction
-      · dsimp; rw [if_pos rfl, if_neg (by decide)]; exact h01
-      · revert hij; decide
+      · exact h01
+      · have : ¬ (1 : Fin 2) < 0 := by decide
+        exact False.elim (this hij)
       · contradiction
     · intro i j hij
       fin_cases i <;> fin_cases j
       · rfl
-      · dsimp at hij; rw [if_pos rfl, if_neg (by decide)] at hij; exact False.elim (hne hij)
-      · dsimp at hij; rw [if_pos rfl, if_neg (by decide)] at hij; exact False.elim (hne.symm hij)
+      · dsimp at hij; exact False.elim (hne hij)
+      · dsimp at hij; exact False.elim (hne hij.symm)
       · rfl
-  · use fun i => if i.val = 0 then v1 else v0
+  · use fun i => if i = 0 then v1 else v0
     constructor
     · intro i j hij
       fin_cases i <;> fin_cases j
       · contradiction
-      · dsimp; rw [if_pos rfl, if_neg (by decide)]; exact h10
-      · revert hij; decide
+      · exact h10
+      · have : ¬ (1 : Fin 2) < 0 := by decide
+        exact False.elim (this hij)
       · contradiction
     · intro i j hij
       fin_cases i <;> fin_cases j
       · rfl
-      · dsimp at hij; rw [if_pos rfl, if_neg (by decide)] at hij; exact False.elim (hne.symm hij)
-      · dsimp at hij; rw [if_pos rfl, if_neg (by decide)] at hij; exact False.elim (hne hij)
+      · dsimp at hij; exact False.elim (hne hij.symm)
+      · dsimp at hij; exact False.elim (hne hij)
       · rfl
 
 /-! ### 3. The Cyclic 3-Tournament C_3 Avoids Transitive Triangles (v(3) > 3) -/
@@ -157,13 +159,13 @@ def C3 : Tournament (Fin 3) where
 /-- Theorem: The 3-cycle C_3 contains NO transitive subtournament of order 3. -/
 theorem C3_has_no_transitive_three : ¬ HasTransitiveSubtournament C3 3 := by
   rintro ⟨f, htrans, hinj⟩
-  have h01 := htrans ⟨0, by decide⟩ ⟨1, by decide⟩ (by decide)
-  have h12 := htrans ⟨1, by decide⟩ ⟨2, by decide⟩ (by decide)
-  have h02 := htrans ⟨0, by decide⟩ ⟨2, by decide⟩ (by decide)
+  have h01 := htrans 0 1 (by decide)
+  have h12 := htrans 1 2 (by decide)
+  have h02 := htrans 0 2 (by decide)
   dsimp [C3, C3_rel] at h01 h12 h02
-  generalize ha : f ⟨0, by decide⟩ = a
-  generalize hb : f ⟨1, by decide⟩ = b
-  generalize hc : f ⟨2, by decide⟩ = c
+  generalize ha : f 0 = a
+  generalize hb : f 1 = b
+  generalize hc : f 2 = c
   rw [ha] at h01 h02
   rw [hb] at h01 h12
   rw [hc] at h12 h02

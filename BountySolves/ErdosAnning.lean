@@ -1,4 +1,4 @@
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.Data.Finset.Basic
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
@@ -64,7 +64,6 @@ def NonCollinear (A B C : Point2D) : Prop :=
 For any points P, A, B in a metric space with distances d(P, A), d(P, B), and d(A, B) = D,
 the difference of distances is bounded by D: |d(P, A) - d(P, B)| ≤ D. -/
 theorem metric_distance_diff_le (d_PA d_PB D : ℝ)
-    (h_pos : 0 ≤ d_PA ∧ 0 ≤ d_PB ∧ 0 < D)
     (h_tri1 : d_PA ≤ d_PB + D)
     (h_tri2 : d_PB ≤ d_PA + D) :
     |d_PA - d_PB| ≤ D := by
@@ -86,14 +85,7 @@ theorem integral_distance_difference (d_PA d_PB D : ℝ) (hD : 0 < D)
     push_cast; rw [hk1, hk2]
   constructor
   · rw [← heq]
-    apply metric_distance_diff_le d_PA d_PB D
-    · constructor
-      · rw [hk1]; linarith
-      · constructor
-        · rw [hk2]; linarith
-        · exact hD
-    · exact h_tri1
-    · exact h_tri2
+    exact metric_distance_diff_le d_PA d_PB D h_tri1 h_tri2
   · exact heq
 
 /-- Theorem 3 (Difference in Closed Interval):
