@@ -272,19 +272,6 @@ Kernel verification: depends only on standard `[propext]` (0 `sorry`, 0 custom a
 
 ---
 
-## 9. JSP-000006: Quantum Yang–Mills Existence and Mass Gap
-
-* **Problem ID**: [JSP-000006](https://github.com/TheJustinSunPrize/awards/blob/main/problems/catalog-0001-0100.md#JSP-000006)
-* **Prize Tier**: **$1,000,000 USD (Clay Mathematics Institute Millennium Prize)**
-* **Mathematical Solvers**: Jason Emerick (`@CreizyLabs`) & DeepMind Advanced Agentic Systems
-* **Formalization Author**: Jason Emerick (`@CreizyLabs`)
-* **Informal Paper**: [`papers/JSP-000006-Quantum-Yang-Mills-Mass-Gap.md`](papers/JSP-000006-Quantum-Yang-Mills-Mass-Gap.md)
-* **Lean 4 Module**: [`BountySolves/YangMillsMassGap.lean`](BountySolves/YangMillsMassGap.lean)
-
-### One-to-One Paper to Lean Declaration Mapping
-
----
-
 ## 10. JSP-001021: Erdős–Moser Tournament Conjecture (Reid–Parker Disproof)
 
 * **Problem ID**: [JSP-001021](https://github.com/TheJustinSunPrize/awards/blob/main/problems/catalog-1001-1022.md#JSP-001021)
