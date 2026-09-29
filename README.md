@@ -63,7 +63,7 @@ Every official submission package in this repository satisfies three foundationa
 
 The repository's solutions are organized across four major mathematical domains:
 
-### 1. Algebraic Topology, Metric Geometry & Commutative Algebra
+### 1. Algebraic Topology, Discrete Geometry & Commutative Algebra
 * **JSP-000007**: Poincaré 3-Sphere homology counterexample $\Sigma(2,3,5)$ and presentation $\langle x, y, z \mid x^2 = y^3 = z^5 = xyz \rangle$.
 * **JSP-000039**: DGG unsplittable flow cost conjecture refutation via the Rybin cost gap (58 < 60).
 * **JSP-000040**: Negative resolution to D.D. Anderson's 2014 open problem on weakly quasi-complete local rings via Krull's Intersection Theorem.
@@ -73,24 +73,24 @@ The repository's solutions are organized across four major mathematical domains:
 * **JSP-000043**: Information-theoretic capacity lower bound $\max(A) \ge (2^n - 1)/n$ for distinct subset sum sets.
 * **JSP-000062**: Erdős–Turán Sidon $B_2$ sets finite interval capacity bounds.
 * **JSP-000064**: Additive complements of perfect squares satisfying fundamental bound $|B| \ge \sqrt{N}$.
-* **JSP-000085**: Erdős discrepancy problem on homogeneous progressions (Terence Tao formulation), proving discrepancy breach $\ge 3$ at $d=2, k=3$.
-* **JSP-000144**: Szemerédi's theorem on arithmetic progressions: formalization of $k$-AP free sets and extremal functions.
+* **JSP-000085**: Erdős discrepancy problem on homogeneous progressions (Terence Tao formulation), proving that every periodic sign sequence has unbounded discrepancy along its period step.
+* **JSP-000144**: Szemerédi's theorem on arithmetic progressions: Roth density increment step $\alpha < \alpha + c\alpha^2$, exact threshold $r_3(3) \le 2$, and density barrier.
 * **JSP-000288**: Ronald L. Graham's minimal stably complete sequences: unconditional convergence of consecutive ratios to the Golden Ratio $\phi = (1 + \sqrt{5})/2$ (7,064 lines).
 * **JSP-000996**: Infinite Sidon sets asymptotic density and logarithmic corrections.
 
 ### 3. Number Theory & Diophantine Equations
 * **JSP-000033**: Guy's Problem D19: British Flag Theorem and rational distance obstructions to the vertices of a square.
 * **JSP-000035**: Catalan's Conjecture / Mihăilescu's Theorem on consecutive powers $x^a - y^b = 1$.
-* **JSP-000047**: Bob Hough's theorem on the non-existence of odd covering systems via the density deficit barrier.
+* **JSP-000047**: Hough–Nielsen odd covering system obstruction: general odd chain bounds $m_i \ge M + 2i$, tail density bounds, and Euler product measure positivity $\prod(1 - 1/m_i) > 0$.
 * **JSP-000301**: Unconditional disproof of Solomon Golomb's consecutive powerful numbers conjecture via counterexample $(12167, 12168)$ ([TheJustinSunPrize/awards#4516](https://github.com/TheJustinSunPrize/awards/pull/4516)).
 * **JSP-000559**: Jacobsthal's function $j(r) \ge 2r$ and prime sieve covering obstructions for primorials.
 
 ### 4. Extremal Combinatorics & Graph Theory
-* **JSP-000057**: Erdős–Rado sunflower lemma threshold $(r - 1)^w \cdot w! + 1$.
+* **JSP-000057**: Erdős–Rado sunflower lemma threshold: full hypergraph induction, disjoint sunflower base, and lifting lemma.
 * **JSP-000082**: Cycle spectrum of graphs with minimum degree 3 containing power-of-two cycle lengths.
 * **JSP-000465**: Comprehensive refutation of the Erdős–Simonovits compactness conjecture in extremal graph theory via explicit bipartite family construction (9,383 lines).
 * **JSP-000506**: Erdős–Gimbel cochromatic problem: chromatic-cochromatic separation theorem on Cocktail Party Graphs $CP_k$ proving $\chi(CP_k) - z(CP_k) \ge k - 2$.
-* **JSP-001021**: Exact Reid–Parker refutation of the Erdős–Moser tournament conjecture $v(k) = 2^{k-1}$, operating with strictly 0 axioms.
+* **JSP-001021**: Erdős–Moser tournament conjecture: machine-closed base cases $v(1)=1, v(2)=2$, triangle-free 3-cycle $C_3$ ($v(3) > 3$), monotonicity, and Reid–Parker refutation of $v(5) = 16$.
 
 ---
 
@@ -876,7 +876,7 @@ lake build InfiniteSidonDensity
 ```bash
 lake build ErdosMoserTournaments
 ```
-* **Axiom Audit**: Verified machine-closed using `Strictly 0 axioms (no propext, no choice, no Quot.sound)` (strictly 0 `sorry`, 0 custom axioms).
+* **Axiom Audit**: Verified machine-closed using standard Lean axioms `[propext, Classical.choice, Quot.sound]` (strictly 0 `sorry`, 0 custom axioms).
 
 ---
 
@@ -927,7 +927,7 @@ To verify that declarations do not depend on custom axioms or `sorry`, Lean 4 pr
 -- info: 'GolombPowerful.consecutive_powerful_squares_conjecture_false' depends on axioms: [propext, Quot.sound]
 
 #print axioms ErdosMoserTournaments.erdos_moser_conjecture_refuted
--- info: 'ErdosMoserTournaments.erdos_moser_conjecture_refuted' depends on axioms: [] (strictly 0 axioms)
+-- info: 'ErdosMoserTournaments.erdos_moser_conjecture_refuted' depends on axioms: [propext]
 ```
 
 ---
