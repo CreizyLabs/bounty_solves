@@ -641,16 +641,14 @@ The following table provides the exact 1:1 correspondence between the theoretica
 | 4 | Section 1.1 | Maximal ideal vanishing in local rings | `AndersonLocalRings.in_all_powers_maximalIdeal_eq_zero` | `BountySolves/AndersonLocalRings.lean` | `[propext, Classical.choice, Quot.sound]` | Closed (0 sorry) |
 | 5 | Section 1.3 | Jacobson nilpotency in Artinian local rings | `AndersonLocalRings.maximalIdeal_isNilpotent` | `BountySolves/AndersonLocalRings.lean` | `[propext, Classical.choice, Quot.sound]` | Closed (0 sorry) |
 | 6 | Section 1.3 | Existence of vanishing power $\mathfrak{m}^k = \bot$ | `AndersonLocalRings.exists_pow_maximalIdeal_eq_bot` | `BountySolves/AndersonLocalRings.lean` | `[propext, Classical.choice, Quot.sound]` | Closed (0 sorry) |
-| 7 | Definition 1.4 | Formal Definition of Quasi-Complete Ring | `IsQuasiComplete` | `Challenge.lean` / `Anderson/Basic.lean` | None (Def) | Validated |
-| 8 | Definition 1.5 | Formal Definition of Weakly Quasi-Complete Ring | `IsWeaklyQuasiComplete` | `Challenge.lean` / `Anderson/Basic.lean` | None (Def) | Validated |
-| 9 | Theorem 2.1 | Quotient Criterion: $\mathrm{QC}(R) \iff \forall I, \mathrm{WQC}(R/I)$ | `quasi_complete_iff_quotients_weakly` | `Anderson/Reduction/Quotient.lean` | `[propext, Classical.choice, Quot.sound]` | Closed (0 sorry) |
-| 10 | Theorem 2.2 | Generic Formal Fiber Criterion for WQC | `weakly_quasi_complete_iff_trivial_gff` | `Anderson/FormalFiber/Criterion.lean` | `[propext, Classical.choice, Quot.sound]` | Closed (0 sorry) |
-| 11 | Theorem 2.3 | 1D Domain WQC $\iff$ Analytically Irreducible | `dim_one_wqc_iff_analytically_irreducible` | `Anderson/DimensionOne/Equiv.lean` | `[propext, Classical.choice, Quot.sound]` | Closed (0 sorry) |
-| 12 | Section 3 | Complete Hypersurface $T = \mathbb{C}[[x,y,z]]/(x^2-yz)$ | `CompleteHypersurfaceT` | `Anderson/Geometry/Hypersurface.lean` | None (Def) | Validated |
-| 13 | Proposition 3.2 | Non-principal height-1 prime $Q = (x, y)T$, $\mu(Q)=2$ | `prime_Q_height_one_not_principal` | `Anderson/Geometry/PrimeQ.lean` | `[propext, Classical.choice, Quot.sound]` | Closed (0 sorry) |
-| 14 | Theorem 4.1 | Jensen UFD Realization with Trivial GFF | `jensen_ufd_realization` | `Anderson/Heitmann/Jensen.lean` | `[propext, Classical.choice, Quot.sound]` | Closed (0 sorry) |
-| 15 | Theorem 5.6 | Counterexample: $\exists R, \mathrm{WQC}(R) \wedge \neg\mathrm{QC}(R)$ | `anderson_problem_counterexample` | `Anderson/Main.lean` | `[propext, Classical.choice, Quot.sound]` | Closed (0 sorry) |
-| 16 | Section 7 | Axiomatic Dependency Audit | `#print axioms` | `BountySolves/AndersonLocalRings.lean` | `[propext, Classical.choice, Quot.sound]` | Clean Audit |
+| 7 | Definition 1.4 | Formal Definition of Quasi-Complete Ring | `AndersonLocalRings.IsQuasiComplete` | `BountySolves/AndersonLocalRings.lean` | None (Def) | Validated |
+| 8 | Definition 1.5 | Formal Definition of Weakly Quasi-Complete Ring | `AndersonLocalRings.IsWeaklyQuasiComplete` | `BountySolves/AndersonLocalRings.lean` | None (Def) | Validated |
+| 9 | Theorem 1.3 / 2.6 | Implication $\mathrm{QC}(R) \implies \mathrm{WQC}(R)$ | `AndersonLocalRings.isWeaklyQuasiComplete_of_isQuasiComplete` | `BountySolves/AndersonLocalRings.lean` | `[propext, Classical.choice, Quot.sound]` | Closed (0 sorry) |
+| 10 | Theorem 2.1 / 2.7 | Convergence of All Descending Chains | `AndersonLocalRings.isQuasiComplete_iff_all_chains_converge` | `BountySolves/AndersonLocalRings.lean` | None (rfl) | Closed (0 sorry) |
+| 11 | Theorem 2.8 | Obstruction Criterion to Weak Quasi-Completeness | `AndersonLocalRings.not_isWeaklyQuasiComplete_of_counter_chain` | `BountySolves/AndersonLocalRings.lean` | `[propext, Classical.choice, Quot.sound]` | Closed (0 sorry) |
+| 12 | Theorem 2.9 | Anderson Structural Separation Theorem | `AndersonLocalRings.anderson_structural_separation` | `BountySolves/AndersonLocalRings.lean` | `[propext, Classical.choice, Quot.sound]` | Closed (0 sorry) |
+| 13 | Problem Statement | Anderson Problem Statement Formulation | `AndersonLocalRings.AndersonProblemStatement` | `BountySolves/AndersonLocalRings.lean` | None (Def) | Validated |
+| 14 | Section 7 | Axiomatic Dependency Audit | `#print axioms` | `BountySolves/AndersonLocalRings.lean` | `[propext, Classical.choice, Quot.sound]` | Clean Audit |
 
 ---
 
