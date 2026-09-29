@@ -74,3 +74,9 @@ lean_lib "ErdosDiscrepancy" where
 
 lean_lib "ErdosMoserTournaments" where
   srcDir := "BountySolves"
+
+lean_lib "OrdinalRamsey" where
+  srcDir := "BountySolves"
+
+lean_lib "MaynardPrimeGaps" where
+  srcDir := "BountySolves"

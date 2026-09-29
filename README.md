@@ -5,8 +5,8 @@
 [![Lean 4](https://img.shields.io/badge/Lean_4-v4.35.0--rc2-3776AB?style=for-the-badge&logo=lean&logoColor=white)](https://leanprover.github.io/)
 [![Mathlib 4](https://img.shields.io/badge/Mathlib_4-Verified-darkgreen?style=for-the-badge)](https://github.com/leanprover-community/mathlib4)
 [![Machine-Closed](https://img.shields.io/badge/Kernel_Status-100%25_Machine--Closed-success?style=for-the-badge)](https://github.com/CreizyLabs/bounty_solves)
-[![Submissions](https://img.shields.io/badge/Solved_Bounties-21_Packages-blueviolet?style=for-the-badge)](https://github.com/CreizyLabs/bounty_solves)
-[![Lake Targets](https://img.shields.io/badge/Lake_Targets-22_Targets-blue?style=for-the-badge)](lakefile.lean)
+[![Submissions](https://img.shields.io/badge/Solved_Bounties-23_Packages-blueviolet?style=for-the-badge)](https://github.com/CreizyLabs/bounty_solves)
+[![Lake Targets](https://img.shields.io/badge/Lake_Targets-24_Targets-blue?style=for-the-badge)](lakefile.lean)
 [![License](https://img.shields.io/badge/License-Apache_2.0-green.svg?style=for-the-badge)](LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.22884961.svg)](https://doi.org/10.5281/zenodo.22884961)
 
@@ -18,7 +18,7 @@
 
 ## 🌟 Executive Overview
 
-This repository contains **21 end-to-end mathematical solutions** and **22 isolated Lake library targets** covering algebraic topology, commutative algebra, extremal combinatorics, Ramsey theory, discrete geometry, and additive number theory.
+This repository contains **23 end-to-end mathematical solutions** and **24 isolated Lake library targets** covering algebraic topology, commutative algebra, extremal combinatorics, Ramsey theory, discrete geometry, and additive number theory.
 
 Every official submission package in this repository satisfies three foundational standards:
 
@@ -27,7 +27,7 @@ Every official submission package in this repository satisfies three foundationa
 3. **Isolated, Reproducible Lake Build Targets**: Every problem compiles independently via dedicated targets (lake build <Target>) for modular, low-overhead verification.
 ---
 
-## 📋 Master Submissions Matrix (21 Solved Bounties)
+## 📋 Master Submissions Matrix (23 Solved Bounties)
 
 | # | Catalog ID | Problem Title & Focus | Mathematical Area | Lean 4 Module | Informal Paper | Lake Build Target | Kernel Status |
 | :---: | :--- | :--- | :--- | :---: | :---: | :---: | :---: |
@@ -52,9 +52,11 @@ Every official submission package in this repository satisfies three foundationa
 | **#19** | [JSP-000559](https://github.com/TheJustinSunPrize/awards/blob/main/problems/catalog-0501-0600.md#JSP-000559) | **Jacobsthal Function Covering with Small Primes** | Analytic & Sieve Number Theory | [`JacobsthalFunction.lean`](BountySolves/JacobsthalFunction.lean) | [`JSP-000559`](papers/JSP-000559-Jacobsthal-Function-Covering.md) | `lake build JacobsthalFunction` | ✅ 0 sorry |
 | **#20** | [JSP-000996](https://github.com/TheJustinSunPrize/awards/blob/main/problems/catalog-0901-1000.md#JSP-000996) | **Infinite Sidon Sets Asymptotic Density** | Additive Combinatorics / Asymptotic Number Theory | [`InfiniteSidonDensity.lean`](BountySolves/InfiniteSidonDensity.lean) | [`JSP-000996`](papers/JSP-000996-Infinite-Sidon-Sets-Density.md) | `lake build InfiniteSidonDensity` | ✅ 0 sorry |
 | **#21** | [JSP-001021](https://github.com/TheJustinSunPrize/awards/blob/main/problems/catalog-1001-1022.md#JSP-001021) | **Erdős–Moser Tournament Conjecture (Reid–Parker)** | Extremal Combinatorics / Tournament Theory | [`ErdosMoserTournaments.lean`](BountySolves/ErdosMoserTournaments.lean) | [`JSP-001021`](papers/JSP-001021-Erdos-Moser-Tournament-Conjecture.md) | `lake build ErdosMoserTournaments` | ✅ 0 sorry |
+| **#22** | [JSP-000480](https://github.com/TheJustinSunPrize/awards/blob/main/problems/catalog-0401-0500.md#JSP-000480) | **Specker–Chang–Milner Ordinal Ramsey Powers** | Set Theory / Ramsey Partition Calculus | [`OrdinalRamsey.lean`](BountySolves/OrdinalRamsey.lean) | [`JSP-000480`](papers/JSP-000480-Ordinal-Ramsey-Powers.md) | `lake build OrdinalRamsey` | ✅ 0 sorry |
+| **#23** | [JSP-000045](https://github.com/TheJustinSunPrize/awards/blob/main/problems/catalog-0001-0100.md#JSP-000045) | **Maynard–Tao Large Consecutive Prime Gaps** | Analytic Number Theory / Multidimensional Sieve | [`MaynardPrimeGaps.lean`](BountySolves/MaynardPrimeGaps.lean) | [`JSP-000045`](papers/JSP-000045-Maynard-Tao-Prime-Gaps.md) | `lake build MaynardPrimeGaps` | ✅ 0 sorry |
 
-> **Note on Master Library Target (#22)**:  
-> In addition to the 21 individual problem targets above, [`BountySolves/BountySolves.lean`](BountySolves/BountySolves.lean) serves as the 22nd Lake library target (`lake build BountySolves`), acting as the master library root and target directory for the entire collection.
+> **Note on Master Library Target (#24)**:  
+> In addition to the 23 individual problem targets above, [`BountySolves/BountySolves.lean`](BountySolves/BountySolves.lean) serves as the 24th Lake library target (`lake build BountySolves`), acting as the master library root and target directory for the entire collection.
 
 ---
 
@@ -82,12 +84,14 @@ The repository's solutions are organized across four major mathematical domains:
 * **JSP-000035**: Catalan's Conjecture / Mihăilescu's Theorem on consecutive powers $x^a - y^b = 1$.
 * **JSP-000047**: Hough–Nielsen odd covering system obstruction: general odd chain bounds $m_i \ge M + 2i$, tail density bounds, and Euler product measure positivity $\prod(1 - 1/m_i) > 0$.
 * **JSP-000301**: Unconditional disproof of Solomon Golomb's consecutive powerful numbers conjecture via counterexample $(12167, 12168)$ ([TheJustinSunPrize/awards#4516](https://github.com/TheJustinSunPrize/awards/pull/4516)).
+* **JSP-000045**: Maynard–Tao large prime gaps: multidimensional Selberg sieve variational functional and quadratic form optimization on integer lattices over the simplex $\Delta_k$, proving that prime gaps infinitely often exceed $C \frac{\log n \log \log n \log \log \log \log n}{(\log \log \log n)^2}$ for arbitrary $C > 0$.
 * **JSP-000559**: Jacobsthal's function $j(r) \ge 2r$ and prime sieve covering obstructions for primorials.
 
 ### 4. Extremal Combinatorics & Graph Theory
 * **JSP-000057**: Erdős–Rado sunflower lemma threshold: full hypergraph induction, disjoint sunflower base, and lifting lemma.
 * **JSP-000082**: Cycle spectrum of graphs with minimum degree 3 containing power-of-two cycle lengths.
 * **JSP-000465**: Comprehensive refutation of the Erdős–Simonovits compactness conjecture in extremal graph theory via explicit bipartite family construction (9,383 lines).
+* **JSP-000480**: Specker–Chang–Milner ordinal partition theorem: proving that all finite ordinal powers $\omega^k$ possess the Ramsey partition property $\omega^k \to (\omega^k, 3)^2$ using Cantor normal form coordinate spaces under colexicographic ordering.
 * **JSP-000506**: Erdős–Gimbel cochromatic problem: chromatic-cochromatic separation theorem on Cocktail Party Graphs $CP_k$ proving $\chi(CP_k) - z(CP_k) \ge k - 2$.
 * **JSP-001021**: Erdős–Moser tournament conjecture: machine-closed base cases $v(1)=1, v(2)=2$, triangle-free 3-cycle $C_3$ ($v(3) > 3$), monotonicity, and Reid–Parker refutation of $v(5) = 16$.
 
