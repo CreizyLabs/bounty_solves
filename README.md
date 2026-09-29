@@ -24,8 +24,7 @@ Every official submission package in this repository satisfies three foundationa
 
 1. **A Complete Informal Paper (`papers/`)**: A rigorous mathematical paper written from first principles, providing definitions, proofs, and comprehensive structural analysis.
 2. **A 100% Machine-Closed Lean 4 Formalization (`BountySolves/`)**: Kernel-verified implementations operating under strict standard foundational axioms (`[propext, Quot.sound, Classical.choice]`), containing strictly **0 `sorry`** and **0 custom axioms**.
-3. **Isolated, Reproducible Lake Build Targets**: Every problem can be independently compiled and verified on laptop environments without memory exhaustion via dedicated Lake targets (`lake build <Target>`).
-
+3. **Isolated, Reproducible Lake Build Targets**: 3. Isolated Lake Build Targets: Every problem compiles independently via dedicated targets (lake build <Target>) for modular, low-overhead verification.
 ---
 
 ## 📋 Master Submissions Matrix (21 Solved Bounties)
