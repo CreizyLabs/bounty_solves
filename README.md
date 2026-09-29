@@ -945,7 +945,6 @@ If you use or reference these formal proof packages or mathematical papers in yo
   title        = {Bounty Solves: Machine-Verified Lean 4 Proof Packages for Academic Open Problems},
   year         = {2026},
   publisher    = {Zenodo},
-  doi          = {10.5281/zenodo.22884961},
   url          = {https://github.com/CreizyLabs/bounty_solves}
 }
 ```
