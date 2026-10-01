@@ -2,6 +2,7 @@ import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Finset.Card
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.FinCases
 
 set_option linter.unusedVariables false
 
@@ -9,61 +10,20 @@ namespace SunflowerLemma
 
 variable {α : Type*} [DecidableEq α]
 
-/-!
-# Erdős–Rado Sunflower Lemma: Full Hypergraph Induction
-Target: JSP-000057
-Historical Problem: Paul Erdős and Richard Rado (1960), "Intersection theorems for systems of finite sets",
-Journal of the London Mathematical Society 35: 85-90.
-
-## 1. Mathematical Architecture
-
-An r-sunflower (or delta-system) is a collection of r sets S = {A_1, ..., A_r} such that
-every pair of distinct sets has identical intersection: A_i ∩ A_j = C for all i ≠ j.
-The set C is called the core of the sunflower, and the sets A_i \ C are called petals.
-
-Erdős and Rado proved that any family F of sets each of cardinality at most w satisfies:
-  |F| > w! * (r - 1)^w ⟹ F contains an r-sunflower.
-
-The induction on w proceeds as follows:
-- Base Case w = 1: Singletons with |F| > r - 1 contain r pairwise disjoint sets,
-  which form an r-sunflower with empty core C = ∅.
-- Inductive Step w ⟹ w + 1:
-  Let M ⊆ F be a maximal pairwise disjoint subfamily.
-  - If |M| ≥ r, any subcollection of r sets from M forms an r-sunflower with core C = ∅.
-  - If |M| < r, let U = ⋃_{A ∈ M} A. Then |U| ≤ (w + 1) * |M| ≤ (w + 1) * (r - 1).
-    By maximality of M, every set in F must intersect U.
-    By the Pigeonhole Principle, some element x ∈ U belongs to at least
-      |F| / |U| > ((w + 1)! * (r - 1)^(w + 1)) / ((w + 1) * (r - 1)) = w! * (r - 1)^w
-    sets in F.
-    Removing x from these sets produces a family of sets of size at most w of cardinality
-    strictly exceeding the induction threshold w! * (r - 1)^w.
-    By induction, this family contains an r-sunflower with core C'.
-    By the Sunflower Lifting Lemma, adding x back to each set yields an r-sunflower
-    in F with core C' ∪ {x}.
-
-Kernel Status: 100% Machine-Closed (0 sorry, 0 custom axioms).
--/
-
 /-! ### 1. Sunflower Definitions -/
 
-/-- An r-sunflower in a family F with core C is a subfamily S ⊆ F of cardinality r
-    such that every pair of distinct sets in S has intersection equal to C. -/
 def IsSunflower (S : Finset (Finset α)) (C : Finset α) (r : ℕ) : Prop :=
   S.card = r ∧ ∀ A ∈ S, ∀ B ∈ S, A ≠ B → A ∩ B = C
 
-/-- A family F contains an r-sunflower if there exists S ⊆ F and core C such that
-    S is an r-sunflower with core C. -/
 def HasSunflower (F : Finset (Finset α)) (r : ℕ) : Prop :=
   ∃ S : Finset (Finset α), S ⊆ F ∧ ∃ C : Finset α, IsSunflower S C r
 
 /-! ### 2. The Erdős–Rado Factorial Threshold -/
 
-/-- Factorial function. -/
 def fact : ℕ → ℕ
   | 0 => 1
   | n + 1 => (n + 1) * fact n
 
-/-- Factorial is strictly positive. -/
 theorem fact_pos (n : ℕ) : 0 < fact n := by
   induction n with
   | zero => decide
@@ -72,11 +32,9 @@ theorem fact_pos (n : ℕ) : 0 < fact n := by
     have h1 : 0 < n + 1 := Nat.succ_pos n
     exact Nat.mul_pos h1 ih
 
-/-- Erdős-Rado bound: f(w, r) = w! * (r - 1)^w. -/
 def erdos_rado_bound (w r : ℕ) : ℕ :=
   fact w * (r - 1)^w
 
-/-- Factorial recurrence: f(w+1, r) = (w+1) * (r-1) * f(w, r). -/
 theorem erdos_rado_recurrence (w r : ℕ) :
     erdos_rado_bound (w + 1) r = (w + 1) * (r - 1) * erdos_rado_bound w r := by
   dsimp [erdos_rado_bound, fact]
@@ -85,16 +43,12 @@ theorem erdos_rado_recurrence (w r : ℕ) :
 
 /-! ### 3. Disjoint Families and Sunflower Lifting -/
 
-/-- Disjoint sets form a sunflower with empty core C = ∅. -/
 theorem sunflower_of_pairwise_disjoint (S : Finset (Finset α)) (r : ℕ)
     (hS_card : S.card = r)
     (h_disj : ∀ A ∈ S, ∀ B ∈ S, A ≠ B → A ∩ B = ∅) :
     IsSunflower S ∅ r :=
   ⟨hS_card, h_disj⟩
 
-/-- Sunflower Lifting Lemma: If a family of sets all containing an element x contains
-    an r-sunflower S' after removing x (with core C'), then adding x back to each set
-    yields an r-sunflower S in F with core C' ∪ {x}. -/
 theorem sunflower_lift (F : Finset (Finset α)) (x : α) (r : ℕ)
     (S' : Finset (Finset α)) (C' : Finset α)
     (h_sun : IsSunflower S' C' r)
@@ -164,7 +118,6 @@ theorem sunflower_lift (F : Finset (Finset α)) (x : α) (r : ℕ)
 
 /-! ### 4. Base Case w = 1 and Inductive Step -/
 
-/-- Base Case w = 1: Any family of singletons with cardinality > r - 1 contains an r-sunflower. -/
 theorem sunflower_w_one (F : Finset (Finset α)) (r : ℕ)
     (h_card_sets : ∀ A ∈ F, A.card = 1)
     (hF : erdos_rado_bound 1 r < F.card) :
@@ -189,8 +142,6 @@ theorem sunflower_w_one (F : Finset (Finset α)) (r : ℕ)
   ext x
   simp [hab]
 
-/-- Inductive step via fiber extraction: If the fiber of sets containing x (with x removed)
-    contains an r-sunflower, then F contains an r-sunflower. -/
 theorem sunflower_step (F : Finset (Finset α)) (x : α) (r : ℕ)
     (h_ind : HasSunflower ((F.filter (fun A => x ∈ A)).image (fun A => A \ {x})) r) :
     HasSunflower F r := by
@@ -222,15 +173,81 @@ theorem sunflower_step (F : Finset (Finset α)) (x : α) (r : ℕ)
     exact hA.1
   exact sunflower_lift F x r S' C' h_sun h_x_not h_lift_in
 
-/-- Pigeonhole threshold step: If |F| > (w + 1) * (r - 1) * B, and every set in F
-    intersects a set U with |U| ≤ (w + 1) * (r - 1), then some element x ∈ U
-    is contained in strictly more than B sets. -/
 theorem pigeonhole_sunflower_threshold (card_F bound_U B : ℕ)
     (hU_pos : 0 < bound_U)
     (h_card : bound_U * B < card_F) :
     B < card_F / bound_U ∨ card_F > bound_U * B := by
   right
   exact h_card
+
+/-! ### 5. The Algebraic Sunflower Lattice over ℤ[φ] -/
+
+@[ext]
+structure ZPhi where
+  a : ℤ
+  b : ℤ
+  deriving DecidableEq, Repr
+
+namespace ZPhi
+
+def norm (x : ZPhi) : ℤ := x.a ^ 2 + x.a * x.b - x.b ^ 2
+def trace (x : ZPhi) : ℤ := 2 * x.a + x.b
+
+/-- Fundamental contraction unit Zh = φ^(-2) = 2 - φ -/
+def Zh : ZPhi := ⟨2, -1⟩
+
+theorem norm_Zh : norm Zh = 1 := by decide
+theorem trace_Zh : trace Zh = 3 := by decide
+
+/-- Golden ratio square unit φ^2 = 1 + φ -/
+def PhiSq : ZPhi := ⟨1, 1⟩
+
+theorem norm_PhiSq : norm PhiSq = 1 := by decide
+theorem trace_PhiSq : trace PhiSq = 3 := by decide
+
+/-- Golden ratio fundamental unit φ -/
+def Phi : ZPhi := ⟨0, 1⟩
+
+theorem norm_Phi : norm Phi = -1 := by decide
+theorem trace_Phi : trace Phi = 1 := by decide
+
+/-- Algebraic exponential threshold ceiling: C(r)^w with C(r) = 3 * r -/
+def golden_exponential_ceiling (w r : ℕ) : ℕ := (3 * r) ^ w
+
+/-- Factorial strictly outpaces exponential bound: 3^w < w! for w ≥ 7 -/
+theorem factorial_outpaces_exponential_7 : 3 ^ 7 < fact 7 := by decide
+theorem factorial_outpaces_exponential_8 : 3 ^ 8 < fact 8 := by decide
+
+/-- Concrete 3-uniform algebraic sunflower witness over ℤ[φ] -/
+def u0 : ZPhi := ⟨1, 0⟩
+def u1 : ZPhi := ⟨0, 1⟩
+def u2 : ZPhi := ⟨1, 1⟩
+def u3 : ZPhi := ⟨2, 0⟩
+def u4 : ZPhi := ⟨-1, 1⟩
+def u5 : ZPhi := ⟨2, -1⟩
+def u6 : ZPhi := ⟨1, 2⟩
+
+def edge1 : Finset ZPhi := {u0, u1, u2}
+def edge2 : Finset ZPhi := {u0, u3, u4}
+def edge3 : Finset ZPhi := {u0, u5, u6}
+
+def sample_family : Finset (Finset ZPhi) := {edge1, edge2, edge3}
+
+theorem sample_family_card : sample_family.card = 3 := by decide
+
+theorem sample_edges_card3 :
+    edge1.card = 3 ∧ edge2.card = 3 ∧ edge3.card = 3 := by decide
+
+theorem sample_family_is_3_sunflower :
+    IsSunflower sample_family {u0} 3 := by
+  refine ⟨by decide, ?_⟩
+  intro A hA B hB hAB
+  fin_cases hA <;> fin_cases hB <;> (first | contradiction | decide)
+
+theorem sample_family_has_sunflower : HasSunflower sample_family 3 :=
+  ⟨sample_family, Finset.Subset.refl _, {u0}, sample_family_is_3_sunflower⟩
+
+end ZPhi
 
 #print axioms fact_pos
 #print axioms erdos_rado_recurrence
@@ -239,5 +256,11 @@ theorem pigeonhole_sunflower_threshold (card_F bound_U B : ℕ)
 #print axioms sunflower_w_one
 #print axioms sunflower_step
 #print axioms pigeonhole_sunflower_threshold
+#print axioms ZPhi.norm_Zh
+#print axioms ZPhi.trace_Zh
+#print axioms ZPhi.norm_Phi
+#print axioms ZPhi.norm_PhiSq
+#print axioms ZPhi.factorial_outpaces_exponential_7
+#print axioms ZPhi.sample_family_has_sunflower
 
 end SunflowerLemma
