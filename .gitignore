@@ -10,3 +10,9 @@ BountySolves/math and logic/
 test.lean
 .agents/
 ORIGINAL_REQUEST.md
+PROJECT.md
+tests/
+*.html
+TODAY_SOLVES*
+__pycache__/
+*.pyc
