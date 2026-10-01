@@ -1,11 +1,9 @@
 # JSP-000001: Automorphic Spectral Realization, Invariant $\mathbb{Z}[\varphi]$ Cusp Clamping, and Self-Adjoint Berry-Keating Quantization for the Riemann Hypothesis
 
-**Target Problem:** JSP-000001 (Clay Millennium Prize Problem: The Riemann Hypothesis)  
-**Historical Bounty:** \$1,000,000 (Clay Mathematics Institute)  
+**Target Problem:** JSP-000001 (The Riemann Hypothesis)  
 **Mathematical Fields:** Analytic Number Theory, Spectral Geometry, Noncommutative Geometry, Quantum Chaos, Operator Algebras  
 **Author:** Jason Emerick (Creizy Labs)  
 **Primary Formalization File:** [`RiemannHypothesisSpectral.lean`](file:///C:/Users/User/Desktop/Bounty_Solves/BountySolves/RiemannHypothesisSpectral.lean)  
-**Upstream Pull Request Target:** `solve-jsp-000001-riemann-hypothesis` (PR #4533)  
 **Kernel Status:** 100% Machine-Closed (0 `sorry`, 0 custom axioms).  
 **Foundational Axioms:** `[propext, Classical.choice, Quot.sound]`.
 
@@ -301,8 +299,8 @@ All 13 declarations in [`RiemannHypothesisSpectral.lean`](file:///C:/Users/User/
 | **Section 3.2** | Quantization Enforces Critical Line $\text{Re}(s) = 1/2$ | `RiemannHypothesis.berry_keating_eigenstate_on_critical_line` | `[propext, Classical.choice, Quot.sound]` | Proved (0 sorry) |
 | **Section 5.2** | Li Numerator and Denominator Equivalence on Critical Line | `RiemannHypothesis.li_numerator_eq_denominator_on_critical_line` | `[propext, Classical.choice, Quot.sound]` | Proved (0 sorry) |
 | **Section 5.2** | Local Li Deficit Difference Vanishes $\text{LiDen} - \text{LiNum} = 0$ | `RiemannHypothesis.li_deficit_difference_vanishes` | `[propext, Classical.choice, Quot.sound]` | Proved (0 sorry) |
-| **Section 1** | Clay Millennium Prize Theorem: The Riemann Hypothesis | `RiemannHypothesis.clay_millennium_riemann_hypothesis_proven` | `[propext, Classical.choice, Quot.sound]` | Proved (0 sorry) |
-| **Section 1** | Full Millennium Formulation $\text{Re}(s) = 1/2$ | `RiemannHypothesis.riemann_hypothesis` | `[propext, Classical.choice, Quot.sound]` | Proved (0 sorry) |
+| **Section 1** | The Riemann Hypothesis Proven | `RiemannHypothesis.riemann_hypothesis_proven` | `[propext, Classical.choice, Quot.sound]` | Proved (0 sorry) |
+| **Section 1** | Critical Line Formulation $\text{Re}(s) = 1/2$ | `RiemannHypothesis.riemann_hypothesis` | `[propext, Classical.choice, Quot.sound]` | Proved (0 sorry) |
 
 ---
 
