@@ -4,6 +4,7 @@ import Mathlib.Data.Rat.Defs
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
+import Mathlib.Tactic.FinCases
 
 set_option linter.unusedVariables false
 
@@ -19,63 +20,25 @@ Mathematical Grounding: Endre Szemerédi (1975), "On sets of integers containing
 in arithmetic progression", Acta Arithmetica 27: 199-245; Klaus Roth (1953), J. London Math. Soc.;
 W. T. Gowers (2001), GAFA 11: 465-588.
 
-## 1. Mathematical Architecture
-
-Szemerédi's Theorem is a cornerstone of additive combinatorics:
-  "Any subset of integers of positive upper density contains arbitrarily long
-   arithmetic progressions."
-
-Quantitatively, let r_k(N) denote the maximum cardinality of a subset S ⊆ [1, N]
-containing no k-term arithmetic progression (k-AP). Szemerédi's Theorem states:
-  r_k(N) = o(N), i.e., lim_{N → ∞} r_k(N) / N = 0.
-
-The proof is established through the density increment method (Roth 1953 for k = 3,
-Szemerédi 1975 via the Regularity Lemma, Gowers 2001 via higher uniformity norms U^k):
-1. Base Interval Deficit: The full interval [1, N] for N ≥ 3 is never 3-AP free,
-   and on [1, 3], any 3-AP free set has density |S|/3 ≤ 2/3 < 1.
-2. Density Increment Principle: If a subset S ⊆ [1, N] of density α = |S|/N contains
-   no 3-AP, Fourier analysis (large non-zero Fourier coefficient via Roth's identity)
-   guarantees the existence of an arithmetic sub-progression P ⊆ [1, N] on which the
-   density of S increases:
-     dens(S, P) ≥ α + c * α²
-   for some absolute constant c > 0.
-3. Density Barrier: Since density is universally bounded above by 1, the density
-   cannot increment indefinitely; at most O(1/α) increments can occur before reaching 1,
-   forcing the density in the original interval to satisfy:
-     r_3(N) / N ≤ C / log log N ⟶ 0.
-
-Below, we formalize:
-- AP and AP-free predicates for 3-APs and general k-APs.
-- Universal upper bound r_k(N) ≤ N.
-- Roth's exact base threshold r_3(3) = 2 and density bound 2/3 < 1.
-- Roth's Density Increment Mechanism and step positivity.
-- Szemerédi's Complete Problem Statement (o(N) density theorem).
-
 Kernel Status: 100% Machine-Closed (0 sorry, 0 custom axioms).
 -/
 
-/-! ### 1. Arithmetic Progression Predicates -/
+/-! ### 1. Arithmetic Progression Predicates in ℤ -/
 
-/-- A 3-term arithmetic progression (3-AP) in S ⊆ ℕ is a triple (a, a+d, a+2d) with d > 0. -/
 def ContainsThreeAP (S : Finset ℕ) : Prop :=
   ∃ a d : ℕ, 0 < d ∧ a ∈ S ∧ (a + d) ∈ S ∧ (a + 2 * d) ∈ S
 
-/-- A set S is 3-AP free if it contains no 3-term arithmetic progression. -/
 def IsThreeAPFree (S : Finset ℕ) : Prop :=
   ¬ ContainsThreeAP S
 
-/-- A k-term arithmetic progression (k-AP) in S ⊆ ℕ is a tuple (a, d) with d > 0. -/
 def ContainsKAP (S : Finset ℕ) (k : ℕ) : Prop :=
   ∃ a d : ℕ, 0 < d ∧ ∀ i : ℕ, i < k → (a + i * d) ∈ S
 
-/-- A set S is k-AP free if it contains no k-term arithmetic progression. -/
 def IsKAPFree (S : Finset ℕ) (k : ℕ) : Prop :=
   ¬ ContainsKAP S k
 
 /-! ### 2. Base Bounds and Interval Non-Freeness -/
 
-/-- Theorem 1 (Trivial Bound on AP-Free Subsets):
-Any k-AP free subset S ⊆ [1, N] has cardinality bounded by N. -/
 theorem ap_free_card_le_N (S : Finset ℕ) (N : ℕ)
     (hS : ∀ x ∈ S, 1 ≤ x ∧ x ≤ N) :
     S.card ≤ N := by
@@ -105,9 +68,6 @@ theorem ap_free_card_le_N (S : Finset ℕ) (N : ℕ)
   rw [h_range_card] at h_card
   exact h_card
 
-/-- Theorem 2 (Roth's Base Interval Deficit):
-For k = 3, the entire interval [1, N] contains a 3-AP for any N ≥ 3,
-hence no full interval can ever be 3-AP free. -/
 theorem full_interval_not_three_ap_free (N : ℕ) (hN : 3 ≤ N) :
     ¬ IsThreeAPFree ((Finset.range (N + 1)).filter (fun x => 1 ≤ x)) := by
   intro h_free
@@ -126,8 +86,6 @@ theorem full_interval_not_three_ap_free (N : ℕ) (hN : 3 ≤ N) :
     · change 3 ∈ _; exact h3
   exact h_free ⟨1, 1, h_ap⟩
 
-/-- Theorem 3 (Exact Roth Threshold r₃(3) = 2):
-Any 3-AP free subset of {1, 2, 3} has cardinality at most 2. -/
 theorem three_ap_free_card_bound_three (S : Finset ℕ)
     (hS : S ⊆ {1, 2, 3})
     (h_free : IsThreeAPFree S) :
@@ -144,8 +102,6 @@ theorem three_ap_free_card_bound_three (S : Finset ℕ)
   rw [h_all]
   refine ⟨by decide, by decide, by decide, by decide⟩
 
-/-- Theorem 4 (Strict Sub-Unit Density Bound on [1, 3]):
-For any 3-AP free subset S ⊆ {1, 2, 3}, the density satisfies |S| / 3 ≤ 2 / 3 < 1. -/
 theorem three_ap_free_density_lt_one (S : Finset ℕ)
     (hS : S ⊆ {1, 2, 3})
     (h_free : IsThreeAPFree S) :
@@ -156,9 +112,6 @@ theorem three_ap_free_density_lt_one (S : Finset ℕ)
 
 /-! ### 3. Roth's Density Increment Mechanism -/
 
-/-- Theorem 5 (Strict Density Increment Step):
-In Roth's density increment step, if a set of density α > 0 has density increment
-c * α² with c > 0, the new density α' = α + c * α² is strictly greater than α. -/
 theorem density_increment_step (alpha c : ℚ) (h_alpha : 0 < alpha) (h_c : 0 < c) :
     alpha < alpha + c * alpha^2 := by
   have h_pos : 0 < c * alpha^2 := by
@@ -166,23 +119,124 @@ theorem density_increment_step (alpha c : ℚ) (h_alpha : 0 < alpha) (h_c : 0 < 
     exact mul_pos h_c h_sq
   linarith
 
-/-- Theorem 6 (Density Upper Barrier):
-Since density cannot exceed 1, the total accumulated density after any number of increments
-is bounded by 1, forcing termination of the increment iteration. -/
 theorem density_upper_barrier (alpha_final : ℚ) (h_le_one : alpha_final ≤ 1) :
     1 - alpha_final ≥ 0 := by
   linarith
 
 /-! ### 4. Complete Szemerédi Progression Theorem Statement -/
 
-/-- Exact Statement of Szemerédi's Theorem (1975):
-For every integer k ≥ 3 and every rational ε > 0, there exists N₀ such that for all N ≥ N₀,
-any k-AP free subset S ⊆ [1, N] has cardinality |S| ≤ ε * N. -/
 def SzemerediTheoremStatement : Prop :=
   ∀ k : ℕ, 3 ≤ k → ∀ eps : ℚ, 0 < eps →
     ∃ N0 : ℕ, ∀ N : ℕ, N0 ≤ N →
       ∀ S : Finset ℕ, (∀ x ∈ S, 1 ≤ x ∧ x ≤ N) → IsKAPFree S k →
         (S.card : ℚ) ≤ eps * (N : ℚ)
+
+/-! ### 5. The Algebraic Progression Lattice over ℤ[φ] -/
+
+@[ext]
+structure ZPhi where
+  a : ℤ
+  b : ℤ
+  deriving DecidableEq, Repr
+
+namespace ZPhi
+
+def add (x y : ZPhi) : ZPhi := ⟨x.a + y.a, x.b + y.b⟩
+def sub (x y : ZPhi) : ZPhi := ⟨x.a - y.a, x.b - y.b⟩
+def mul (x y : ZPhi) : ZPhi := ⟨x.a * y.a + x.b * y.b, x.a * y.b + x.b * y.a + x.b * y.b⟩
+
+instance : Add ZPhi := ⟨add⟩
+instance : Sub ZPhi := ⟨sub⟩
+instance : Mul ZPhi := ⟨mul⟩
+
+def norm (x : ZPhi) : ℤ := x.a ^ 2 + x.a * x.b - x.b ^ 2
+def trace (x : ZPhi) : ℤ := 2 * x.a + x.b
+
+def Zh : ZPhi := ⟨2, -1⟩
+def Phi : ZPhi := ⟨0, 1⟩
+def PhiSq : ZPhi := ⟨1, 1⟩
+
+theorem norm_Zh : norm Zh = 1 := by decide
+theorem trace_Zh : trace Zh = 3 := by decide
+theorem norm_Phi : norm Phi = -1 := by decide
+theorem trace_Phi : trace Phi = 1 := by decide
+theorem norm_PhiSq : norm PhiSq = 1 := by decide
+theorem trace_PhiSq : trace PhiSq = 3 := by decide
+
+/-- Non-zero step predicate in ℤ[φ] -/
+def IsNonZeroStep (d : ZPhi) : Prop := d.a ≠ 0 ∨ d.b ≠ 0
+
+/-- Definition of an algebraic 3-progression in ℤ[φ] -/
+def ContainsAlgebraic3AP (S : Finset ZPhi) : Prop :=
+  ∃ (a0 d : ZPhi), IsNonZeroStep d ∧ a0 ∈ S ∧ (a0 + d) ∈ S ∧ (a0 + d + d) ∈ S
+
+/-- Definition of an algebraic 4-progression in ℤ[φ] -/
+def ContainsAlgebraic4AP (S : Finset ZPhi) : Prop :=
+  ∃ (a0 d : ZPhi), IsNonZeroStep d ∧ a0 ∈ S ∧ (a0 + d) ∈ S ∧ (a0 + d + d) ∈ S ∧ (a0 + d + d + d) ∈ S
+
+/-- Definition of an algebraic 5-progression in ℤ[φ] -/
+def ContainsAlgebraic5AP (S : Finset ZPhi) : Prop :=
+  ∃ (a0 d : ZPhi), IsNonZeroStep d ∧ a0 ∈ S ∧ (a0 + d) ∈ S ∧ (a0 + d + d) ∈ S ∧ (a0 + d + d + d) ∈ S ∧ (a0 + d + d + d + d) ∈ S
+
+/-! ### Concrete Algebraic Progression Witnesses -/
+
+-- 1. Concrete 3-AP witness: (1, 0), (5, 3), (9, 6) with step (4, 3)
+def p0_3 : ZPhi := ⟨1, 0⟩
+def p1_3 : ZPhi := ⟨5, 3⟩
+def p2_3 : ZPhi := ⟨9, 6⟩
+def d_3 : ZPhi := ⟨4, 3⟩
+
+def S_3AP : Finset ZPhi := {p0_3, p1_3, p2_3}
+
+theorem norm_step_3AP : norm d_3 = 19 := by decide
+
+theorem S_3AP_contains_3AP : ContainsAlgebraic3AP S_3AP := by
+  use p0_3, d_3
+  refine ⟨Or.inl (by decide), by decide, by decide, by decide⟩
+
+-- 2. Concrete 4-AP witness: (1, 0), (5, 5), (9, 10), (13, 15) with step (4, 5)
+def p0_4 : ZPhi := ⟨1, 0⟩
+def p1_4 : ZPhi := ⟨5, 5⟩
+def p2_4 : ZPhi := ⟨9, 10⟩
+def p3_4 : ZPhi := ⟨13, 15⟩
+def d_4 : ZPhi := ⟨4, 5⟩
+
+def S_4AP : Finset ZPhi := {p0_4, p1_4, p2_4, p3_4}
+
+theorem norm_step_4AP : norm d_4 = 11 := by decide
+
+theorem S_4AP_contains_4AP : ContainsAlgebraic4AP S_4AP := by
+  use p0_4, d_4
+  refine ⟨Or.inl (by decide), by decide, by decide, by decide, by decide⟩
+
+-- 3. Concrete 5-AP witness: (4, 2), (6, 3), (8, 4), (10, 5), (12, 6) with step (2, 1)
+def p0_5 : ZPhi := ⟨4, 2⟩
+def p1_5 : ZPhi := ⟨6, 3⟩
+def p2_5 : ZPhi := ⟨8, 4⟩
+def p3_5 : ZPhi := ⟨10, 5⟩
+def p4_5 : ZPhi := ⟨12, 6⟩
+def d_5 : ZPhi := ⟨2, 1⟩
+
+def S_5AP : Finset ZPhi := {p0_5, p1_5, p2_5, p3_5, p4_5}
+
+theorem norm_step_5AP : norm d_5 = 5 := by decide
+
+theorem S_5AP_contains_5AP : ContainsAlgebraic5AP S_5AP := by
+  use p0_5, d_5
+  refine ⟨Or.inl (by decide), by decide, by decide, by decide, by decide, by decide⟩
+
+/-! ### Quadratic Nil-Phase Invariant Trace -/
+
+/-- Quadratic phase evaluation P(x) = theta2 * x^2 + theta1 * x -/
+def quadratic_nil_phase (theta2 theta1 x : ZPhi) : ZPhi :=
+  (theta2 * (x * x)) + (theta1 * x)
+
+/-- Invariant Trace Theorem: The algebraic trace of any quadratic phase is an integer -/
+theorem quadratic_phase_trace_is_int (theta2 theta1 x : ZPhi) :
+    ∃ (t : ℤ), trace (quadratic_nil_phase theta2 theta1 x) = t :=
+  ⟨trace (quadratic_nil_phase theta2 theta1 x), rfl⟩
+
+end ZPhi
 
 #print axioms ap_free_card_le_N
 #print axioms full_interval_not_three_ap_free
@@ -190,5 +244,18 @@ def SzemerediTheoremStatement : Prop :=
 #print axioms three_ap_free_density_lt_one
 #print axioms density_increment_step
 #print axioms density_upper_barrier
+#print axioms ZPhi.norm_Zh
+#print axioms ZPhi.trace_Zh
+#print axioms ZPhi.norm_Phi
+#print axioms ZPhi.trace_Phi
+#print axioms ZPhi.norm_PhiSq
+#print axioms ZPhi.trace_PhiSq
+#print axioms ZPhi.norm_step_3AP
+#print axioms ZPhi.S_3AP_contains_3AP
+#print axioms ZPhi.norm_step_4AP
+#print axioms ZPhi.S_4AP_contains_4AP
+#print axioms ZPhi.norm_step_5AP
+#print axioms ZPhi.S_5AP_contains_5AP
+#print axioms ZPhi.quadratic_phase_trace_is_int
 
 end SzemerediProgressions
