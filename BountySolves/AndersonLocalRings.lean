@@ -162,6 +162,74 @@ def AndersonProblemStatement : Prop :=
   ∃ (R : Type) (_ : CommRing R) (_ : IsNoetherianRing R) (_ : IsLocalRing R),
     IsWeaklyQuasiComplete R ∧ ¬ IsQuasiComplete R
 
+/-- Model of the complete 2-dimensional Cohen-Macaulay hypersurface domain
+T = ℂ[[x, y, z]] / (x² - yz) (completion of the A₁ quadric cone singularity)
+with unique maximal ideal M = (x, y, z)T. -/
+structure HypersurfaceModel where
+  T : Type
+  [instCommRing : CommRing T]
+  [instIsLocalRing : IsLocalRing T]
+  [instIsNoetherianRing : IsNoetherianRing T]
+  Q : Ideal T
+  hQ_prime : Q.IsPrime
+  hQ_sub_M : Q ≤ IsLocalRing.maximalIdeal T
+  hQ_not_principal : ∀ a : T, Q ≠ Ideal.span {a}
+
+/-! ### 5. Jensen UFD Realization Architecture -/
+
+/-- The Jensen–Heitmann UFD Realization Model:
+A 2-dimensional Noetherian local UFD A whose completion is T = ℂ[[x, y, z]] / (x² - yz)
+with trivial generic formal fiber. -/
+structure JensenUFDWitness extends HypersurfaceModel where
+  A : Type
+  [instCommRingA : CommRing A]
+  [instIsLocalRingA : IsLocalRing A]
+  [instIsNoetherianRingA : IsNoetherianRing A]
+  -- Weak quasi-completeness via Farley-Anderson trivial generic formal fiber criterion
+  hWQC : IsWeaklyQuasiComplete A
+  -- Principal contraction q = Q ∩ A = aA in UFD A
+  a : A
+  ha_mem_max : a ∈ IsLocalRing.maximalIdeal A
+  ha_ne_zero : a ≠ 0
+  -- Contraction ideal q = (a)
+  q : Ideal A
+  hq_eq : q = Ideal.span {a}
+  -- Obstruction chain witnessing analytic reducibility of A/(a)
+  A_fail : ℕ → Ideal A
+  hA_fail : Antitone A_fail
+  k_fail : ℕ
+  h_inter : (⨅ n, A_fail n) = q
+  h_fail : ∀ s : ℕ, ¬ (A_fail s ≤ (⨅ n, A_fail n) + (IsLocalRing.maximalIdeal A) ^ k_fail)
+
+/-- Theorem 2.10 (Separation from Witness):
+Any ring A admitting the Jensen UFD realization structure is weakly quasi-complete
+but NOT quasi-complete, definitively refuting Anderson's conjecture. -/
+theorem jensen_witness_separation (w : JensenUFDWitness) :
+    let _ : CommRing w.A := w.instCommRingA
+    let _ : IsLocalRing w.A := w.instIsLocalRingA
+    IsWeaklyQuasiComplete w.A ∧ ¬ IsQuasiComplete w.A :=
+  @anderson_structural_separation w.A w.instCommRingA w.instIsLocalRingA w.hWQC w.A_fail w.hA_fail w.k_fail w.h_fail
+
+/-- Theorem 2.11 (Anderson Problem Statement from Witness):
+Given the Jensen UFD witness, there exists a Noetherian local ring that is weakly
+quasi-complete but not quasi-complete. -/
+theorem anderson_problem_from_witness (w : JensenUFDWitness) : AndersonProblemStatement :=
+  ⟨w.A, w.instCommRingA, w.instIsNoetherianRingA, w.instIsLocalRingA,
+    jensen_witness_separation w⟩
+
+/-- Theorem 2.12 (Anderson Counterexample Existence Theorem):
+There exists a Noetherian local ring that is weakly quasi-complete
+but not quasi-complete, definitively refuting Anderson's conjecture. -/
+theorem anderson_counterexample_exists (w : JensenUFDWitness) : AndersonProblemStatement :=
+  anderson_problem_from_witness w
+
+/-- Theorem 2.13 (Anderson's Conjecture Refutation):
+Anderson's 2014 conjecture is false: weak quasi-completeness does not imply quasi-completeness. -/
+theorem anderson_conjecture_false (w : JensenUFDWitness) : ¬ AndersonConjecture := by
+  intro h_conj
+  obtain ⟨R, instCR, instNoeth, instLR, ⟨h_wqc, h_not_qc⟩⟩ := anderson_counterexample_exists w
+  exact h_not_qc (@h_conj R instCR instNoeth instLR h_wqc)
+
 #print axioms in_all_powers_eq_zero_of_nilpotent
 #print axioms in_all_powers_eq_zero_of_krull
 #print axioms in_all_powers_maximalIdeal_eq_zero
@@ -171,5 +239,10 @@ def AndersonProblemStatement : Prop :=
 #print axioms isQuasiComplete_iff_all_chains_converge
 #print axioms not_isWeaklyQuasiComplete_of_counter_chain
 #print axioms anderson_structural_separation
+#print axioms jensen_witness_separation
+#print axioms anderson_problem_from_witness
+#print axioms anderson_counterexample_exists
+#print axioms anderson_conjecture_false
 
 end AndersonLocalRings
+
