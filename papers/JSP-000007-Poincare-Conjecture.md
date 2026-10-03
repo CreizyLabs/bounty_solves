@@ -4,7 +4,7 @@
 **Historical Bounty:** \$1,000,000 (Clay Millennium Prize)  
 **Mathematical Field:** Algebraic Topology, Geometric Topology, Differential Geometry, 4-Manifold Invariants  
 **Author:** Jason Emerick (Creizy Labs)  
-**Primary Formalization File:** [`PoincareSphere.lean`](file:///C:/Users/User/Desktop/Bounty_Solves/BountySolves/PoincareSphere.lean)  
+**Primary Formalization File:** [`PoincareSphere.lean`](../BountySolves/PoincareSphere.lean)  
 **Upstream Pull Request:** [TheJustinSunPrize/awards#4545](https://github.com/TheJustinSunPrize/awards/pull/4545)  
 **Kernel Status:** 100% Machine-Closed (0 `sorry`, 0 custom axioms).  
 **Foundational Axioms:** `[propext]`.
@@ -455,7 +455,7 @@ if __name__ == "__main__":
 
 ## 7. Paper-to-Code Mapping & Complete Axiomatic Audit
 
-All 26 definitions, theorems, and representations in [`PoincareSphere.lean`](file:///C:/Users/User/Desktop/Bounty_Solves/BountySolves/PoincareSphere.lean) are 100% machine-checked with 0 `sorry` and 0 custom axioms.
+All 26 definitions, theorems, and representations in [`PoincareSphere.lean`](../BountySolves/PoincareSphere.lean) are 100% machine-checked with 0 `sorry` and 0 custom axioms.
 
 | Paper Section | Mathematical Formulation | Lean 4 Identifier | Verified Axioms | Kernel Status |
 | :--- | :--- | :--- | :--- | :--- |

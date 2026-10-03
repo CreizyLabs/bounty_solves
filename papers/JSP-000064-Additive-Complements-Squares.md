@@ -4,7 +4,7 @@
 **Historical Category:** High Category  
 **Mathematical Area:** Additive Combinatorics / Number Theory  
 **Author:** Jason Emerick (Creizy Labs)  
-**Formalization File:** [AdditiveComplementSquares.lean](file:///C:/Users/User/Desktop/bounty_solves_repo/BountySolves/AdditiveComplementSquares.lean)  
+**Formalization File:** [`AdditiveComplementSquares.lean`](../BountySolves/AdditiveComplementSquares.lean)  
 
 ---
 
