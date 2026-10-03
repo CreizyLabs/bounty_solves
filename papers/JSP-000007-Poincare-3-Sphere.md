@@ -500,3 +500,17 @@ To run the Python verification engine:
 python scratch/verify_poincare.py
 ```
 Verification completes with 0 errors, 0 `sorry`, and zero external axioms.
+
+---
+
+## 9. References
+
+1. Poincaré, H. (1904). *Cinquième complément à l'analysis situs*. Rendiconti del Circolo Matematico di Palermo, 18(1), 45–110.
+2. Perelman, G. (2002). *The entropy formula for the Ricci flow and its geometric applications*. arXiv:math/0211159.
+3. Perelman, G. (2003). *Ricci flow with surgery on three-manifolds*. arXiv:math/0303109.
+4. Perelman, G. (2003). *Finite extinction time for the solutions to the Ricci flow on certain three-manifolds*. arXiv:math/0307245.
+5. Morgan, J., & Tian, G. (2007). *Ricci Flow and the Poincaré Conjecture*. Clay Mathematics Monographs, Vol. 3, American Mathematical Society.
+6. Kleiner, B., & Lott, J. (2008). *Notes on Perelman's papers*. Geometry & Topology, 12(5), 2587–2855.
+7. Rohlin, V. A. (1952). *New results in the theory of four-dimensional manifolds*. Doklady Akad. Nauk SSSR, 84, 221–224.
+8. Donaldson, S. K. (1983). *An application of gauge theory to four-dimensional topology*. Journal of Differential Geometry, 18(2), 279–315.
+9. Kirby, R. C., & Scharlemann, M. G. (1979). *Eight faces of the Poincaré homology 3-sphere*. Geometric Topology (Proc. Georgia Topology Conf.), 113–146.

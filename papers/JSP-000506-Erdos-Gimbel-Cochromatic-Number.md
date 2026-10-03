@@ -153,3 +153,15 @@ Kernel output:
 'ErdosGimbel.chromatic_cochromatic_gap_unbounded' depends on axioms: [propext, Classical.choice, Quot.sound]
 ```
 The formalization contains **0 `sorry`**, **0 `admit`**, and **0 custom axioms**.
+
+---
+
+## 7. References
+
+1. Erdős, P., & Gimbel, J. (1993). *Some problems and results in cochromatic theory*. In: Combinatorics, Paul Erdős is Eighty, Vol. 1, 145–158.
+2. Gimbel, J. (2016). *Some of my favorite coloring problems for graphs and digraphs*. Graph Theory: Favorite Conjectures and Open Problems, 95–108.
+3. Heckel, A. (2024). *On a question of Erdős and Gimbel on the cochromatic number*. arXiv:2408.13839.
+4. Heckel, A. (2024). *The difference between the chromatic and the cochromatic number of a random graph*. arXiv:2409.17614.
+5. Steiner, R. (2024). *On the difference between the chromatic and cochromatic number*. arXiv:2408.02400.
+6. Bollobás, B. (1988). *The chromatic number of random graphs*. Combinatorica, 8(1), 49–55.
+7. Lesniak, L., & Straight, H. J. (1977). *The cochromatic number of a graph*. Ars Combinatoria, 3, 39–45.
