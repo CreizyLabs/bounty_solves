@@ -80,3 +80,18 @@ lean_lib "OrdinalRamsey" where
 
 lean_lib "MaynardPrimeGaps" where
   srcDir := "BountySolves"
+
+lean_lib "MovingSofa" where
+  srcDir := "BountySolves"
+
+lean_lib "LegendreConjecture" where
+  srcDir := "BountySolves"
+
+lean_lib "TwinPrimeConjecture" where
+  srcDir := "BountySolves"
+
+lean_lib "SingmasterConjecture" where
+  srcDir := "BountySolves"
+
+lean_lib "HadwigerNelson" where
+  srcDir := "BountySolves"
