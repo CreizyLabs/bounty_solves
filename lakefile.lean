@@ -12,105 +12,50 @@ require mathlib from git
 lean_lib "BountySolves" where
   srcDir := "BountySolves"
 
-lean_lib "StablyCompleteGoldenRatio" where
-  srcDir := "BountySolves"
-
-lean_lib "ErdosSimonovitsCompactness" where
-  srcDir := "BountySolves"
-
-lean_lib "SunflowerLemma" where
-  srcDir := "BountySolves"
-
-lean_lib "ErdosSidonSets" where
-  srcDir := "BountySolves"
-
-lean_lib "LowerBoundMaxElement" where
-  srcDir := "BountySolves"
-
-lean_lib "OddCoveringSystems" where
-  srcDir := "BountySolves"
-
 lean_lib "AdditiveComplementSquares" where
-  srcDir := "BountySolves"
-
-lean_lib "GuysD19" where
   srcDir := "BountySolves"
 
 lean_lib "CatalanMihailescu" where
   srcDir := "BountySolves"
 
-lean_lib "PoincareSphere" where
-  srcDir := "BountySolves"
-
-lean_lib "SzemerediProgressions" where
-  srcDir := "BountySolves"
-
-lean_lib "PowerOfTwoCycles" where
-  srcDir := "BountySolves"
-
-lean_lib "JacobsthalFunction" where
-  srcDir := "BountySolves"
-
-lean_lib "InfiniteSidonDensity" where
-  srcDir := "BountySolves"
-
-lean_lib "GolombPowerful" where
-  srcDir := "BountySolves"
-
-lean_lib "ErdosGimbelCochromatic" where
-  srcDir := "BountySolves"
-
-lean_lib "AndersonLocalRings" where
-  srcDir := "BountySolves"
-
-lean_lib "DGGCostPreserving" where
-  srcDir := "BountySolves"
-
-lean_lib "ErdosAnning" where
-  srcDir := "BountySolves"
-
-lean_lib "ErdosDiscrepancy" where
-  srcDir := "BountySolves"
-
-lean_lib "ErdosMoserTournaments" where
-  srcDir := "BountySolves"
-
-lean_lib "OrdinalRamsey" where
-  srcDir := "BountySolves"
-
-lean_lib "MaynardPrimeGaps" where
-  srcDir := "BountySolves"
-
-lean_lib "MovingSofa" where
-  srcDir := "BountySolves"
-
-lean_lib "LegendreConjecture" where
-  srcDir := "BountySolves"
-
-lean_lib "TwinPrimeConjecture" where
-  srcDir := "BountySolves"
-
-lean_lib "SingmasterConjecture" where
-  srcDir := "BountySolves"
-
-lean_lib "HadwigerNelson" where
-  srcDir := "BountySolves"
-
-lean_lib "ZPhiSovereignRing" where
-  srcDir := "BountySolves"
-
 lean_lib "CauchySchwarz" where
-  srcDir := "BountySolves"
-
-lean_lib "EdwardsBookTheorem" where
   srcDir := "BountySolves"
 
 lean_lib "CernyAutomata" where
   srcDir := "BountySolves"
 
-lean_lib "LucasLehmer" where
+lean_lib "DGGCostPreserving" where
+  srcDir := "BountySolves"
+
+lean_lib "EdwardsBookTheorem" where
+  srcDir := "BountySolves"
+
+lean_lib "ErdosDiscrepancy" where
+  srcDir := "BountySolves"
+
+lean_lib "ErdosGimbelCochromatic" where
+  srcDir := "BountySolves"
+
+lean_lib "ErdosMoserTournaments" where
   srcDir := "BountySolves"
 
 lean_lib "HadamardMatrices" where
   srcDir := "BountySolves"
 
+lean_lib "HadwigerNelson" where
+  srcDir := "BountySolves"
+
+lean_lib "InfiniteSidonDensity" where
+  srcDir := "BountySolves"
+
+lean_lib "LucasLehmer" where
+  srcDir := "BountySolves"
+
+lean_lib "MovingSofa" where
+  srcDir := "BountySolves"
+
+lean_lib "PoincareSphere" where
+  srcDir := "BountySolves"
+
+lean_lib "SingmasterConjecture" where
+  srcDir := "BountySolves"

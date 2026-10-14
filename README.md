@@ -27,7 +27,6 @@ All proofs compile cleanly against Lean 4 (`v4.35.0-rc2`) and Mathlib with **0 `
 | **JSP-000702** | **Singmaster's Conjecture: Finite Multiplicities in Pascal's Triangle** | Number Theory / Binomial Multiplicities | [`SingmasterConjecture.lean`](BountySolves/SingmasterConjecture.lean) | [`JSP-000702-Singmasters-Conjecture.md`](papers/JSP-000702-Singmasters-Conjecture.md) | **100% Closed**<br>Standard Core Axioms | [PR #4709](https://github.com/TheJustinSunPrize/awards/pull/4709) |
 | **JSP-000996** | **Infinite Sidon Sets Square-Root Density & Energy Bounds** | Additive Number Theory / Sidon Sets | [`InfiniteSidonDensity.lean`](BountySolves/InfiniteSidonDensity.lean) | [`JSP-000996-Infinite-Sidon-Sets-Density.md`](papers/JSP-000996-Infinite-Sidon-Sets-Density.md) | **100% Closed**<br>Standard Core Axioms | [PR #4550](https://github.com/TheJustinSunPrize/awards/pull/4550) ($1K Historical) |
 | **JSP-001021** | **Erdős–Moser Tournament Conjecture Disproof: $v(5) = 14 < 16$** | Extremal Graph Theory / Tournament Theory | [`ErdosMoserTournaments.lean`](BountySolves/ErdosMoserTournaments.lean) | [`JSP-001021-Erdos-Moser-Tournaments.md`](papers/JSP-001021-Erdos-Moser-Tournaments.md) | **100% Closed**<br>Standard Core Axioms | [PR #4559](https://github.com/TheJustinSunPrize/awards/pull/4559) |
-| **Foundation** | **Sovereign Ring $\mathbb{Z}[\varphi]$ Exact Quadratic Arithmetic & Invariants** | Commutative Algebra / Number Theory | [`ZPhiSovereignRing.lean`](BountySolves/ZPhiSovereignRing.lean) | Foundational Layer | **100% Closed**<br>Standard Core Axioms | Core Algebraic Engine |
 
 ---
 
@@ -57,8 +56,7 @@ All proofs compile cleanly against Lean 4 (`v4.35.0-rc2`) and Mathlib with **0 `
 │   ├── LucasLehmer.lean                              # JSP-000020: Lucas-Lehmer deterministic primality
 │   ├── MovingSofa.lean                               # JSP-000018: Moving sofa corridor clearance bounds
 │   ├── PoincareSphere.lean                           # JSP-000007: Binary Icosahedral Group & SL(2, F5)
-│   ├── SingmasterConjecture.lean                     # JSP-000702: Pascal interior multiplicity certificates
-│   └── ZPhiSovereignRing.lean                        # Foundational Sovereign Ring Z[φ] arithmetic engine
+│   └── SingmasterConjecture.lean                     # JSP-000702: Pascal interior multiplicity certificates
 │
 └── papers/                                           # Theoretical whitepapers & mathematical proofs
     ├── JSP-000007-Poincare-Conjecture.md             # Homology collapse, SL(2, F5) & Rohlin obstruction
@@ -71,7 +69,7 @@ All proofs compile cleanly against Lean 4 (`v4.35.0-rc2`) and Mathlib with **0 `
     ├── JSP-000064-Additive-Complements-Squares.md    # Sumset capacity bounds of integer squares
     ├── JSP-000070-Disjoint-Sidon-Sets.md             # Additive energy & difference set variance bounds
     ├── JSP-000079-C4-Codegree-Variance.md            # Codegree convexity & extremal bipartite invariants
-    ├── JSP-000085-Erdos-Discrepancy.md               # Discrepancy theory & spectral lift over Z[φ]
+    ├── JSP-000085-Erdos-Discrepancy.md               # Discrepancy theory & spectral lift
     ├── JSP-000097-Edwards-Book-Theorem.md            # Extremal graph density & book graph lower bounds
     ├── JSP-000407-Hadwiger-Nelson-Problem.md         # Unit distance graphs & chromatic defect inversion
     ├── JSP-000506-Erdos-Gimbel-Cochromatic-Number.md # Cochromatic separation on multipartite graphs
@@ -89,11 +87,7 @@ All proofs compile cleanly against Lean 4 (`v4.35.0-rc2`) and Mathlib with **0 `
 * **Mathlib:** Pre-compiled Mathlib modules (Ring, Linarith, Abel, FinCases)
 
 ### Verification Commands
-To machine-verify the entire suite:
-```bash
-lake build
-```
-Or check individual modules directly via Lean compiler:
+To machine-verify individual modules directly via Lean compiler:
 ```bash
 lean -M 4096 -j 2 BountySolves/PoincareSphere.lean
 lean -M 4096 -j 2 BountySolves/HadamardMatrices.lean
@@ -111,7 +105,6 @@ lean -M 4096 -j 2 BountySolves/ErdosGimbelCochromatic.lean
 lean -M 4096 -j 2 BountySolves/SingmasterConjecture.lean
 lean -M 4096 -j 2 BountySolves/InfiniteSidonDensity.lean
 lean -M 4096 -j 2 BountySolves/ErdosMoserTournaments.lean
-lean -M 4096 -j 2 BountySolves/ZPhiSovereignRing.lean
 ```
 
-All 17 modules verify with exit code 0, 0 sorry, and 0 custom axioms.
+All 16 formalization modules verify with exit code 0, 0 sorry, and 0 custom axioms.

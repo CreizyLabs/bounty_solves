@@ -7,7 +7,6 @@ import InfiniteSidonDensity
 import MovingSofa
 import PoincareSphere
 import SingmasterConjecture
-import ZPhiSovereignRing
 import DGGCostPreserving
 import CauchySchwarz
 import EdwardsBookTheorem
@@ -21,10 +20,9 @@ import CatalanMihailescu
 
 This umbrella module exports all machine-verified Lean 4 formalizations
 in the BountySolves repository, covering classical conjectures, prize problems,
-and discrete algebraic invariants over `ℤ[φ]`.
+and extremal bounds for the Justin Sun Prize challenges.
 
 ## Verified Problem Catalog
-* `ZPhiSovereignRing`: Sovereign Ring `ℤ[φ]` Exact Arithmetic & Unimodular Tournament Algebra
 * `DGGCostPreserving`: JSP-000039 Dinitz–Garg–Goemans Unsplittable Flow Disproof
 * `CauchySchwarz`: JSP-000070 & JSP-000079 Exact Cauchy–Schwarz Kernels
 * `EdwardsBookTheorem`: JSP-000097 Edwards–Erdős Book Graph Theorem
@@ -37,8 +35,8 @@ and discrete algebraic invariants over `ℤ[φ]`.
 * `ErdosGimbelCochromatic`: JSP-000506 Erdős–Gimbel Cochromatic Number Arbitrary Gap
 * `ErdosMoserTournaments`: JSP-001021 Erdős–Moser Tournament Transitive Subtournament Bounds
 * `HadwigerNelson`: JSP-000407 Hadwiger–Nelson Unit Distance Graph & Moser Spindle `χ = 4`
-* `InfiniteSidonDensity`: JSP-000071 / JSP-000996 Infinite Sidon Set Density & `B₂[1]` Sequences over `ℤ[φ]`
-* `MovingSofa`: JSP-000018 Moving Sofa Non-Holonomic L-Corridor Geometry over `ℤ[φ]`
+* `InfiniteSidonDensity`: JSP-000071 / JSP-000996 Infinite Sidon Set Density & `B₂[1]` Sequences
+* `MovingSofa`: JSP-000018 Moving Sofa Non-Holonomic L-Corridor Geometry
 * `PoincareSphere`: JSP-000007 Poincaré Homology Sphere Homology Collapse & `SL(2, 𝔽₅)`
 * `SingmasterConjecture`: JSP-000702 Singmaster High-Multiplicity Binomial Certificates
 -/
