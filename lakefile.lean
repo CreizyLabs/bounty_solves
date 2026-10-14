@@ -95,3 +95,27 @@ lean_lib "SingmasterConjecture" where
 
 lean_lib "HadwigerNelson" where
   srcDir := "BountySolves"
+
+lean_lib "Part01_ZPhi_SovereignRing" where
+  srcDir := "BountySolves"
+
+lean_lib "Part02_Problem39_DGG_UnsplittableFlow" where
+  srcDir := "BountySolves"
+
+lean_lib "Part03_Problem70_79_CauchySchwarz" where
+  srcDir := "BountySolves"
+
+lean_lib "Part04_Problem97_EdwardsBookTheorem" where
+  srcDir := "BountySolves"
+
+lean_lib "Part05_Problem22_CernyAutomata" where
+  srcDir := "BountySolves"
+
+lean_lib "Part06_Problem20_LucasLehmer" where
+  srcDir := "BountySolves"
+
+lean_lib "Part07_Problem13_HadamardMatrices" where
+  srcDir := "BountySolves"
+
+lean_lib "Part08_Problem35_CatalanMihailescu" where
+  srcDir := "BountySolves"
