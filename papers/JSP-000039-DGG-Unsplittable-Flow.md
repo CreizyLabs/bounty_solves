@@ -4,7 +4,7 @@
 **Mathematical Area:** Combinatorial Optimization / Network Flows / Approximation Algorithms  
 **Author:** Jason Emerick (Creizy Labs)  
 **Mathematical Attribution:** Dmitry Rybin (2026 Counterexample) & Jason Emerick (Formal Invariant Verification)  
-**Formalization File:** [`BountySolves/Part02_Problem39_DGG_UnsplittableFlow.lean`](../BountySolves/Part02_Problem39_DGG_UnsplittableFlow.lean)  
+**Formalization File:** [`BountySolves/DGGCostPreserving.lean`](../BountySolves/DGGCostPreserving.lean)  
 **Repository:** [https://github.com/CreizyLabs/bounty_solves](https://github.com/CreizyLabs/bounty_solves)  
 **Kernel Status:** 100% Machine-Closed (0 `sorry`, 0 custom axioms).  
 **Foundational Axioms:** `[propext, Classical.choice, Quot.sound]`.  

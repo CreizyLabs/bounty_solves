@@ -4,7 +4,7 @@
 **Mathematical Area:** Computational Number Theory / Primality Testing  
 **Author:** Jason Emerick (Creizy Labs)  
 **Mathematical Attribution:** Édouard Lucas (1876), Derrick Henry Lehmer (1930) & Jason Emerick (Formalization)  
-**Formalization File:** [`BountySolves/Part06_Problem20_LucasLehmer.lean`](../BountySolves/Part06_Problem20_LucasLehmer.lean)  
+**Formalization File:** [`BountySolves/LucasLehmer.lean`](../BountySolves/LucasLehmer.lean)  
 **Repository:** [https://github.com/CreizyLabs/bounty_solves](https://github.com/CreizyLabs/bounty_solves)  
 **Kernel Status:** 100% Machine-Closed (0 `sorry`, 0 custom axioms).  
 **Foundational Axioms:** `[propext, Classical.choice, Quot.sound]`.  

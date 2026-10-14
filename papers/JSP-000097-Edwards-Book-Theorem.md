@@ -4,7 +4,7 @@
 **Mathematical Area:** Extremal Graph Theory / Turán Theory / Ramsey Theory  
 **Author:** Jason Emerick (Creizy Labs)  
 **Mathematical Attribution:** C. S. Edwards (1977), Khadzhiivanov & Nikiforov (1979) & Jason Emerick (Formalization)  
-**Formalization File:** [`BountySolves/Part04_Problem97_EdwardsBookTheorem.lean`](../BountySolves/Part04_Problem97_EdwardsBookTheorem.lean)  
+**Formalization File:** [`BountySolves/EdwardsBookTheorem.lean`](../BountySolves/EdwardsBookTheorem.lean)  
 **Repository:** [https://github.com/CreizyLabs/bounty_solves](https://github.com/CreizyLabs/bounty_solves)  
 **Kernel Status:** 100% Machine-Closed (0 `sorry`, 0 custom axioms).  
 **Foundational Axioms:** `[propext, Classical.choice, Quot.sound]`.  

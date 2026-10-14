@@ -4,7 +4,7 @@
 **Mathematical Area:** Number Theory / Sidon Sets / Additive Combinatorics  
 **Author:** Jason Emerick (Creizy Labs)  
 **Mathematical Attribution:** Harjas Sandhu (Mathematical Resolution) & Jason Emerick (Machine Verification)  
-**Formalization File:** [`BountySolves/Part03_Problem70_79_CauchySchwarz.lean`](../BountySolves/Part03_Problem70_79_CauchySchwarz.lean)  
+**Formalization File:** [`BountySolves/CauchySchwarz.lean`](../BountySolves/CauchySchwarz.lean)  
 **Repository:** [https://github.com/CreizyLabs/bounty_solves](https://github.com/CreizyLabs/bounty_solves)  
 **Kernel Status:** 100% Machine-Closed (0 `sorry`, 0 custom axioms).  
 **Foundational Axioms:** `[propext, Classical.choice, Quot.sound]`.  

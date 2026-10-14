@@ -4,7 +4,7 @@
 **Mathematical Area:** Automata Theory / Combinatorics on Words  
 **Author:** Jason Emerick (Creizy Labs)  
 **Mathematical Attribution:** Ján Černý (1964) & Jason Emerick (Formal Deterministic Bitmask Verification)  
-**Formalization File:** [`BountySolves/Part05_Problem22_CernyAutomata.lean`](../BountySolves/Part05_Problem22_CernyAutomata.lean)  
+**Formalization File:** [`BountySolves/CernyAutomata.lean`](../BountySolves/CernyAutomata.lean)  
 **Repository:** [https://github.com/CreizyLabs/bounty_solves](https://github.com/CreizyLabs/bounty_solves)  
 **Kernel Status:** 100% Machine-Closed (0 `sorry`, 0 custom axioms).  
 **Foundational Axioms:** `[propext, Classical.choice, Quot.sound]`.  

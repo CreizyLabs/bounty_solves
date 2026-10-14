@@ -4,7 +4,7 @@
 **Mathematical Area:** Matrix Theory / Combinatorics / Design Theory  
 **Author:** Jason Emerick (Creizy Labs)  
 **Mathematical Attribution:** Jacques Hadamard (1893), J. J. Sylvester (1867), R. E. A. C. Paley (1933) & Jason Emerick (Formalization)  
-**Formalization File:** [`BountySolves/Part07_Problem13_HadamardMatrices.lean`](../BountySolves/Part07_Problem13_HadamardMatrices.lean)  
+**Formalization File:** [`BountySolves/HadamardMatrices.lean`](../BountySolves/HadamardMatrices.lean)  
 **Repository:** [https://github.com/CreizyLabs/bounty_solves](https://github.com/CreizyLabs/bounty_solves)  
 **Kernel Status:** 100% Machine-Closed (0 `sorry`, 0 custom axioms).  
 **Foundational Axioms:** `[propext, Classical.choice, Quot.sound]`.  
