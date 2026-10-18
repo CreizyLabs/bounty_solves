@@ -30,6 +30,9 @@ lean_lib "DGGCostPreserving" where
 lean_lib "EdwardsBookTheorem" where
   srcDir := "BountySolves"
 
+lean_lib "ErdosAnningIntegralDistances" where
+  srcDir := "BountySolves"
+
 lean_lib "ErdosDiscrepancy" where
   srcDir := "BountySolves"
 
@@ -37,6 +40,9 @@ lean_lib "ErdosGimbelCochromatic" where
   srcDir := "BountySolves"
 
 lean_lib "ErdosMoserTournaments" where
+  srcDir := "BountySolves"
+
+lean_lib "ErdosStrausUnitFractions" where
   srcDir := "BountySolves"
 
 lean_lib "HadamardMatrices" where
