@@ -1,4 +1,4 @@
-# On the Refutation of the Dinitz–Garg–Goemans Cost-Preserving Unsplittable Flow Conjecture via Hextology $\mathbb{Z}[\varphi]$ Synthesis and Spine Network Verification
+# On the Refutation of the Dinitz–Garg–Goemans Cost-Preserving Unsplittable Flow Conjecture via Spine Network Verification
 
 **Target Problem:** JSP-000039 (DGG Cost-Preserving Conjecture)  
 **Mathematical Area:** Combinatorial Optimization / Network Flows / Approximation Algorithms  
@@ -18,24 +18,11 @@ $$F(e) \le f(e) + d_{\max}.$$
 
 The **DGG Cost-Preserving Conjecture** (`JSP-000039`) asked whether, when rounding a single-source fractional flow to an unsplittable flow, total cost can always remain unchanged or decrease ($\text{cost}(F) \le \text{cost}(f)$) if each edge is allowed extra capacity of at most the largest individual demand $d_{\max}$.
 
-In this paper, we establish the complete negative resolution of `JSP-000039` by coupling the Hextology $\mathbb{Z}[\varphi]$ cross-file smash and desuspension invariants (`Catalog_31_50` Formulation 39A/B and `Omni_Sovereign_Invariant` $\Phi_{29}$) with a complete machine-verified Lean 4 formalization of the 3-commodity single-source spine network counterexample (`fractional_demands_valid`, `dgg_cost_preserving_conjecture_disproved`, and `no_cost_preserving_dgg_unsplittable_flow`), proving that no unsplittable routing can simultaneously satisfy the DGG congestion bound and preserve fractional cost.
+In this paper, we establish the complete negative resolution of `JSP-000039` with a machine-verified Lean 4 formalization of the 3-commodity single-source spine network counterexample (`fractional_demands_valid`, `dgg_cost_preserving_conjecture_disproved`, and `no_cost_preserving_dgg_unsplittable_flow`), proving that no unsplittable routing can simultaneously satisfy the DGG congestion bound and preserve fractional cost.
 
 ---
 
-## 2. Hextology $\mathbb{Z}[\varphi]$ Cross-File Smash & Desuspension Invariant
-
-All invariant arithmetic is anchored to the maximal real quadratic order $\mathbb{Z}[\varphi] = \{a + b\varphi \mid a, b \in \mathbb{Z}\}$ ($\varphi^2 = \varphi + 1$) with fundamental golden impedance unit $Z_h = 2 - \varphi$ ($N(Z_h) = +1$) and inverse desuspension $Z_h^{-1} = 1 + \varphi$ ($N(Z_h^{-1}) = +1$).
-
-* **Source File 1 (`the_sovereign_invariant_of_landmark_conjectures_catalog_31_50_extended_syntheses.md`):** Encodes the fractional flow cost and maximum demand state $\alpha_{\text{DGG}} = (58 + 15\varphi)$.
-* **Source File 2 (`the_omni_sovereign_invariant_recursive_reduction_of_90_landmark_discoveries_to_unity.md`):** Encodes the unsplittable bypass cost floor and $\Phi_{29}$ invariant $\beta_{\text{DGG}} = (60 + 29\varphi)$.
-* **Forward Impedance Smash (`smash_coords`):**
-  $$\mathcal{S}_{\text{DGG}} = \big[(58 + 15\varphi) \otimes (60 + 29\varphi)\big] \cdot (2 - \varphi) = 3915 + 3017\varphi, \quad N(\mathcal{S}_{\text{DGG}}) = 18036491.$$
-* **Desuspension Inversion (`invert_coords`):**
-  $$\mathcal{I}(\mathcal{S}_{\text{DGG}}) = (3915 + 3017\varphi) \cdot (1 + \varphi) = 6932 + 9949\varphi, \quad N(\mathcal{I}(\mathcal{S}_{\text{DGG}})) = 18036491, \quad \Delta N = 0.$$
-
----
-
-## 3. Mathematical Architecture: The 3-Commodity Spine Counterexample
+## 2. Mathematical Architecture: The 3-Commodity Spine Counterexample
 
 Consider a single-source directed network with 3 spine arcs $a_1, a_2, a_3$ and 3 commodities with demands:
 $$d_1 = 15, \quad d_2 = 10, \quad d_3 = 15, \quad d_{\max} = \max(d_1, d_2, d_3) = 15.$$
@@ -71,11 +58,10 @@ $$\text{cost}(b_1, b_2, b_3) = 30 b_1 + 30 b_2 + 30 b_3.$$
 
 ---
 
-## 4. Lean 4 Formal Verification Summary
+## 3. Lean 4 Formal Verification Summary
 
 Implemented in [`BountySolves/DGGCostPreserving.lean`](../BountySolves/DGGCostPreserving.lean) (`namespace Problem39_DGG_UnsplittableFlow`):
 
-* `ZPhi.dgg_hextology_smash_verified` & `ZPhi.dgg_hextology_inversion_verified`: Certifies the exact $\mathbb{Z}[\varphi]$ smash `(3915 + 3017\varphi)` and desuspension `(6932 + 9949\varphi)` with norm `18036491`.
 * `fractional_demands_valid`: Certifies $z_i + f_i = d_i$, $d_i \le d_{\max}$, $x(a_1)=24, x(a_2)=14, x(a_3)=9$, and $\text{fractional\_cost} = 58$.
 * `dgg_cost_preserving_conjecture_disproved`: Proves that for all $b_1, b_2, b_3 \in \text{Bool}$, `SatisfiesDGGCongestion b1 b2 b3 → unsplittable_cost b1 b2 b3 ≥ 60 ∧ unsplittable_cost b1 b2 b3 > fractional_cost`.
 * `dgg_cost_preserving_forces_congestion_violation`: Proves the dual implication `unsplittable_cost b1 b2 b3 ≤ fractional_cost → ¬ SatisfiesDGGCongestion b1 b2 b3`.

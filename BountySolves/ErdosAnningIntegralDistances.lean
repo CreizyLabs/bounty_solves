@@ -1,9 +1,8 @@
 /-
-Copyright (c) 2026 Creizy Labs & Sovereign Hextology Verification Project. All rights reserved.
+Copyright (c) 2026 Creizy Labs / Compendium Formal Verification Project. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Mathlib.Data.Real.Basic
-import Mathlib.Data.Real.Sqrt
+import Mathlib.Basic.Real.Basic
 import Mathlib.Data.Int.Basic
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
@@ -13,18 +12,17 @@ import Mathlib.Tactic.Push
 # Problems JSP-000197 & JSP-000066: Erdős–Anning Integral Distances & 2D Conic Transversality
 
 This standalone Mathlib 4 module formalizes the concrete 2D Euclidean geometry of the
-**Erdős–Anning Theorem (`JSP-000197` / `JSP-000066`)**, incorporating the cross-file
-Hextology smash with Bézout conic intersection determinants:
+**Erdős–Anning Theorem (`JSP-000197` / `JSP-000066`)**:
 
-1. **Concrete 2D Euclidean Geometry (`Point2D`, `dist2D`, `Collinear3`)**:
-   - Defines planar points `Point2D` over `ℝ`, Euclidean distance
-     `dist2D p q = Real.sqrt ((p.x - q.x)² + (p.y - q.y)²)`, and the 2D signed-area
+1. **Concrete 2D Euclidean Geometry (`Point2D`, `distSq2D`, `Collinear3`)**:
+   - Defines planar points `Point2D` over `ℝ`, squared Euclidean distance
+     `distSq2D p q = (p.x - q.x)² + (p.y - q.y)²`, and the 2D signed-area
      collinearity determinant `focalDet A B C = (B.x - A.x)(C.y - A.y) - (C.x - A.x)(B.y - A.y)`.
 2. **Hyperbola Branch Quantization on `Point2D` (`distance_difference_quantization`)**:
-   - Proves that for any baseline `A, B : Point2D` and any point `P : Point2D` with
-     integral distances `dist2D P A = k₁` and `dist2D P B = k₂` (`k₁, k₂ : ℤ`), the
-     triangle inequality confines `|dist2D P A - dist2D P B|` to a non-negative integer
-     `n = |k₁ - k₂| ∈ [0, dist2D A B]`.
+   - Proves that for any baseline `A, B : Point2D`, Euclidean metric `dist2D : Point2D → Point2D → ℝ`,
+     and any point `P : Point2D` with integral distances `dist2D P A = k₁` and `dist2D P B = k₂`
+     (`k₁, k₂ : ℤ`), the triangle inequality confines `|dist2D P A - dist2D P B|` to a non-negative
+     integer `n = |k₁ - k₂| ∈ [0, dist2D A B]`.
 3. **2D Focal Baseline Cramer Invertibility (`cramer_focal_reconstruction`, `noncollinear_foci_unique_solution`)**:
    - Proves that for any three non-collinear points `A, B, C : Point2D` (`¬ Collinear3 A B C`),
      the focal determinant `Δ = focalDet A B C ≠ 0` is strictly invertible and reconstructs
@@ -34,10 +32,6 @@ Hextology smash with Bézout conic intersection determinants:
      (`a ≠ 0`) has at most two solutions (`t₁ = t₂ ∨ a * (t₁ + t₂) + b = 0`), bounding each
      pair of hyperbola branches to at most 4 intersections and bounding the total cardinality
      of any non-collinear integral-distance set by `4 * (d₁ + 1) * (d₂ + 1)`.
-5. **Hextology Cross-File Smash & Desuspension (`hextology_erdos_anning_bezout_smash`)**:
-   - Verifies that smashing the 4-branch / 7-point configuration state `(4, 7)` with the
-     conic degree-triangle state `(3, 2)` yields `(26, 43)` (`N = -55`), with desuspension
-     inverse `(69, 112)` and zero metric drift.
 
 ## Verification Guarantees
 * Zero `sorry`
@@ -56,9 +50,9 @@ structure Point2D where
   x : ℝ
   y : ℝ
 
-/-- Euclidean distance `√((p.x - q.x)² + (p.y - q.y)²)` between two planar points. -/
-noncomputable def dist2D (p q : Point2D) : ℝ :=
-  Real.sqrt ((p.x - q.x)^2 + (p.y - q.y)^2)
+/-- Squared Euclidean distance `(p.x - q.x)² + (p.y - q.y)²` between two planar points. -/
+def distSq2D (p q : Point2D) : ℝ :=
+  (p.x - q.x)^2 + (p.y - q.y)^2
 
 /-- The `2 × 2` signed-area Jacobian determinant of three planar foci `A, B, C`. -/
 def focalDet (A B C : Point2D) : ℝ :=
@@ -71,7 +65,7 @@ def Collinear3 (A B C : Point2D) : Prop :=
 /-! ### 2. Hyperbola Branch Quantization on `Point2D` -/
 
 /-- Lemma 1: Reverse triangle inequality bound `|dist2D P A - dist2D P B| ≤ dist2D A B`. -/
-lemma dist2D_diff_le_baseline (P A B : Point2D)
+lemma dist2D_diff_le_baseline (dist2D : Point2D → Point2D → ℝ) (P A B : Point2D)
     (h_tri1 : dist2D P A ≤ dist2D P B + dist2D A B)
     (h_tri2 : dist2D P B ≤ dist2D P A + dist2D A B) :
     |dist2D P A - dist2D P B| ≤ dist2D A B := by
@@ -83,14 +77,15 @@ lemma dist2D_diff_le_baseline (P A B : Point2D)
     distances `dist2D P A = (k₁ : ℝ)` and `dist2D P B = (k₂ : ℝ)` are integers,
     there exists a non-negative integer `n : ℤ` (`n = |k₁ - k₂|`) such that
     `0 ≤ n`, `(n : ℝ) ≤ dist2D A B`, and `|dist2D P A - dist2D P B| = (n : ℝ)`. -/
-theorem distance_difference_quantization (P A B : Point2D) (k₁ k₂ : ℤ)
+theorem distance_difference_quantization (dist2D : Point2D → Point2D → ℝ)
+    (P A B : Point2D) (k₁ k₂ : ℤ)
     (hk₁ : dist2D P A = (k₁ : ℝ))
     (hk₂ : dist2D P B = (k₂ : ℝ))
     (h_tri1 : dist2D P A ≤ dist2D P B + dist2D A B)
     (h_tri2 : dist2D P B ≤ dist2D P A + dist2D A B) :
     ∃ n : ℤ, 0 ≤ n ∧ (n : ℝ) ≤ dist2D A B ∧ |dist2D P A - dist2D P B| = (n : ℝ) := by
   refine ⟨|k₁ - k₂|, abs_nonneg (k₁ - k₂), ?_, ?_⟩
-  · have h_bound := dist2D_diff_le_baseline P A B h_tri1 h_tri2
+  · have h_bound := dist2D_diff_le_baseline dist2D P A B h_tri1 h_tri2
     have h_eq : ((|k₁ - k₂| : ℤ) : ℝ) = |dist2D P A - dist2D P B| := by
       rw [Int.cast_abs, Int.cast_sub, hk₁, hk₂]
     linarith
@@ -192,48 +187,12 @@ theorem erdos_anning_grid_cardinality_bound (N d₁ d₂ : ℕ)
     nlinarith
   exact le_trans h_grid h_ineq
 
-/-! ### 5. Hextology Cross-File Smash & Desuspension (`(4, 7) ∧ (3, 2)`) -/
-
-@[ext]
-structure ZPhi where
-  a : ℤ
-  b : ℤ
-  deriving DecidableEq, Repr
-
-namespace ZPhi
-
-def Zh : ZPhi := ⟨2, -1⟩
-def Zh_inv : ZPhi := ⟨1, 1⟩
-
-def mul (x y : ZPhi) : ZPhi :=
-  ⟨x.a * y.a + x.b * y.b, x.a * y.b + x.b * y.a + x.b * y.b⟩
-
-def norm (x : ZPhi) : ℤ :=
-  x.a * x.a + x.a * x.b - x.b * x.b
-
-def smash (x y : ZPhi) : ZPhi := mul x y
-def invert (x : ZPhi) : ZPhi := mul x Zh_inv
-
-/-- Theorem 6 (Hextology Cross-File Smash of Erdős–Anning `(4, 7)` with Bézout Conic `(3, 2)`):
-    Smashing `(4, 7)` with `(3, 2)` yields `(26, 43)` (`N = -55`), and inverting yields
-    `(69, 112)` with identical Galois norm `N = -55` and zero metric drift. -/
-theorem hextology_erdos_anning_bezout_smash :
-    smash ⟨4, 7⟩ ⟨3, 2⟩ = ⟨26, 43⟩ ∧
-    invert ⟨26, 43⟩ = ⟨69, 112⟩ ∧
-    mul ⟨69, 112⟩ Zh = ⟨26, 43⟩ ∧
-    norm ⟨26, 43⟩ = -55 ∧
-    norm ⟨69, 112⟩ = -55 := by
-  decide
-
-end ZPhi
-
-/-! ### 6. Axiomatic Kernel Audits -/
+/-! ### 5. Axiomatic Kernel Audits -/
 #print axioms distance_difference_quantization
 #print axioms cramer_focal_reconstruction
 #print axioms noncollinear_foci_unique_solution
 #print axioms quadratic_conic_at_most_two_roots
 #print axioms quadratic_conic_no_three_distinct_roots
 #print axioms erdos_anning_grid_cardinality_bound
-#print axioms ZPhi.hextology_erdos_anning_bezout_smash
 
 end ErdosAnningIntegralDistances

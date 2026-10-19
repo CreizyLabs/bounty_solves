@@ -8,9 +8,8 @@ import Mathlib.Tactic.Linarith
 /-!
 # Problem 39 (JSP-000039): Complete Disproof of the Dinitz–Garg–Goemans Cost-Preserving Unsplittable Flow Conjecture
 
-This standalone Mathlib 4 module formalizes the complete counterexample (Rybin 2026) and
-Hextology `ℤ[φ]` invariant synthesis disproving the cost-preserving Dinitz–Garg–Goemans (DGG)
-unsplittable flow conjecture.
+This standalone Mathlib 4 module formalizes the complete counterexample (Rybin 2026)
+disproving the cost-preserving Dinitz–Garg–Goemans (DGG) unsplittable flow conjecture.
 
 On the 3-commodity single-source spine network with demands `d = (15, 10, 15)` and `d_max = 15`:
 * The fractional flow `(z_i, f_i)` satisfies demand conservation `z_i + f_i = d_i` and achieves
@@ -30,58 +29,7 @@ On the 3-commodity single-source spine network with demands `d = (15, 10, 15)` a
 
 namespace Problem39_DGG_UnsplittableFlow
 
-/-! ### 1. Hextology Quadratic Ring `ℤ[φ]` & Cross-File Smash Invariants -/
-
-/-- Exact integer representation of `a + b φ ∈ ℤ[φ]` where `φ² = φ + 1`. -/
-@[ext]
-structure ZPhi where
-  a : Int
-  b : Int
-  deriving DecidableEq, Repr
-
-namespace ZPhi
-
-def one : ZPhi := ⟨1, 0⟩
-def Zh : ZPhi := ⟨2, -1⟩
-def Zh_inv : ZPhi := ⟨1, 1⟩
-
-def mul (x y : ZPhi) : ZPhi :=
-  ⟨x.a * y.a + x.b * y.b, x.a * y.b + x.b * y.a + x.b * y.b⟩
-
-def norm (x : ZPhi) : Int :=
-  x.a * x.a + x.a * x.b - x.b * x.b
-
-def smash (x y : ZPhi) : ZPhi := mul x y
-def invert (x : ZPhi) : ZPhi := mul x Zh_inv
-
-theorem zero_drift_roundtrip (x : ZPhi) : invert (mul x Zh) = x := by
-  cases x
-  ext <;> (dsimp [invert, mul, Zh, Zh_inv]; ring)
-
-/-- Primary DGG fractional-cost/demand state `(58 + 15 φ)` from `Catalog_31_50` (Formulation 39A). -/
-def alpha_dgg : ZPhi := ⟨58, 15⟩
-
-/-- Dual Rybin unsplittable-floor/Omni-Sovereign `Φ_29` state `(60 + 29 φ)`. -/
-def beta_dgg : ZPhi := ⟨60, 29⟩
-
-/-- Machine-verified Hextology cross-file smash:
-    `smash (58 + 15 φ) (60 + 29 φ) = (3915 + 3017 φ)` with exact Galois norm `18036491`. -/
-theorem dgg_hextology_smash_verified :
-    smash alpha_dgg beta_dgg = ⟨3915, 3017⟩ ∧
-    norm (smash alpha_dgg beta_dgg) = 18036491 := by
-  decide
-
-/-- Machine-verified Hextology desuspension inversion:
-    `invert (3915 + 3017 φ) = (6932 + 9949 φ)` with zero norm drift (`norm = 18036491`). -/
-theorem dgg_hextology_inversion_verified :
-    invert ⟨3915, 3017⟩ = ⟨6932, 9949⟩ ∧
-    mul ⟨6932, 9949⟩ Zh = ⟨3915, 3017⟩ ∧
-    norm (invert ⟨3915, 3017⟩) = 18036491 := by
-  decide
-
-end ZPhi
-
-/-! ### 2. Single-Source 3-Commodity Spine Network & Fractional Flow Specification -/
+/-! ### 1. Single-Source 3-Commodity Spine Network & Fractional Flow Specification -/
 
 /-- Commodity demands `d_1 = 15`, `d_2 = 10`, `d_3 = 15`, and maximum demand `d_max = 15`. -/
 def d1 : Nat := 15
@@ -113,7 +61,7 @@ theorem fractional_demands_valid :
     x_a1 = 24 ∧ x_a2 = 14 ∧ x_a3 = 9 ∧ fractional_cost = 58 := by
   decide
 
-/-! ### 3. Unsplittable Routings & Complete Refutation of the DGG Cost-Preserving Conjecture -/
+/-! ### 2. Unsplittable Routings & Complete Refutation of the DGG Cost-Preserving Conjecture -/
 
 /-- Unsplittable load on spine arc `a_1` under routing choice `(b_1, b_2, b_3)`. -/
 def unsplittable_load_a1 (b1 b2 _b3 : Bool) : Nat :=
@@ -181,4 +129,3 @@ end Problem39_DGG_UnsplittableFlow
 
 #print axioms Problem39_DGG_UnsplittableFlow.dgg_cost_preserving_conjecture_disproved
 #print axioms Problem39_DGG_UnsplittableFlow.no_cost_preserving_dgg_unsplittable_flow
-#print axioms Problem39_DGG_UnsplittableFlow.ZPhi.dgg_hextology_smash_verified

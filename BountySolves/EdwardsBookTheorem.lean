@@ -2,8 +2,10 @@
 Copyright (c) 2026 Creizy Labs / Compendium Formal Verification Project. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Mathlib.Combinatorics.SimpleGraph.Basic
-import Mathlib.Combinatorics.SimpleGraph.Finite
+import Mathlib.Data.Finset.Basic
+import Mathlib.Data.Finset.Card
+import Mathlib.Data.Fintype.Basic
+import Mathlib.Data.Fintype.Card
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
 import Mathlib.Tactic.Ring
@@ -16,21 +18,17 @@ This standalone Mathlib 4 module formalizes the complete resolution of Erdős's 
 Conjecture (Edwards' Book Theorem, JSP-000097), proving how many triangles sharing a common
 edge a sufficiently dense simple graph must contain:
 
-1. **Hextology `ℤ[φ]` Cross-File Smash & Desuspension Invariants:**
-   Couples the Edwards degree-sum multiplicity `(6 + 3 φ)` (`Catalog_71_100`, Formulation 97A/B)
-   with the Turán–Omni-Sovereign `Φ_87` invariant `(4 + 87 φ)`, yielding `(285 + 795 φ)` and
-   desuspension `(1080 + 1875 φ)` with exact Galois norm `-324225` and zero metric drift.
-2. **SimpleGraph Common-Neighbor Triangle Multiplicity Theorem:**
+1. **SimpleGraph Common-Neighbor Triangle Multiplicity Theorem:**
    For any finite simple graph `G : SimpleGraph V`, defines the book triangle fiber
    `bookTriangles G u v = G.neighborFinset u ∩ G.neighborFinset v`, proves that its elements
    are precisely the vertices forming a triangle with `(u, v)`, and proves via
    inclusion–exclusion (`Finset.card_union_add_card_inter`) that for all `u v : V`:
    `G.degree u + G.degree v ≤ Fintype.card V + (bookTriangles G u v).card`.
-3. **Finite-Set Variance & Cauchy–Schwarz Degree-Sum Theorem:**
+2. **Finite-Set Variance & Cauchy–Schwarz Degree-Sum Theorem:**
    Proves by induction over any finite set `s : Finset α` and degree function `d : α → ℤ`
    that `(∑ u ∈ s, d u)² ≤ s.card * (∑ u ∈ s, d u * d u)`, forcing
    `n * ∑ v, d(v)² ≥ 4 m²` under the handshaking identity `∑ v, d(v) = 2 m`.
-4. **Edwards–Turán Positivstellensatz Syzygy & Strict `n/6` Book Theorem:**
+3. **Edwards–Turán Positivstellensatz Syzygy & Strict `n/6` Book Theorem:**
    Proves that every graph on `n > 0` vertices with `m` edges above the Mantel–Turán threshold
    (`4 m > n²`, i.e., `m ≥ ⌊n²/4⌋ + 1`) satisfies `3 n · bk ≥ 6 m - n²` and therefore contains
    an edge in strictly more than `n / 6` triangles (`6 * bk > n`).
@@ -45,62 +43,38 @@ open scoped BigOperators
 
 namespace Problem97_EdwardsBookTheorem
 
-/-! ### 1. Hextology Quadratic Ring `ℤ[φ]` & Cross-File Smash Invariants -/
+/-! ### 1. `SimpleGraph` Book Triangle Fibers & Inclusion–Exclusion Degree Bound -/
 
-/-- Exact integer representation of `a + b φ ∈ ℤ[φ]` where `φ² = φ + 1`. -/
-@[ext]
-structure ZPhi where
-  a : Int
-  b : Int
-  deriving DecidableEq, Repr
+/-- A finite simple graph on vertex type `V`, equipped with decidable adjacency `Adj`. -/
+structure SimpleGraph (V : Type*) where
+  Adj : V → V → Prop
+  [decAdj : DecidableRel Adj]
+  symm : ∀ u v, Adj u v → Adj v u
+  loopless : ∀ v, ¬ Adj v v
 
-namespace ZPhi
+attribute [instance] SimpleGraph.decAdj
 
-def one : ZPhi := ⟨1, 0⟩
-def Zh : ZPhi := ⟨2, -1⟩
-def Zh_inv : ZPhi := ⟨1, 1⟩
+namespace SimpleGraph
 
-def mul (x y : ZPhi) : ZPhi :=
-  ⟨x.a * y.a + x.b * y.b, x.a * y.b + x.b * y.a + x.b * y.b⟩
+variable {V : Type*} [Fintype V] (G : SimpleGraph V)
 
-def norm (x : ZPhi) : Int :=
-  x.a * x.a + x.a * x.b - x.b * x.b
+/-- Finite neighborhood `N(u) = {w ∈ V | G.Adj u w}`. -/
+def neighborFinset (u : V) : Finset V :=
+  Finset.univ.filter (fun w => G.Adj u w)
 
-def smash (x y : ZPhi) : ZPhi := mul x y
-def invert (x : ZPhi) : ZPhi := mul x Zh_inv
+/-- Vertex degree `d(u) = |N(u)|`. -/
+def degree (u : V) : ℕ :=
+  (G.neighborFinset u).card
 
-theorem zero_drift_roundtrip (x : ZPhi) : invert (mul x Zh) = x := by
-  cases x
-  ext <;> (dsimp [invert, mul, Zh, Zh_inv]; ring)
+theorem mem_neighborFinset (u w : V) :
+    w ∈ G.neighborFinset u ↔ G.Adj u w := by
+  simp [neighborFinset]
 
-/-- Primary Edwards book-multiplicity state `(6 + 3 φ)` from `Catalog_71_100` (Formulation 97A/B). -/
-def alpha_edwards : ZPhi := ⟨6, 3⟩
-
-/-- Dual Mantel–Turán / Omni-Sovereign `Φ_87` state `(4 + 87 φ)`. -/
-def beta_edwards : ZPhi := ⟨4, 87⟩
-
-/-- Machine-verified Hextology cross-file smash:
-    `smash (6 + 3 φ) (4 + 87 φ) = (285 + 795 φ)` with exact Galois norm `-324225`. -/
-theorem edwards_hextology_smash_verified :
-    smash alpha_edwards beta_edwards = ⟨285, 795⟩ ∧
-    norm (smash alpha_edwards beta_edwards) = -324225 := by
-  decide
-
-/-- Machine-verified Hextology desuspension inversion:
-    `invert (285 + 795 φ) = (1080 + 1875 φ)` with zero norm drift (`norm = -324225`). -/
-theorem edwards_hextology_inversion_verified :
-    invert ⟨285, 795⟩ = ⟨1080, 1875⟩ ∧
-    mul ⟨1080, 1875⟩ Zh = ⟨285, 795⟩ ∧
-    norm (invert ⟨285, 795⟩) = -324225 := by
-  decide
-
-end ZPhi
-
-/-! ### 2. `SimpleGraph` Book Triangle Fibers & Inclusion–Exclusion Degree Bound -/
+end SimpleGraph
 
 section SimpleGraphBook
 
-variable {V : Type*} [Fintype V] [DecidableEq V] (G : SimpleGraph V) [DecidableRel G.Adj]
+variable {V : Type*} [Fintype V] [DecidableEq V] (G : SimpleGraph V)
 
 /-- The book triangle fiber of a pair of vertices `(u, v)` in a simple graph `G`:
     the finite set of common neighbors `N(u) ∩ N(v)`. When `G.Adj u v`, each `w ∈ bookTriangles G u v`
@@ -144,7 +118,7 @@ theorem triangle_degree_sum_bound (u v w : V) :
 
 end SimpleGraphBook
 
-/-! ### 3. General Finite-Sum Cauchy–Schwarz Variance Identity -/
+/-! ### 2. General Finite-Sum Cauchy–Schwarz Variance Identity -/
 
 /-- Exact Inductive Cauchy–Schwarz Step Identity over `ℤ`:
     `n * ((n + 1) * (x² + S₂) - (x + S₁)²) = (n * x - S₁)² + (n + 1) * (n * S₂ - S₁²)`. -/
@@ -192,7 +166,7 @@ theorem degree_sq_sum_ge_four_edges_sq {α : Type*} [DecidableEq α] (s : Finset
   rw [h_handshake] at h_cs
   linarith
 
-/-! ### 4. Khadzhiivanov–Nikiforov / Edwards Inequality & Strict `n / 6` Book Bound -/
+/-! ### 3. Khadzhiivanov–Nikiforov / Edwards Inequality & Strict `n / 6` Book Bound -/
 
 /-- Khadzhiivanov–Nikiforov Degree-to-Book Derivation:
     The Edwards–Turán algebraic syzygy
@@ -259,4 +233,3 @@ end Problem97_EdwardsBookTheorem
 #print axioms Problem97_EdwardsBookTheorem.finset_cauchy_schwarz
 #print axioms Problem97_EdwardsBookTheorem.edwards_strict_book_lower_bound
 #print axioms Problem97_EdwardsBookTheorem.erdos_book_conjecture_at_mantel_plus_one
-#print axioms Problem97_EdwardsBookTheorem.ZPhi.edwards_hextology_smash_verified

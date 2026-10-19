@@ -31,42 +31,29 @@ In this paper, we formalize the exact finite combinatorial and Cauchy–Schwarz 
 
 ---
 
-## 2. Hextology $\mathbb{Z}[\varphi]$ Cross-File Smash & Desuspension Invariant
+## 2. Mathematical Proofs
 
-Embedding the 4-fiber variance parameters and `Omni_Sovereign_Invariant` $\Phi_{69}$ into $\mathbb{Z}[\varphi] = \{a + b\varphi \mid a, b \in \mathbb{Z}\}$:
-* **Source File 1 (`the_sovereign_invariant_of_landmark_conjectures_catalog_71_100_extended_syntheses.md`):** Encodes the 4-fiber degree/pair multiplicity state $\alpha_{79} = (4 + 6\varphi)$.
-* **Source File 2 (`the_omni_sovereign_invariant_recursive_reduction_of_90_landmark_discoveries_to_unity.md`):** Encodes the $\Phi_{69}$ quadrilateral supersaturation invariant $\beta_{79} = (69 + 4\varphi)$.
-* **Forward Impedance Smash (`smash_coords`):**
-  $$\mathcal{S}_{79} = \big[(4 + 6\varphi) \otimes (69 + 4\varphi)\big] \cdot (2 - \varphi) = 300 + 454\varphi, \quad N(\mathcal{S}_{79}) = 20084.$$
-* **Desuspension Inversion (`invert_coords`):**
-  $$\mathcal{I}(\mathcal{S}_{79}) = (300 + 454\varphi) \cdot (1 + \varphi) = 754 + 1208\varphi, \quad N(\mathcal{I}(\mathcal{S}_{79})) = 20084, \quad \Delta N = 0.$$
-
----
-
-## 3. Mathematical Proofs
-
-### Theorem 3.1 (General `Finset` Cauchy–Schwarz Variance Identity)
+### Theorem 2.1 (General `Finset` Cauchy–Schwarz Variance Identity)
 For any finite set $P$ and integer function $c : P \to \mathbb{Z}$ with $M = |P|$ and $S = \sum_{p \in P} c(p)$:
 $$\sum_{p \in P} (M c(p) - S)^2 = M \left( M \sum_{p \in P} c(p)^2 - S^2 \right) \ge 0.$$
 Consequently, $M \sum_{p \in P} c(p)^2 \ge \left(\sum_{p \in P} c(p)\right)^2$. $\blacksquare$
 
-### Theorem 3.2 (Linear & Quadratic Forced-$C_4$ Bounds)
+### Theorem 2.2 (Linear & Quadratic Forced-$C_4$ Bounds)
 1. **Linear Excess Bound:** For every $k \in \mathbb{Z}$, $k(k-1) - 2(k-1) = (k-1)(k-2) \ge 0$ because $k - 1$ and $k - 2$ are consecutive integers and therefore either both $\ge 0$, both $\le 0$, or one is $0$. Summing over $p \in P$ gives:
    $$4 \cdot \# C_4(G) = \sum_{p \in P} c(p)(c(p) - 1) \ge 2\left(\sum_{p \in P} c(p) - |P|\right) = 2S - n(n - 1).$$
    Substituting $2S = \sum_{v \in V} d(v)^2 - 2m$ and $n \sum_{v \in V} d(v)^2 \ge 4m^2$ yields:
    $$4n \cdot \# C_4(G) \ge 2m(2m - n) - n^2(n - 1).$$
-2. **Quadratic Supersaturation Bound:** By Theorem 3.1 applied to $c : P \to \mathbb{Z}$:
+2. **Quadratic Supersaturation Bound:** By Theorem 2.1 applied to $c : P \to \mathbb{Z}$:
    $$|P| \sum_{p \in P} c(p)(c(p) - 1) = |P| \sum_{p \in P} c(p)^2 - |P| S \ge S^2 - |P| S = S(S - |P|). \quad \blacksquare$$
 
 ---
 
-## 4. Lean 4 Formal Verification Summary
+## 3. Lean 4 Formal Verification Summary
 
 Implemented in [`BountySolves/CauchySchwarz.lean`](../BountySolves/CauchySchwarz.lean) (`namespace Problem70_And_79_CauchySchwarz`):
-* `finset_variance_identity` & `finset_cauchy_schwarz`: Proves the general `Finset` Cauchy–Schwarz theorem from first principles.
+* `cauchy_schwarz_step_identity` & `finset_cauchy_schwarz`: Proves the general `Finset` Cauchy–Schwarz theorem from first principles.
 * `codeg_pair_excess_nonneg`: Proves $0 \le (k - 1)(k - 2)$ and $2(k - 1) \le k(k - 1)$ for all $k \in \mathbb{Z}$.
 * `forced_c4_linear_from_cherry_excess`: Proves $2(\sum_{p \in P} c(p) - |P|) \le \sum_{p \in P} c(p)(c(p) - 1)$.
 * `forced_c4_quadratic_supersaturation`: Proves $|P| \sum_{p \in P} c(p)(c(p) - 1) \ge S(S - |P|)$.
 * `forced_c4_above_reiman_threshold`: Proves $4n \cdot c_4 \ge 2m(2m - n) - n^2(n - 1)$ and $c_4 \ge 1$ above the threshold.
 * `four_fiber_cauchy_schwarz`: Proves the 4-fiber variance identity.
-* `ZPhi.jsp000079_hextology_smash_verified`: Certifies the exact $\mathbb{Z}[\varphi]$ smash `(300 + 454\varphi)` and desuspension `(754 + 1208\varphi)`.

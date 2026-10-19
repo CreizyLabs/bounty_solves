@@ -37,11 +37,6 @@ This standalone Mathlib 4 module provides complete, kernel-verified resolutions 
      4-cycles `c4` satisfies `4 * n * c4 ≥ 2 * m * (2 * m - n) - n² * (n - 1) > 0`.
    * Proves `forced_c4_quadratic_supersaturation`: by finite Cauchy–Schwarz over all `P.card` vertex
      pairs, `P.card * ∑ p ∈ P, c p * (c p - 1) ≥ (∑ p ∈ P, c p) * ((∑ p ∈ P, c p) - P.card)`.
-3. **Hextology `ℤ[φ]` Cross-File Smash & Desuspension Invariants:**
-   * `JSP-000070`: `smash (2 + 4 φ) (60 + 61 φ) = (364 + 606 φ)` and `invert (364 + 606 φ) = (970 + 1576 φ)`
-     with exact Galois norm `-14156`.
-   * `JSP-000079`: `smash (4 + 6 φ) (69 + 4 φ) = (300 + 454 φ)` and `invert (300 + 454 φ) = (754 + 1208 φ)`
-     with exact Galois norm `20084`.
 
 ## Verification Guarantees
 * Zero `sorry`
@@ -53,57 +48,7 @@ open scoped BigOperators
 
 namespace Problem70_And_79_CauchySchwarz
 
-/-! ### 1. Hextology Quadratic Ring `ℤ[φ]` & Cross-File Smash Invariants -/
-
-/-- Exact integer representation of `a + b φ ∈ ℤ[φ]` where `φ² = φ + 1`. -/
-@[ext]
-structure ZPhi where
-  a : Int
-  b : Int
-  deriving DecidableEq, Repr
-
-namespace ZPhi
-
-def one : ZPhi := ⟨1, 0⟩
-def Zh : ZPhi := ⟨2, -1⟩
-def Zh_inv : ZPhi := ⟨1, 1⟩
-
-def mul (x y : ZPhi) : ZPhi :=
-  ⟨x.a * y.a + x.b * y.b, x.a * y.b + x.b * y.a + x.b * y.b⟩
-
-def norm (x : ZPhi) : Int :=
-  x.a * x.a + x.a * x.b - x.b * x.b
-
-def smash (x y : ZPhi) : ZPhi := mul x y
-def invert (x : ZPhi) : ZPhi := mul x Zh_inv
-
-theorem zero_drift_roundtrip (x : ZPhi) : invert (mul x Zh) = x := by
-  cases x
-  ext <;> (dsimp [invert, mul, Zh, Zh_inv]; ring)
-
-/-- JSP-000070 Hextology cross-file smash:
-    `smash (2 + 4 φ) (60 + 61 φ) = (364 + 606 φ)` with Galois norm `-14156`. -/
-theorem jsp000070_hextology_smash_verified :
-    smash ⟨2, 4⟩ ⟨60, 61⟩ = ⟨364, 606⟩ ∧
-    norm (smash ⟨2, 4⟩ ⟨60, 61⟩) = -14156 ∧
-    invert ⟨364, 606⟩ = ⟨970, 1576⟩ ∧
-    mul ⟨970, 1576⟩ Zh = ⟨364, 606⟩ ∧
-    norm (invert ⟨364, 606⟩) = -14156 := by
-  decide
-
-/-- JSP-000079 Hextology cross-file smash:
-    `smash (4 + 6 φ) (69 + 4 φ) = (300 + 454 φ)` with Galois norm `20084`. -/
-theorem jsp000079_hextology_smash_verified :
-    smash ⟨4, 6⟩ ⟨69, 4⟩ = ⟨300, 454⟩ ∧
-    norm (smash ⟨4, 6⟩ ⟨69, 4⟩) = 20084 ∧
-    invert ⟨300, 454⟩ = ⟨754, 1208⟩ ∧
-    mul ⟨754, 1208⟩ Zh = ⟨300, 454⟩ ∧
-    norm (invert ⟨300, 454⟩) = 20084 := by
-  decide
-
-end ZPhi
-
-/-! ### 2. Complete Resolution of JSP-000070: Sidon Sets & Disjoint Nonzero Differences -/
+/-! ### 1. Complete Resolution of JSP-000070: Sidon Sets & Disjoint Nonzero Differences -/
 
 /-- A finite integer set `A : Finset Int` is a **Sidon set** (or `B₂` set) if all two-element sums
     `a₁ + a₂` are distinct up to permutation of the summands. -/
@@ -223,7 +168,7 @@ theorem exists_sidon_of_any_card_disjoint_diffs (A S : Finset Int) (D : Int)
   · exact card_scaleSet (by omega) S
   · exact disjointNonzeroDiffs_scaleSet A S D (D + 1) hD (by omega) h_diam
 
-/-! ### 3. Cauchy–Schwarz Algebraic Kernels for Disjoint-Difference Sidon Sets in `[1, N]` -/
+/-! ### 2. Cauchy–Schwarz Algebraic Kernels for Disjoint-Difference Sidon Sets in `[1, N]` -/
 
 /-- Exact 2-variable Cauchy–Schwarz defect identity:
     `2 * (a² + b²) - (a + b)² = (a - b)²`. -/
@@ -258,7 +203,7 @@ theorem disjoint_sidon_ordered_diff_bound (a b N : Int)
   have h_sq : 0 ≤ (a - b) * (a - b) := sq_nonneg (a - b)
   linarith
 
-/-! ### 4. Complete Resolution of JSP-000079: Forced Quadrilaterals (`C_4`) & Supersaturation -/
+/-! ### 3. Complete Resolution of JSP-000079: Forced Quadrilaterals (`C_4`) & Supersaturation -/
 
 /-- Exact Inductive Cauchy–Schwarz Step Identity over `ℤ`:
     `M * ((M + 1) * (x² + S₂) - (x + S₁)²) = (M * x - S₁)² + (M + 1) * (M * S₂ - S₁²)`. -/
@@ -388,5 +333,3 @@ end Problem70_And_79_CauchySchwarz
 #print axioms Problem70_And_79_CauchySchwarz.forced_c4_linear_from_cherry_excess
 #print axioms Problem70_And_79_CauchySchwarz.forced_c4_quadratic_supersaturation
 #print axioms Problem70_And_79_CauchySchwarz.forced_c4_above_reiman_threshold
-#print axioms Problem70_And_79_CauchySchwarz.ZPhi.jsp000070_hextology_smash_verified
-#print axioms Problem70_And_79_CauchySchwarz.ZPhi.jsp000079_hextology_smash_verified

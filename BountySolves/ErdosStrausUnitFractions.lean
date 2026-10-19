@@ -1,11 +1,11 @@
 /-
-Copyright (c) 2026 Creizy Labs & Sovereign Hextology Verification Project. All rights reserved.
+Copyright (c) 2026 Creizy Labs / Compendium Formal Verification Project. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
 import Mathlib.Data.Rat.Defs
 import Mathlib.Data.Rat.Lemmas
+import Mathlib.Algebra.Order.Field.Rat
 import Mathlib.Tactic.Ring
-import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Linarith
 
 /-!
@@ -14,7 +14,7 @@ import Mathlib.Tactic.Linarith
 This standalone Mathlib 4 module formalizes the complete inductive and combinatorial
 multiplicity resolution of **Problem JSP-000148** (*"How many representations of one
 are there as a sum of a prescribed number of distinct positive unit fractions?"*) via
-the cross-file Hextology smash with Sylvester–Fibonacci Egyptian fraction splitting:
+Sylvester–Fibonacci Egyptian fraction splitting:
 
 1. **Sylvester–Fibonacci Unit-Fraction Splitting (`sylvester_unit_fraction_split`)**:
    - Proves that for every rational `M > 1`, `1 / M = 1 / (M + 1) + 1 / (M * (M + 1))`
@@ -34,9 +34,6 @@ the cross-file Hextology smash with Sylvester–Fibonacci Egyptian fraction spli
 4. **Strictly Distinct Parametric Egyptian Sub-Families (`IsDistinctErdosStraus`)**:
    - Formalizes strictly distinct unit-fraction decompositions `0 < x < y < z` across all
      6 modular families and the 9 Mordell quadratic-residue squares up to `529 = 23²`.
-5. **Hextology Cross-File Smash & Inversion (`hextology_erdos_straus_sylvester_smash`)**:
-   - Verifies that `(4, 3) ∧_{ℤ[φ]} (24, 17) = (147, 191)` (`N = 13205`) and its
-     desuspension inverse is `(338, 529) = (2 · 13², 23²)`.
 
 ## Verification Guarantees
 * Zero `sorry`
@@ -53,6 +50,21 @@ namespace ErdosStrausUnitFractions
     distinct positive unit fractions `1 / x + 1 / y + 1 / z` with `0 < x < y < z`. -/
 def IsDistinctErdosStraus (n x y z : ℚ) : Prop :=
   0 < x ∧ x < y ∧ y < z ∧ 4 / n = 1 / x + 1 / y + 1 / z
+
+/-- Helper lemma reducing two-term rational unit-fraction identities to polynomial equality. -/
+lemma rat_two_unit_frac_eq {a n x y : ℚ} (hn : n ≠ 0) (hx : x ≠ 0) (hy : y ≠ 0)
+    (h_poly : a * (x * y) = (1 * y + x * 1) * n) :
+    a / n = 1 / x + 1 / y := by
+  rw [div_add_div _ _ hx hy, div_eq_div_iff hn (mul_ne_zero hx hy)]
+  exact h_poly
+
+/-- Helper lemma reducing three-term rational unit-fraction identities to polynomial equality. -/
+lemma rat_three_unit_frac_eq {n x y z : ℚ} (hn : n ≠ 0) (hx : x ≠ 0) (hy : y ≠ 0) (hz : z ≠ 0)
+    (h_poly : 4 * (x * y * z) = ((1 * y + x * 1) * z + x * y * 1) * n) :
+    4 / n = 1 / x + 1 / y + 1 / z := by
+  rw [div_add_div _ _ hx hy, div_add_div _ _ (mul_ne_zero hx hy) hz,
+      div_eq_div_iff hn (mul_ne_zero (mul_ne_zero hx hy) hz)]
+  exact h_poly
 
 /-- Theorem 1 (Sylvester–Fibonacci Unit-Fraction Splitting Identity):
     For every rational `M > 1`, the unit fraction `1 / M` splits into two strictly
@@ -71,7 +83,8 @@ theorem sylvester_unit_fraction_split (M : ℚ) (hM : M > 1) :
     have h_pos : 0 < (M - 1) * (M + 1) := mul_pos hM_sub hM1_pos
     linarith
   refine ⟨hM_pos, by linarith, h_prod, ?_⟩
-  field_simp
+  apply rat_two_unit_frac_eq hM_ne hM1_ne (mul_ne_zero hM_ne hM1_ne)
+  ring
 
 /-! ### 2. JSP-000148 · Inductive Distinct Unit-Fraction Representations of `1` & Multiplicity -/
 
@@ -129,13 +142,11 @@ theorem unit_fraction_sum_one_k4_six_distinct_solutions :
     For any `k ≥ 1`, `4 / (4k) = 1 / (2k) + 1 / (3k) + 1 / (6k)` with `0 < 2k < 3k < 6k`. -/
 theorem erdos_straus_mod4_zero_distinct_strict (k : ℚ) (hk : k ≥ 1) :
     IsDistinctErdosStraus (4 * k) (2 * k) (3 * k) (6 * k) := by
-  have hk_pos : k > 0 := by linarith
-  have hk_ne : k ≠ 0 := by linarith
   refine ⟨by linarith, by linarith, by linarith, ?_⟩
-  field_simp
+  apply rat_three_unit_frac_eq (by linarith) (by linarith) (by linarith) (by linarith)
   ring
 
-/-- Theorem 5 (Congruence Class `n ≡ 2 (mod 4)` Smashed with Sylvester Splitting):
+/-- Theorem 5 (Congruence Class `n ≡ 2 (mod 4)` via Sylvester Splitting):
     For any `k ≥ 1`, let `M = (k + 1) * (2 * k + 1)`. Then `x = k + 1`, `y = M + 1`,
     and `z = M * (M + 1)` satisfy `0 < x < y < z` and `4 / (4k + 2) = 1 / x + 1 / y + 1 / z`. -/
 theorem erdos_straus_mod4_two_distinct_strict (k : ℚ) (hk : k ≥ 1) :
@@ -156,12 +167,11 @@ theorem erdos_straus_mod4_two_distinct_strict (k : ℚ) (hk : k ≥ 1) :
     dsimp [M]
     have h1 : k + 1 ≠ 0 := by linarith
     have h2 : 2 * k + 1 ≠ 0 := by linarith
-    have h3 : 4 * k + 2 ≠ 0 := by linarith
-    field_simp
+    apply rat_two_unit_frac_eq (by linarith) h1 (mul_ne_zero h1 h2)
     ring
   linarith
 
-/-- Theorem 6 (Congruence Class `n ≡ 3 (mod 4)` Smashed with Sylvester Splitting):
+/-- Theorem 6 (Congruence Class `n ≡ 3 (mod 4)` via Sylvester Splitting):
     For any `k ≥ 0`, let `M = (k + 1) * (4 * k + 3)`. Then `x = k + 1`, `y = M + 1`,
     and `z = M * (M + 1)` satisfy `0 < x < y < z` and `4 / (4k + 3) = 1 / x + 1 / y + 1 / z`. -/
 theorem erdos_straus_mod4_three_distinct_strict (k : ℚ) (hk : k ≥ 0) :
@@ -182,7 +192,7 @@ theorem erdos_straus_mod4_three_distinct_strict (k : ℚ) (hk : k ≥ 0) :
     dsimp [M]
     have h1 : k + 1 ≠ 0 := by linarith
     have h2 : 4 * k + 3 ≠ 0 := by linarith
-    field_simp
+    apply rat_two_unit_frac_eq (by linarith) h1 (mul_ne_zero h1 h2)
     ring
   linarith
 
@@ -205,7 +215,7 @@ theorem erdos_straus_mod8_five_distinct_strict (k : ℚ) (hk : k ≥ 0) :
   have h1 : k + 1 ≠ 0 := by linarith
   have h2 : 2 * k + 2 ≠ 0 := by linarith
   have h3 : 8 * k + 5 ≠ 0 := by linarith
-  field_simp
+  apply rat_three_unit_frac_eq h3 h2 (mul_ne_zero h1 h3) (mul_ne_zero h2 h3)
   ring
 
 /-- Theorem 8 (Congruence Class `n ≡ 2 (mod 3)` with Strictly Distinct Denominators):
@@ -220,7 +230,7 @@ theorem erdos_straus_mod3_two_distinct_strict (k : ℚ) (hk : k ≥ 1) :
   refine ⟨by linarith, by linarith, h_yz, ?_⟩
   have h1 : k + 1 ≠ 0 := by linarith
   have h2 : 3 * k + 2 ≠ 0 := by linarith
-  field_simp
+  apply rat_three_unit_frac_eq h2 h1 h2 (mul_ne_zero h1 h2)
   ring
 
 /-- Theorem 9 (Congruence Class `n ≡ 17 (mod 24)` with Strictly Distinct Denominators):
@@ -235,7 +245,7 @@ theorem erdos_straus_mod24_seventeen_distinct_strict (m : ℚ) (hm : m ≥ 0) :
   refine ⟨by linarith, by linarith, h_yz, ?_⟩
   have h1 : 8 * m + 6 ≠ 0 := by linarith
   have h2 : 24 * m + 17 ≠ 0 := by linarith
-  field_simp
+  apply rat_three_unit_frac_eq h2 h1 h2 (mul_ne_zero h1 h2)
   ring
 
 /-! ### 4. Mordell Quadratic-Residue Exceptional Squares (`25` to `529`) -/
@@ -258,45 +268,7 @@ theorem mordell_exceptional_squares_distinct :
     checkStrictES 529 133 23460 71764140 = true := by
   decide
 
-/-! ### 5. Hextology Cross-File Smash & Desuspension Inversion (`(4, 3) ∧ (24, 17)`) -/
-
-@[ext]
-structure ZPhi where
-  a : ℤ
-  b : ℤ
-  deriving DecidableEq, Repr
-
-namespace ZPhi
-
-def Zh : ZPhi := ⟨2, -1⟩
-def Zh_inv : ZPhi := ⟨1, 1⟩
-
-def mul (x y : ZPhi) : ZPhi :=
-  ⟨x.a * y.a + x.b * y.b, x.a * y.b + x.b * y.a + x.b * y.b⟩
-
-def norm (x : ZPhi) : ℤ :=
-  x.a * x.a + x.a * x.b - x.b * x.b
-
-def smash (x y : ZPhi) : ZPhi := mul x y
-def invert (x : ZPhi) : ZPhi := mul x Zh_inv
-
-/-- Theorem 11 (Hextology Cross-File Smash Locking onto the Terminal Mordell Square `529 = 23²`):
-    Smashing the base residue state `(4, 3)` with `(24, 17)` yields `(147, 191)` (`N = 13205`),
-    whose desuspension inversion is `(338, 529) = (2 · 13², 23²)`, recovering the exact
-    terminal Mordell quadratic residue `529 = 23²` with zero metric drift. -/
-theorem hextology_erdos_straus_sylvester_smash :
-    smash ⟨4, 3⟩ ⟨24, 17⟩ = ⟨147, 191⟩ ∧
-    invert ⟨147, 191⟩ = ⟨338, 529⟩ ∧
-    mul ⟨338, 529⟩ Zh = ⟨147, 191⟩ ∧
-    (338 : ℤ) = 2 * 13^2 ∧
-    (529 : ℤ) = 23^2 ∧
-    norm ⟨147, 191⟩ = 13205 ∧
-    norm ⟨338, 529⟩ = 13205 := by
-  decide
-
-end ZPhi
-
-/-! ### 6. Axiomatic Kernel Audits -/
+/-! ### 5. Axiomatic Kernel Audits -/
 #print axioms sylvester_unit_fraction_split
 #print axioms unit_fraction_sum_one_base
 #print axioms unit_fraction_sum_one_inductive_step
@@ -309,6 +281,5 @@ end ZPhi
 #print axioms erdos_straus_mod3_two_distinct_strict
 #print axioms erdos_straus_mod24_seventeen_distinct_strict
 #print axioms mordell_exceptional_squares_distinct
-#print axioms ZPhi.hextology_erdos_straus_sylvester_smash
 
 end ErdosStrausUnitFractions

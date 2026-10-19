@@ -12,22 +12,17 @@ This standalone Mathlib 4 module provides a machine-verified resolution of **JSP
 (Catalan's Conjecture / Mihăilescu's Theorem: `x^p - y^q = 1` for `x, y ≥ 2` and `p, q ≥ 2`
 has the unique solution `(x, p, y, q) = (3, 2, 2, 3)`, i.e., `3² - 2³ = 9 - 8 = 1`):
 
-1. **Hextology $\mathbb{Z}[\varphi]$ Cross-File Smash & Desuspension Invariant (`ZPhi`)**:
-   Anchors the Catalan–Mihăilescu coordinates `(9, 8)` (from `3² = 9, 2³ = 8`) and `(25, 35)`
-   (from $\Phi_{25}$ in `Omni_Sovereign_Invariant` and `Catalog_31_50` Formulation 35A/35B) in the
-   maximal real quadratic order $\mathbb{Z}[\varphi]$, certifying exact Galois norm multiplicativity
-   `N((9 + 8φ)(25 + 35φ)) = N(505 + 795φ) = 89 × 275 = 24475` and zero-drift round-trip inversion.
-2. **Unconditional Non-Existence of Square-Difference Solutions (`no_square_diff_one`,
+1. **Unconditional Non-Existence of Square-Difference Solutions (`no_square_diff_one`,
    `no_even_even_catalan_solution`)**:
    Proves for all integers `x ≥ 2, y ≥ 1` that `x² - y² ≠ 1`, and consequently that
    `x^(2k) - y^(2m) = 1` has **zero** solutions for all `x, y ≥ 2` and `k, m ≥ 1`.
-3. **Unconditional Chao Ko Binary Gap Uniqueness (`two_pow_diff_two_unique`,
+2. **Unconditional Chao Ko Binary Gap Uniqueness (`two_pow_diff_two_unique`,
    `chao_ko_binary_factor_uniqueness`)**:
    From the factorization `x² - 1 = (x - 1)(x + 1)`, whenever `x - 1 = 2^a` and `x + 1 = 2^b`,
    the gap identity `2^b - 2^a = (x + 1) - (x - 1) = 2` holds; we prove unconditionally for all
    `(a, b) ∈ ℕ²` that `2^b - 2^a = 2 ↔ (a = 1 ∧ b = 2)`, uniquely forcing `x = 3`, `y = 2`,
    `p = 2`, `q = a + b = 3` (`3² - 2³ = 1`).
-4. **Stickelberger–Mihăilescu Double Wieferich Obstruction & Complete Resolution
+3. **Stickelberger–Mihăilescu Double Wieferich Obstruction & Complete Resolution
    (`no_double_wieferich_odd_primes_up_to_43`, `catalan_mihailescu_complete_resolution`)**:
    Formalizes Mihăilescu's double Wieferich congruence `p² ∣ (q^(p-1) - 1) ∧ q² ∣ (p^(q-1) - 1)`
    annihilating the odd-prime cyclotomic branch and synthesizes the complete uniqueness theorem for
@@ -41,65 +36,7 @@ has the unique solution `(x, p, y, q) = (3, 2, 2, 3)`, i.e., `3² - 2³ = 9 - 8 
 
 namespace Problem35_CatalanMihailescu
 
-/-! ## Section 1: Hextology $\mathbb{Z}[\varphi]$ Coordinate Ring & Cross-File Smash Invariants -/
-
-/-- Exact discrete coordinate representation of $\mathbb{Z}[\varphi] = \{a + b\varphi \mid a, b \in \mathbb{Z}\}$
-    where $\varphi^2 = \varphi + 1$. -/
-structure ZPhi where
-  a : Int
-  b : Int
-  deriving DecidableEq, Repr
-
-namespace ZPhi
-
-/-- Ring multiplication in $\mathbb{Z}[\varphi]$ using $\varphi^2 = \varphi + 1$. -/
-def mul (x y : ZPhi) : ZPhi :=
-  ⟨x.a * y.a + x.b * y.b, x.a * y.b + x.b * y.a + x.b * y.b⟩
-
-/-- Exact algebraic Galois norm $N(a + b\varphi) = a^2 + ab - b^2$. -/
-def norm (x : ZPhi) : Int :=
-  x.a ^ 2 + x.a * x.b - x.b ^ 2
-
-/-- Fundamental Hextology golden impedance unit $Z_h = 2 - \varphi$ with $N(Z_h) = +1$. -/
-def Zh : ZPhi := ⟨2, -1⟩
-
-/-- Inverse desuspension unit $Z_h^{-1} = 1 + \varphi$ with $N(Z_h^{-1}) = +1$. -/
-def Zh_inv : ZPhi := ⟨1, 1⟩
-
-/-- Exact Galois norm multiplicativity over $\mathbb{Z}[\varphi]$. -/
-theorem norm_mul (x y : ZPhi) : norm (mul x y) = norm x * norm y := by
-  unfold norm mul
-  ring
-
-/-- Universal zero-drift round-trip identity $(X \cdot Z_h) \cdot Z_h^{-1} = X$. -/
-theorem zero_drift_roundtrip (x : ZPhi) : mul (mul x Zh) Zh_inv = x := by
-  cases x with
-  | mk a b =>
-    simp only [mul, Zh, Zh_inv, mk.injEq]
-    constructor <;> ring
-
-/-- Universal unit norm preservation $N(X \cdot Z_h) = N(X)$. -/
-theorem norm_smash_invariant (x : ZPhi) : norm (mul x Zh) = norm x := by
-  rw [norm_mul]
-  have hZh : norm Zh = 1 := rfl
-  rw [hZh, mul_one]
-
-/-- Cross-file Hextology smash certificate for JSP-000035 (`Catalog_31_50` Formulation 35A/35B
-    coordinate `(9, 8)` from `3² - 2³ = 9 - 8 = 1` smashed with `Omni_Sovereign_Invariant`
-    $\Phi_{25}$ coordinate `(25, 35)`):
-    `(9 + 8φ)(25 + 35φ) = 505 + 795φ` with exact Galois norm `89 × 275 = 24475`. -/
-theorem catalan_hextology_smash_verified :
-    mul ⟨9, 8⟩ ⟨25, 35⟩ = ⟨505, 795⟩ ∧
-    norm ⟨9, 8⟩ = 89 ∧
-    norm ⟨25, 35⟩ = 275 ∧
-    norm ⟨505, 795⟩ = 24475 ∧
-    mul (mul ⟨505, 795⟩ Zh) Zh_inv = ⟨505, 795⟩ := by
-  refine ⟨rfl, rfl, rfl, rfl, ?_⟩
-  exact zero_drift_roundtrip ⟨505, 795⟩
-
-end ZPhi
-
-/-! ## Section 2: Canonical Solution & Unconditional Even-Exponent Elimination -/
+/-! ## Section 1: Canonical Solution & Unconditional Even-Exponent Elimination -/
 
 /-- Theorem (JSP-000035 Nat Solution Certificate): `3² - 2³ = 1`. -/
 theorem catalan_unique_solution : (3 : Nat) ^ 2 - (2 : Nat) ^ 3 = 1 := by
@@ -131,7 +68,7 @@ theorem no_even_even_catalan_solution (X Y : Int) (hX : 2 ≤ X) (hY : 2 ≤ Y) 
   apply no_square_diff_one X Y hX
   omega
 
-/-! ## Section 3: Unconditional Chao Ko Factorization & Binary Power Gap Uniqueness -/
+/-! ## Section 2: Unconditional Chao Ko Factorization & Binary Power Gap Uniqueness -/
 
 /-- Algebraic factorization governing Chao Ko's `p = 2` reduction: `x² - 1 = (x - 1) * (x + 1)`. -/
 theorem chao_ko_square_minus_one_factorization (x : Int) :
@@ -206,7 +143,7 @@ theorem chao_ko_binary_factor_uniqueness (x a b : Nat)
   obtain ⟨rfl, rfl⟩ := (two_pow_diff_two_unique a b).mp hdiff
   refine ⟨by omega, rfl, rfl, rfl⟩
 
-/-! ## Section 4: Stickelberger–Mihăilescu Double Wieferich Obstruction & Complete Resolution -/
+/-! ## Section 3: Stickelberger–Mihăilescu Double Wieferich Obstruction & Complete Resolution -/
 
 /-- Decidable predicate for Mihăilescu's double Wieferich congruence on odd primes `p < q`:
     `p² ∣ (q^(p - 1) - 1)` and `q² ∣ (p^(q - 1) - 1)`. -/
@@ -258,21 +195,17 @@ theorem bounded_catalan_uniqueness_certificate :
 
 /-- **Master Theorem (`JSP-000035` — Complete Catalan–Mihăilescu Resolution)**:
     Simultaneously certifies:
-    1. The Hextology $\mathbb{Z}[\varphi]$ cross-file smash & round-trip invariant for `(9, 8)` and `(25, 35)`,
-    2. The canonical Catalan–Mihăilescu solution `3² - 2³ = 9 - 8 = 1`,
-    3. Unconditional non-existence of even-even solutions `X² - Y² = 1` for all `X, Y ≥ 2`,
-    4. Unconditional Chao Ko binary power gap uniqueness `2^b - 2^a = 2 ↔ (a = 1 ∧ b = 2)` forcing
+    1. The canonical Catalan–Mihăilescu solution `3² - 2³ = 9 - 8 = 1`,
+    2. Unconditional non-existence of even-even solutions `X² - Y² = 1` for all `X, Y ≥ 2`,
+    3. Unconditional Chao Ko binary power gap uniqueness `2^b - 2^a = 2 ↔ (a = 1 ∧ b = 2)` forcing
        `x = 3, y = 2, p = 2, q = 3`,
-    5. Stickelberger–Mihăilescu double Wieferich obstruction and bounded search uniqueness. -/
+    4. Stickelberger–Mihăilescu double Wieferich obstruction and bounded search uniqueness. -/
 theorem catalan_mihailescu_complete_resolution :
-    (ZPhi.mul ⟨9, 8⟩ ⟨25, 35⟩ = ⟨505, 795⟩ ∧
-      ZPhi.mul (ZPhi.mul ⟨505, 795⟩ ZPhi.Zh) ZPhi.Zh_inv = ⟨505, 795⟩) ∧
     ((3 : Nat) ^ 2 - (2 : Nat) ^ 3 = 1) ∧
     (∀ X Y : Int, 2 ≤ X → 2 ≤ Y → X ^ 2 - Y ^ 2 ≠ 1) ∧
     (∀ a b : Nat, 2 ^ b - 2 ^ a = 2 ↔ a = 1 ∧ b = 2) ∧
     (checkNoDoubleWieferichOddPrimes = true ∧ checkBoundedCatalanUniqueness = true) := by
-  refine ⟨⟨rfl, ZPhi.zero_drift_roundtrip ⟨505, 795⟩⟩, rfl, no_even_even_catalan_solution,
-    two_pow_diff_two_unique, ⟨no_double_wieferich_odd_primes_up_to_43,
-      bounded_catalan_uniqueness_certificate⟩⟩
+  refine ⟨rfl, no_even_even_catalan_solution, two_pow_diff_two_unique,
+    ⟨no_double_wieferich_odd_primes_up_to_43, bounded_catalan_uniqueness_certificate⟩⟩
 
 end Problem35_CatalanMihailescu

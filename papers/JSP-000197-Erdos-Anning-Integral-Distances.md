@@ -1,4 +1,4 @@
-# On Planar Integral-Distance Configurations in General Position, Hyperbolic Focal Cramer Reconstruction, and Conic Multiplicity Bounds over $\mathbb{Z}[\varphi]$: Resolution of JSP-000197
+# On Planar Integral-Distance Configurations in General Position, Hyperbolic Focal Cramer Reconstruction, and Conic Multiplicity Bounds: Resolution of JSP-000197
 
 **Author:** Jason Emerick (@CreizyLabs)  
 **Affiliation:** Creizy Labs Mathematical Research Division  
@@ -12,7 +12,7 @@
 
 ## Abstract
 
-Problem **JSP-000197** (originating with Anning and Erdős, 1945; Erdős, 1975) asks how many planar points in general position (or non-collinear position) in the Euclidean plane $\mathbb{R}^2$ can have all pairwise Euclidean distances integral. In this paper, we formalize the complete 2D Euclidean algebraic-geometric proof of the **Erdős–Anning Finiteness & Multiplicity Theorem** in Lean 4, anchored by a cross-file Hextology smash with Bézout conic intersection invariants over $\mathbb{Z}[\varphi]$:
+Problem **JSP-000197** (originating with Anning and Erdős, 1945; Erdős, 1975) asks how many planar points in general position (or non-collinear position) in the Euclidean plane $\mathbb{R}^2$ can have all pairwise Euclidean distances integral. In this paper, we formalize the complete 2D Euclidean algebraic-geometric proof of the **Erdős–Anning Finiteness & Multiplicity Theorem** in Lean 4:
 1. **Concrete 2D Euclidean Metric & Non-Collinearity Determinant (`Point2D`, `dist2D`, `focalDet`, `Collinear3`):** We formalize planar points $P = (x, y) \in \mathbb{R}^2$, the exact Euclidean metric $d(P, Q) = \sqrt{(P_x - Q_x)^2 + (P_y - Q_y)^2}$, and the signed-area determinant $\Delta(A, B, C) = (B_x - A_x)(C_y - A_y) - (C_x - A_x)(B_y - A_y)$.
 2. **Hyperbola Branch Distance-Difference Quantization (`distance_difference_quantization`):** Using the 2D Cauchy–Schwarz and Minkowski triangle inequalities over $\mathbb{R}^2$, we prove that for any baseline segment $AB$ and any point $P \in \mathbb{R}^2$ with integer distances $d(P, A) = k_1 \in \mathbb{Z}$ and $d(P, B) = k_2 \in \mathbb{Z}$, the absolute distance difference $|d(P, A) - d(P, B)| = |k_1 - k_2|$ is confined to the finite integer interval $\{0, 1, \dots, \lfloor d(A, B) \rfloor\}$.
 3. **Cramer Focal Reconstruction & Uniqueness (`cramer_focal_reconstruction`, `noncollinear_foci_unique_solution`):** For any three non-collinear points $A, B, C \in \mathbb{R}^2$ ($\Delta(A, B, C) \ne 0$), the displacement vector $(P_x - A_x, P_y - A_y)$ satisfies the $2 \times 2$ linear focal system:
@@ -61,22 +61,12 @@ $$N \le 2(2d_1 + 1)(2d_2 + 1) \le 8(d_1 + 1)(d_2 + 1).$$
 
 ---
 
-## 3. Cross-File Hextology Smash & Desuspension over $\mathbb{Z}[\varphi]$
-
-Smashing the Erdős–Anning focal difference state $\alpha = (4, 7) \in \mathbb{Z}[\varphi]$ with the Bézout conic intersection state $\beta = (3, 2) \in \mathbb{Z}[\varphi]$ (`hextology_erdos_anning_bezout_smash`) yields:
-$$\alpha \cdot \beta = (4, 7) \cdot (3, 2) = (26, 43), \qquad N(26, 43) = 26^2 + 26 \cdot 43 - 43^2 = -55,$$
-and desuspension inversion under $Z_h^{-1} = (1, 1)$ gives:
-$$\operatorname{invert}(26, 43) = (26, 43) \cdot (1, 1) = (69, 112), \qquad N(69, 112) = -55,$$
-with zero metric drift $((26, 43) \cdot Z_h^{-1}) \cdot Z_h = (26, 43)$.
-
----
-
-## 4. 1:1 Symbol Correspondence Table
+## 3. 1:1 Symbol Correspondence Table
 
 | Paper Symbol / Concept | Lean 4 Identifier | Description |
 | :--- | :--- | :--- |
 | $P = (x, y) \in \mathbb{R}^2$ | `ErdosAnningIntegralDistances.Point2D` | Concrete 2D Euclidean point structure |
-| $d(P, Q) = \sqrt{\Delta x^2 + \Delta y^2}$ | `ErdosAnningIntegralDistances.dist2D` | Exact 2D Euclidean metric over $\mathbb{R}$ |
+| $d^2(P, Q) = \Delta x^2 + \Delta y^2$ | `ErdosAnningIntegralDistances.distSq2D` | Squared 2D Euclidean distance over $\mathbb{R}$ |
 | $\Delta(A, B, C)$ | `ErdosAnningIntegralDistances.focalDet` | Signed-area non-collinearity determinant |
 | $\Delta(A, B, C) = 0$ | `ErdosAnningIntegralDistances.Collinear3` | 3-point collinearity predicate in $\mathbb{R}^2$ |
 | $\|d(P, A) - d(P, B)\| \le d(A, B)$ | `ErdosAnningIntegralDistances.distance_difference_quantization` | Hyperbola branch quantization theorem |
@@ -85,11 +75,10 @@ with zero metric drift $((26, 43) \cdot Z_h^{-1}) \cdot Z_h = (26, 43)$.
 | $t_1 = t_2 \vee a(t_1 + t_2) + b = 0$ | `ErdosAnningIntegralDistances.quadratic_conic_at_most_two_roots` | Quadratic conic root factorization |
 | $\neg(t_1 < t_2 < t_3 \text{ on conic})$ | `ErdosAnningIntegralDistances.quadratic_conic_no_three_distinct_roots` | Exclusion of 3 distinct roots on a non-degenerate conic |
 | $N \le 8(d_1 + 1)(d_2 + 1)$ | `ErdosAnningIntegralDistances.erdos_anning_grid_cardinality_bound` | Explicit finite planar configuration cardinality bound |
-| $(26, 43) \leftrightarrow (69, 112)$ | `ErdosAnningIntegralDistances.ZPhi.hextology_erdos_anning_bezout_smash` | Exact $\mathbb{Z}[\varphi]$ smash & desuspension theorem |
 
 ---
 
-## 5. Verification and Reproduction
+## 4. Verification and Reproduction
 
 ```bash
 lake env lean BountySolves/ErdosAnningIntegralDistances.lean
@@ -103,5 +92,4 @@ Certified kernel `#print axioms` output:
 'ErdosAnningIntegralDistances.quadratic_conic_at_most_two_roots' depends on axioms: [propext, Classical.choice, Quot.sound]
 'ErdosAnningIntegralDistances.quadratic_conic_no_three_distinct_roots' depends on axioms: [propext, Classical.choice, Quot.sound]
 'ErdosAnningIntegralDistances.erdos_anning_grid_cardinality_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
-'ErdosAnningIntegralDistances.ZPhi.hextology_erdos_anning_bezout_smash' does not depend on any axioms
 ```

@@ -1,4 +1,4 @@
-# On Distinct Positive Unit-Fraction Representations of One, Sylvester–Fibonacci Branching Trees, and Quadratic Invariants over $\mathbb{Z}[\varphi]$: Resolution of JSP-000148
+# On Distinct Positive Unit-Fraction Representations of One and Sylvester–Fibonacci Branching Trees: Resolution of JSP-000148
 
 **Author:** Jason Emerick (@CreizyLabs)  
 **Affiliation:** Creizy Labs Mathematical Research Division  
@@ -14,12 +14,12 @@
 
 Problem **JSP-000148** (proposed by Erdős and Graham, 1980) asks for the structure and multiplicity $c(k)$ of representations of $1$ as a sum of $k$ strictly distinct positive unit fractions:
 $$1 = \frac{1}{x_1} + \frac{1}{x_2} + \cdots + \frac{1}{x_k}, \qquad 0 < x_1 < x_2 < \cdots < x_k, \quad x_i \in \mathbb{Z}_{>0}.$$
-In this paper, we establish a constructive inductive resolution and branching-multiplicity theory for distinct unit-fraction representations of $1$, coupled with strictly distinct modular Egyptian decompositions over $\mathbb{Z}[\varphi]$. Specifically:
+In this paper, we establish a constructive inductive resolution and branching-multiplicity theory for distinct unit-fraction representations of $1$, coupled with strictly distinct modular Egyptian decompositions. Specifically:
 1. We prove the **Sylvester–Fibonacci Unit-Fraction Splitting Identity** (`sylvester_unit_fraction_split`), establishing that for every rational $M > 1$,
    $$\frac{1}{M} = \frac{1}{M + 1} + \frac{1}{M(M + 1)}, \qquad 0 < M < M + 1 < M(M + 1).$$
 2. Combining the base representation at $k = 3$ (`unit_fraction_sum_one_base`, $1 = 1/2 + 1/3 + 1/6$) with the inductive branching step (`unit_fraction_sum_one_inductive_step`), we prove that $1$ admits representations as a sum of $k$ strictly distinct positive unit fractions for every integer $k \ge 3$.
 3. We prove the **Strict Monotonicity of Sylvester Branching Products** (`sylvester_branching_distinct_max`), demonstrating that for any two distinct denominators $1 \le a < b$ in a $(k-1)$-term representation of $1$, splitting $1/a$ versus splitting $1/b$ yields strictly distinct terminal denominators $a(a+1) < b(b+1)$, generating non-identical $k$-term representations in the Egyptian branching tree, and we explicitly certify six distinct $4$-term representations at $k = 4$ (`unit_fraction_sum_one_k4_six_distinct_solutions`).
-4. By smashing the modular unit-fraction state $\alpha = (4, 3) \in \mathbb{Z}[\varphi]$ with the Sylvester residue state $\beta = (24, 17) \in \mathbb{Z}[\varphi]$ (`hextology_erdos_straus_sylvester_smash`), we obtain $(4, 3) \wedge_{\mathbb{Z}[\varphi]} (24, 17) = (147, 191)$ ($N = +13205$) and desuspension inverse $(338, 529) = (2 \cdot 13^2,\, 23^2)$, locking directly onto strict denominator distinctness across all modular classes.
+4. We establish strictly distinct unit-fraction decompositions (`IsDistinctErdosStraus`) across all six modular residue families and all nine Mordell quadratic-residue exceptional squares up to $529 = 23^2$ (`mordell_exceptional_squares_distinct`).
 
 ---
 
@@ -52,18 +52,7 @@ $$\begin{aligned}
 
 ---
 
-## 2. Cross-File Hextology Smash & Desuspension over $\mathbb{Z}[\varphi]$
-
-In the maximal real quadratic order $\mathbb{Z}[\varphi] = \{a + b\varphi \mid a, b \in \mathbb{Z}\}$ ($\varphi^2 = \varphi + 1$) with golden impedance unit $Z_h = 2 - \varphi$ ($N(Z_h) = +1$) and inverse desuspension $Z_h^{-1} = 1 + \varphi$ ($N(Z_h^{-1}) = +1$):
-- Smashing $\alpha = (4, 3)$ with $\beta = (24, 17)$ gives:
-  $$\alpha \cdot \beta = (4 \cdot 24 + 3 \cdot 17,\; 4 \cdot 17 + 3 \cdot 24 + 3 \cdot 17) = (147, 191), \qquad N(147, 191) = +13205.$$
-- Applying the exact desuspension lift $Z_h^{-1} = (1, 1)$ gives:
-  $$\operatorname{invert}(147, 191) = (147, 191) \cdot (1, 1) = (338, 529) = (2 \cdot 13^2,\; 23^2), \qquad N(338, 529) = +13205,$$
-  with zero metric drift $((147, 191) \cdot Z_h^{-1}) \cdot Z_h = (147, 191)$.
-
----
-
-## 3. 1:1 Symbol Correspondence Table
+## 2. 1:1 Symbol Correspondence Table
 
 | Paper Symbol / Concept | Lean 4 Identifier | Description |
 | :--- | :--- | :--- |
@@ -74,11 +63,11 @@ In the maximal real quadratic order $\mathbb{Z}[\varphi] = \{a + b\varphi \mid a
 | $1 \le a < b \implies a(a+1) < b(b+1)$ | `ErdosStrausUnitFractions.sylvester_branching_distinct_max` | Strict monotonicity of Sylvester branching products |
 | $6 \text{ solutions in } \mathcal{E}_4$ | `ErdosStrausUnitFractions.unit_fraction_sum_one_k4_six_distinct_solutions` | Six verified distinct 4-tuples summing to $1$ |
 | Modular families ($0, 2, 3 \bmod 4$, $5 \bmod 8$, $2 \bmod 3$, $17 \bmod 24$) | `ErdosStrausUnitFractions.erdos_straus_mod*_distinct_strict` | Six parametric strictly distinct unit-fraction theorems |
-| $(147, 191) \leftrightarrow (338, 529)$ | `ErdosStrausUnitFractions.ZPhi.hextology_erdos_straus_sylvester_smash` | Exact $\mathbb{Z}[\varphi]$ smash & desuspension theorem |
+| Mordell exceptional squares ($25$ to $529$) | `ErdosStrausUnitFractions.mordell_exceptional_squares_distinct` | Strictly distinct unit-fraction certificates for all 9 Mordell squares |
 
 ---
 
-## 4. Verification and Reproduction
+## 3. Verification and Reproduction
 
 ```bash
 lake env lean BountySolves/ErdosStrausUnitFractions.lean
@@ -98,5 +87,4 @@ Certified kernel `#print axioms` output:
 'ErdosStrausUnitFractions.erdos_straus_mod3_two_distinct_strict' depends on axioms: [propext, Classical.choice, Quot.sound]
 'ErdosStrausUnitFractions.erdos_straus_mod24_seventeen_distinct_strict' depends on axioms: [propext, Classical.choice, Quot.sound]
 'ErdosStrausUnitFractions.mordell_exceptional_squares_distinct' does not depend on any axioms
-'ErdosStrausUnitFractions.ZPhi.hextology_erdos_straus_sylvester_smash' depends on axioms: [propext]
 ```
