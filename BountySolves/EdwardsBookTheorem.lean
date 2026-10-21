@@ -131,12 +131,14 @@ theorem finset_cauchy_schwarz {α : Type*} [DecidableEq α] (s : Finset α) (d :
       linarith
     · have hn_pos : 0 < n := by omega
       have h_sq : 0 ≤ (n * x - S1) * (n * x - S1) := mul_self_nonneg (n * x - S1)
+      have h_ih_diff : 0 ≤ n * S2 - S1 * S1 := by linarith [ih]
       have h_id := cauchy_schwarz_inductive_syzygy n x S1 S2
       have h_rhs : 0 ≤ (n * x - S1) * (n * x - S1) + (n + 1) * (n * S2 - S1 * S1) := by
+        have hn_plus1 : 0 ≤ n + 1 := by omega
         nlinarith
       have h_lhs : 0 ≤ n * ((n + 1) * (x * x + S2) - (x + S1) * (x + S1)) := by
         linarith
-      nlinarith
+      exact pos_of_mul_pos_right h_lhs hn_pos
 
 theorem degree_sq_sum_ge_four_edges_sq {α : Type*} [DecidableEq α] (s : Finset α) (d : α → Int) (m : Int)
     (h_handshake : (∑ v ∈ s, d v) = 2 * m) :
