@@ -23,8 +23,11 @@ namespace Problem22_CernyAutomata
     states `1 .. n-1` are fixed. -/
 def stepA (n : Nat) (mask : Nat) : Nat :=
   let bit0 := mask &&& 1
-  let rest := mask &&& (((1 <<< n) - 1) - 1)
-  if bit0 == 1 then rest ||| 2 else rest
+  if bit0 == 1 then
+    let rest := mask &&& (((1 <<< n) - 1) - 1)
+    rest ||| 2
+  else
+    mask
 
 /-- Bitmask transition for letter `b` (`true`) on `C_n`: cyclic shift `s ↦ (s + 1) mod n`. -/
 def stepB (n : Nat) (mask : Nat) : Nat :=
