@@ -55,10 +55,10 @@ theorem no_square_diff_one (x y : Int) (hx : 2 ≤ x) (hy : 1 ≤ y) :
   intro h
   rcases le_or_gt x y with hxy | hxy
   · have h1 : x ^ 2 ≤ y ^ 2 := by nlinarith
-    omega
+    linarith
   · have h1 : y + 1 ≤ x := by omega
     have h2 : 3 ≤ x ^ 2 - y ^ 2 := by nlinarith
-    omega
+    linarith
 
 /-- Unconditional Even-Even Exponent Elimination:
     For any integers `X, Y ≥ 2` representing `X = x^k` and `Y = y^m`, the equation
@@ -84,26 +84,33 @@ theorem chao_ko_three_factors :
 theorem two_pow_ge_four {a : Nat} (ha : 2 ≤ a) : 4 ≤ 2 ^ a := by
   obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le ha
   rw [Nat.pow_add]
-  have hk : 1 ≤ 2 ^ k := Nat.one_le_pow k 2 (by omega)
-  omega
+  induction k with
+  | zero => decide
+  | succ k' _ => 
+    have : 4 ≤ 4 * 2 ^ k' := by linarith [Nat.one_le_pow k' 2 (by decide)]
+    exact this
 
 /-- Helper lemma: for any `b ≥ 3`, `2^b ≥ 8`. -/
 theorem two_pow_ge_eight {b : Nat} (hb : 3 ≤ b) : 8 ≤ 2 ^ b := by
   obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hb
   rw [Nat.pow_add]
-  have hk : 1 ≤ 2 ^ k := Nat.one_le_pow k 2 (by omega)
-  omega
+  induction k with
+  | zero => decide
+  | succ k' _ =>
+    have : 8 ≤ 8 * 2 ^ k' := by linarith [Nat.one_le_pow k' 2 (by decide)]
+    exact this
 
 /-- Helper lemma: for `a ≥ 2`, `2^b - 2^a ≠ 2` for all `b ∈ ℕ`. -/
 theorem two_pow_diff_two_ge_two {a b : Nat} (ha : 2 ≤ a) : 2 ^ b - 2 ^ a ≠ 2 := by
+  intro h
   have ha4 : 4 ≤ 2 ^ a := two_pow_ge_four ha
   rcases le_or_gt b a with hba | hba
-  · have hle : 2 ^ b ≤ 2 ^ a := Nat.pow_le_pow_right (by omega) hba
+  · have hle : 2 ^ b ≤ 2 ^ a := Nat.pow_le_pow_right (by decide) hba
     omega
   · have hge : a + 1 ≤ b := hba
     have hpow : 2 ^ a * 2 ≤ 2 ^ b := by
       rw [← Nat.pow_succ]
-      exact Nat.pow_le_pow_right (by omega) hge
+      exact Nat.pow_le_pow_right (by decide) hge
     omega
 
 /-- Unconditional Binary Power Gap Uniqueness Theorem:
@@ -112,19 +119,25 @@ theorem two_pow_diff_two_unique (a b : Nat) :
     2 ^ b - 2 ^ a = 2 ↔ a = 1 ∧ b = 2 := by
   constructor
   · intro h
-    rcases a with _ | _ | a'
-    · rcases b with _ | _ | b'
+    rcases a with _ | a'
+    · rcases b with _ | b'
       · omega
-      · omega
-      · have hb : 4 ≤ 2 ^ (b' + 2) := two_pow_ge_four (by omega)
-        exact absurd h (by omega)
-    · rcases b with _ | _ | _ | b'
-      · omega
-      · omega
-      · exact ⟨rfl, rfl⟩
-      · have hb : 8 ≤ 2 ^ (b' + 3) := two_pow_ge_eight (by omega)
-        exact absurd h (by omega)
-    · exact absurd h (two_pow_diff_two_ge_two (by omega))
+      · rcases b' with _ | b''
+        · omega
+        · rw [Nat.pow_zero] at h
+          have : 2 ^ (b'' + 2) = 3 := by omega
+          revert this; decide
+    · rcases a' with _ | a''
+      · rcases b with _ | _ | _ | b''
+        · omega
+        · omega
+        · exact ⟨rfl, rfl⟩
+        · rw [Nat.pow_one] at h
+          have : 2 ^ (b'' + 3) = 4 := by omega
+          revert this; decide
+      · have ha_ge : 2 ≤ a'' + 2 := by omega
+        exfalso
+        exact two_pow_diff_two_ge_two ha_ge h
   · rintro ⟨rfl, rfl⟩
     rfl
 
@@ -134,8 +147,11 @@ theorem two_pow_diff_two_unique (a b : Nat) :
 theorem chao_ko_binary_factor_uniqueness (x a b : Nat)
     (hx : 2 ≤ x) (ha : x - 1 = 2 ^ a) (hb : x + 1 = 2 ^ b) :
     x = 3 ∧ a = 1 ∧ b = 2 ∧ a + b = 3 := by
-  have hdiff : 2 ^ b - 2 ^ a = 2 := by omega
+  have hdiff : 2 ^ b - 2 ^ a = 2 := by
+    rw [← hb, ← ha]
+    omega
   obtain ⟨rfl, rfl⟩ := (two_pow_diff_two_unique a b).mp hdiff
+  rw [Nat.pow_one] at ha
   refine ⟨by omega, rfl, rfl, rfl⟩
 
 /-! ## Section 3: Stickelberger–Mihăilescu Double Wieferich Obstruction & Complete Resolution -/
