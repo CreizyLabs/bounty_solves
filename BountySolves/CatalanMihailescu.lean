@@ -2,6 +2,8 @@
 Copyright (c) 2026 Compendium Formal Verification Project. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
+import Mathlib.Data.Int.Basic
+import Mathlib.Data.Nat.Sqrt
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
 
@@ -47,9 +49,7 @@ theorem catalan_unique_solution_int : (3 : Int) ^ 2 - (2 : Int) ^ 3 = 1 := by
   decide
 
 /-- Unconditional Square-Difference Obstruction:
-    For all integers `x ≥ 2` and `y ≥ 1`, `x² - y² ≠ 1`.
-    Proof: If `x ≤ y`, then `x² - y² ≤ 0 < 1`; if `x ≥ y + 1`, then
-    `x² - y² = (x - y)(x + y) ≥ 1 · 3 = 3 > 1`. -/
+    For all integers `x ≥ 2` and `y ≥ 1`, `x² - y² ≠ 1`. -/
 theorem no_square_diff_one (x y : Int) (hx : 2 ≤ x) (hy : 1 ≤ y) :
     x ^ 2 - y ^ 2 ≠ 1 := by
   intro h
@@ -107,35 +107,30 @@ theorem two_pow_diff_two_ge_two {a b : Nat} (ha : 2 ≤ a) : 2 ^ b - 2 ^ a ≠ 2
     omega
 
 /-- Unconditional Binary Power Gap Uniqueness Theorem:
-    For all natural numbers `a, b ∈ ℕ`, `2^b - 2^a = 2` if and only if `a = 1` and `b = 2`
-    (i.e. `2² - 2¹ = 4 - 2 = 2`). -/
+    For all natural numbers `a, b ∈ ℕ`, `2^b - 2^a = 2` if and only if `a = 1` and `b = 2`. -/
 theorem two_pow_diff_two_unique (a b : Nat) :
     2 ^ b - 2 ^ a = 2 ↔ a = 1 ∧ b = 2 := by
   constructor
   · intro h
     rcases a with _ | _ | a'
-    · -- Case a = 0: 2^b - 1 = 2
-      rcases b with _ | _ | b'
+    · rcases b with _ | _ | b'
       · omega
       · omega
       · have hb : 4 ≤ 2 ^ (b' + 2) := two_pow_ge_four (by omega)
         exact absurd h (by omega)
-    · -- Case a = 1: 2^b - 2 = 2
-      rcases b with _ | _ | _ | b'
+    · rcases b with _ | _ | _ | b'
       · omega
       · omega
       · exact ⟨rfl, rfl⟩
       · have hb : 8 ≤ 2 ^ (b' + 3) := two_pow_ge_eight (by omega)
         exact absurd h (by omega)
-    · -- Case a = a' + 2 ≥ 2
-      exact absurd h (two_pow_diff_two_ge_two (by omega))
+    · exact absurd h (two_pow_diff_two_ge_two (by omega))
   · rintro ⟨rfl, rfl⟩
     rfl
 
 /-- Unconditional Chao Ko Binary Factor Uniqueness Theorem:
-    Whenever `x ≥ 2` has consecutive even factors `x - 1 = 2^a` and `x + 1 = 2^b` in `ℕ`
-    (so that `x² - 1 = (x - 1)(x + 1) = 2^(a + b)`), the identity `(x + 1) - (x - 1) = 2`
-    unconditionally forces `a = 1`, `b = 2`, `x = 3`, and exponent `q = a + b = 3`. -/
+    Whenever `x ≥ 2` has consecutive even factors `x - 1 = 2^a` and `x + 1 = 2^b` in `ℕ`,
+    the identity `(x + 1) - (x - 1) = 2` forces `a = 1`, `b = 2`, `x = 3`, and `q = a + b = 3`. -/
 theorem chao_ko_binary_factor_uniqueness (x a b : Nat)
     (hx : 2 ≤ x) (ha : x - 1 = 2 ^ a) (hb : x + 1 = 2 ^ b) :
     x = 3 ∧ a = 1 ∧ b = 2 ∧ a + b = 3 := by
@@ -151,7 +146,7 @@ def isDoubleWieferichPair (p q : Nat) : Bool :=
   ((q ^ (p - 1) - 1) % (p ^ 2) == 0) && ((p ^ (q - 1) - 1) % (q ^ 2) == 0)
 
 /-- Verify across all distinct odd primes `3 ≤ p < q ≤ 43` that no pair satisfies
-    Mihăilescu's double Wieferich congruence `p² ∣ (q^(p-1) - 1)` and `q² ∣ (p^(q-1) - 1)`. -/
+    Mihăilescu's double Wieferich congruence. -/
 def checkNoDoubleWieferichOddPrimes : Bool :=
   let oddPrimes := [3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43]
   oddPrimes.all (fun p =>
@@ -192,20 +187,5 @@ def checkBoundedCatalanUniqueness : Bool :=
 theorem bounded_catalan_uniqueness_certificate :
     checkBoundedCatalanUniqueness = true := by
   decide
-
-/-- **Master Theorem (`JSP-000035` — Complete Catalan–Mihăilescu Resolution)**:
-    Simultaneously certifies:
-    1. The canonical Catalan–Mihăilescu solution `3² - 2³ = 9 - 8 = 1`,
-    2. Unconditional non-existence of even-even solutions `X² - Y² = 1` for all `X, Y ≥ 2`,
-    3. Unconditional Chao Ko binary power gap uniqueness `2^b - 2^a = 2 ↔ (a = 1 ∧ b = 2)` forcing
-       `x = 3, y = 2, p = 2, q = 3`,
-    4. Stickelberger–Mihăilescu double Wieferich obstruction and bounded search uniqueness. -/
-theorem catalan_mihailescu_complete_resolution :
-    ((3 : Nat) ^ 2 - (2 : Nat) ^ 3 = 1) ∧
-    (∀ X Y : Int, 2 ≤ X → 2 ≤ Y → X ^ 2 - Y ^ 2 ≠ 1) ∧
-    (∀ a b : Nat, 2 ^ b - 2 ^ a = 2 ↔ a = 1 ∧ b = 2) ∧
-    (checkNoDoubleWieferichOddPrimes = true ∧ checkBoundedCatalanUniqueness = true) := by
-  refine ⟨rfl, no_even_even_catalan_solution, two_pow_diff_two_unique,
-    ⟨no_double_wieferich_odd_primes_up_to_43, bounded_catalan_uniqueness_certificate⟩⟩
 
 end Problem35_CatalanMihailescu
