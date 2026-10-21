@@ -99,23 +99,20 @@ def satisfies_dgg_congestion (b1 b2 b3 : Bool) : Bool :=
 theorem dgg_cost_preserving_conjecture_disproved (b1 b2 b3 : Bool) :
     SatisfiesDGGCongestion b1 b2 b3 →
     unsplittable_cost b1 b2 b3 ≥ 60 ∧ unsplittable_cost b1 b2 b3 > fractional_cost := by
-  revert b1 b2 b3
-  decide
+  cases b1 <;> cases b2 <;> cases b3 <;> intro h <;> (revert h; decide)
 
 /-- Boolean-reflected version of the DGG cost-preserving disproof. -/
 theorem dgg_cost_preserving_conjecture_disproved_bool (b1 b2 b3 : Bool) :
     satisfies_dgg_congestion b1 b2 b3 = true →
     unsplittable_cost b1 b2 b3 ≥ 60 ∧ unsplittable_cost b1 b2 b3 > fractional_cost := by
-  revert b1 b2 b3
-  decide
+  cases b1 <;> cases b2 <;> cases b3 <;> intro h <;> (revert h; decide)
 
 /-- Theorem 2 (Dual Congestion Obstruction): Every cost-non-increasing unsplittable routing (`cost ≤ 58`)
     violates the strict additive-`d_max` congestion bound on at least one spine arc. -/
 theorem dgg_cost_preserving_forces_congestion_violation (b1 b2 b3 : Bool) :
     unsplittable_cost b1 b2 b3 ≤ fractional_cost →
     ¬ SatisfiesDGGCongestion b1 b2 b3 := by
-  revert b1 b2 b3
-  decide
+  cases b1 <;> cases b2 <;> cases b3 <;> intro h <;> (revert h; decide)
 
 /-- Theorem 3 (Existential Negation of the DGG Cost-Preserving Conjecture):
     No unsplittable routing simultaneously obeys the DGG additive-`d_max` capacity bound
@@ -123,9 +120,9 @@ theorem dgg_cost_preserving_forces_congestion_violation (b1 b2 b3 : Bool) :
 theorem no_cost_preserving_dgg_unsplittable_flow :
     ¬ ∃ (b1 b2 b3 : Bool),
       SatisfiesDGGCongestion b1 b2 b3 ∧ unsplittable_cost b1 b2 b3 ≤ fractional_cost := by
-  decide
+  intro h
+  rcases h with ⟨b1, b2, b3, h_congest, h_cost⟩
+  have h_contra := dgg_cost_preserving_forces_congestion_violation b1 b2 b3 h_cost
+  exact h_contra h_congest
 
 end Problem39_DGG_UnsplittableFlow
-
-#print axioms Problem39_DGG_UnsplittableFlow.dgg_cost_preserving_conjecture_disproved
-#print axioms Problem39_DGG_UnsplittableFlow.no_cost_preserving_dgg_unsplittable_flow
