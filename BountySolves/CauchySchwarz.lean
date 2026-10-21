@@ -105,14 +105,15 @@ theorem disjointNonzeroDiffs_scaleSet (A S : Finset Int) (D K : Int)
   by_cases hs : s₁ - s₂ = 0
   · rw [hs, mul_zero] at h_mul; exact h_mul
   · exfalso
+    have hK_pos : 0 < K := by linarith
     rcases lt_or_gt_of_ne hs with h_neg | h_pos
-    · have h_le : s₁ - s₂ + 1 ≤ 0 := by omega
-      have hK_nonneg : 0 ≤ K := by linarith
-      have h_prod : K * (s₁ - s₂ + 1) ≤ 0 := mul_nonpos_of_nonneg_of_nonpos hK_nonneg h_le
+    · have h_le : s₁ - s₂ ≤ -1 := by linarith
+      have h_prod : K * (s₁ - s₂) ≤ -K := by
+        nlinarith
       linarith
-    · have h_ge : 0 ≤ s₁ - s₂ - 1 := by omega
-      have hK_nonneg : 0 ≤ K := by linarith
-      have h_prod : 0 ≤ K * (s₁ - s₂ - 1) := mul_nonneg hK_nonneg h_ge
+    · have h_ge : 1 ≤ s₁ - s₂ := by linarith
+      have h_prod : K ≤ K * (s₁ - s₂) := by
+        nlinarith
       linarith
 
 theorem exists_disjoint_diff_sidon_same_card (A : Finset Int) (D : Int)
