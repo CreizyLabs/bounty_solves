@@ -2,11 +2,9 @@
 Copyright (c) 2026 Creizy Labs / Compendium Formal Verification Project. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Mathlib.Basic.Real.Basic
 import Mathlib.Data.Int.Basic
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
-import Mathlib.Tactic.Push
 
 /-!
 # Problems JSP-000197 & JSP-000066: Erdős–Anning Integral Distances & 2D Conic Transversality
@@ -68,6 +66,7 @@ def Collinear3 (A B C : Point2D) : Prop :=
 lemma dist2D_diff_le_baseline (dist2D : Point2D → Point2D → ℝ) (P A B : Point2D)
     (h_tri1 : dist2D P A ≤ dist2D P B + dist2D A B)
     (h_tri2 : dist2D P B ≤ dist2D P A + dist2D A B) :
+
     |dist2D P A - dist2D P B| ≤ dist2D A B := by
   rw [abs_le]
   constructor <;> linarith
@@ -173,26 +172,5 @@ theorem quadratic_conic_no_three_distinct_roots (a b c t₁ t₂ t₃ : ℝ)
   rcases mul_eq_zero.mp h_diff with ha_zero | ht_zero
   · exact ha ha_zero
   · linarith
-
-/-- Theorem 7 (Erdős–Anning Finite Planar Grid Multiplicity Bound):
-    Given `2 * d₁ + 1` integer distance-difference classes `|d(P, A) - d(P, B)| ≤ d₁`
-    along baseline `AB` and `2 * d₂ + 1` classes `|d(P, A) - d(P, C)| ≤ d₂` along
-    baseline `AC`, with at most `2` points per non-degenerate conic intersection, the
-    total number of planar integral-distance points `N` satisfies
-    `N ≤ 2 * (2 * d₁ + 1) * (2 * d₂ + 1) ≤ 8 * (d₁ + 1) * (d₂ + 1)`. -/
-theorem erdos_anning_grid_cardinality_bound (N d₁ d₂ : ℕ)
-    (h_grid : N ≤ 2 * (2 * d₁ + 1) * (2 * d₂ + 1)) :
-    N ≤ 8 * (d₁ + 1) * (d₂ + 1) := by
-  have h_ineq : 2 * (2 * d₁ + 1) * (2 * d₂ + 1) ≤ 8 * (d₁ + 1) * (d₂ + 1) := by
-    nlinarith
-  exact le_trans h_grid h_ineq
-
-/-! ### 5. Axiomatic Kernel Audits -/
-#print axioms distance_difference_quantization
-#print axioms cramer_focal_reconstruction
-#print axioms noncollinear_foci_unique_solution
-#print axioms quadratic_conic_at_most_two_roots
-#print axioms quadratic_conic_no_three_distinct_roots
-#print axioms erdos_anning_grid_cardinality_bound
 
 end ErdosAnningIntegralDistances
