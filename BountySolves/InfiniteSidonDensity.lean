@@ -14,8 +14,8 @@ This standalone Mathlib 4 module formalizes:
 1. Pointwise and quadratic upper bounds for Sidon counting functions `A(N)` on `[1, N]`.
 2. Exact ring arithmetic over `ℤ[φ]`, Galois conjugation `σ`, norm multiplicativity
    `N(x y) = N(x) N(y)`, and unit norm preservation under powers of `Z_h = 2 - φ`.
-3. `B₂[1]` Sidon sets in `ℤ[φ]` and an exhaustive verification that all 10 pairwise sums
-   of `{α₁, α₂, α₃, α₄}` are distinct.
+3. `B₂[1]` Sidon sets in `ℤ[φ]` and an exhaustive verification that all 15 pairwise sums
+   of `{α₁, α₂, α₃, α₄, α₅}` are distinct.
 
 ## Verification Guarantees
 * Zero `sorry`
@@ -183,37 +183,43 @@ theorem zero_collision_shared (a b : ZPhi) (h : a ≠ b) : a + a ≠ a + b := by
   intro heq
   exact h (add_left_cancel a a b heq)
 
-/-- First four elements of the golden Sidon sequence in `ℤ[φ]`. -/
+/-- First five elements of the golden Sidon sequence in `ℤ[φ]`. -/
 def a1 : ZPhi := ⟨1, 0⟩
 def a2 : ZPhi := ⟨1, 1⟩
 def a3 : ZPhi := ⟨2, 0⟩
 def a4 : ZPhi := ⟨2, 2⟩
+def a5 : ZPhi := ⟨5, 0⟩
 
 theorem sum_a1_a1 : a1 + a1 = ⟨2, 0⟩ := rfl
 theorem sum_a1_a2 : a1 + a2 = ⟨2, 1⟩ := rfl
 theorem sum_a1_a3 : a1 + a3 = ⟨3, 0⟩ := rfl
 theorem sum_a1_a4 : a1 + a4 = ⟨3, 2⟩ := rfl
+theorem sum_a1_a5 : a1 + a5 = ⟨6, 0⟩ := rfl
+
 theorem sum_a2_a2 : a2 + a2 = ⟨2, 2⟩ := rfl
 theorem sum_a2_a3 : a2 + a3 = ⟨3, 1⟩ := rfl
 theorem sum_a2_a4 : a2 + a4 = ⟨3, 3⟩ := rfl
+theorem sum_a2_a5 : a2 + a5 = ⟨6, 1⟩ := rfl
+
 theorem sum_a3_a3 : a3 + a3 = ⟨4, 0⟩ := rfl
 theorem sum_a3_a4 : a3 + a4 = ⟨4, 2⟩ := rfl
+theorem sum_a3_a5 : a3 + a5 = ⟨7, 0⟩ := rfl
+
 theorem sum_a4_a4 : a4 + a4 = ⟨4, 4⟩ := rfl
+theorem sum_a4_a5 : a4 + a5 = ⟨7, 2⟩ := rfl
 
-theorem diff_a1_a2_sums : a1 + a1 ≠ a1 + a2 := by decide
-theorem diff_a1_a3_sums : a1 + a1 ≠ a1 + a3 := by decide
-theorem diff_a1_a4_sums : a1 + a1 ≠ a1 + a4 := by decide
-theorem diff_a2_a3_sums : a1 + a2 ≠ a1 + a3 := by decide
+theorem sum_a5_a5 : a5 + a5 = ⟨10, 0⟩ := rfl
 
-/-- List of all 10 unordered pair sums `a_i + a_j` (`1 ≤ i ≤ j ≤ 4`). -/
-def goldenTenPairwiseSums : List ZPhi :=
-  [a1 + a1, a1 + a2, a1 + a3, a1 + a4,
-   a2 + a2, a2 + a3, a2 + a4,
-   a3 + a3, a3 + a4,
-   a4 + a4]
+/-- List of all 15 unordered pair sums `a_i + a_j` (`1 ≤ i ≤ j ≤ 5`). -/
+def goldenFifteenPairwiseSums : List ZPhi :=
+  [a1 + a1, a1 + a2, a1 + a3, a1 + a4, a1 + a5,
+   a2 + a2, a2 + a3, a2 + a4, a2 + a5,
+   a3 + a3, a3 + a4, a3 + a5,
+   a4 + a4, a4 + a5,
+   a5 + a5]
 
-/-- Complete verification that all 10 unordered pair sums of `{a1, a2, a3, a4}` are pairwise distinct. -/
-theorem golden_ten_pairwise_sums_nodup : goldenTenPairwiseSums.Nodup := by
+/-- Complete verification that all 15 unordered pair sums of `{a1, a2, a3, a4, a5}` are pairwise distinct. -/
+theorem golden_fifteen_pairwise_sums_nodup : goldenFifteenPairwiseSums.Nodup := by
   decide
 
 end ZPhi
