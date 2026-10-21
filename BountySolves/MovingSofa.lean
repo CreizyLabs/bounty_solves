@@ -58,8 +58,8 @@ def inCornerJunction (c : LCorridor) (p : Point2D) : Prop :=
 /-- Every point in the corner turning square `[0, w] × [0, w]` lies inside the L-corridor. -/
 theorem corner_square_in_corridor (c : LCorridor) (p : Point2D)
     (hp : inCornerJunction c p) : inCorridor c p := by
-  left
-  exact ⟨hp.2.2.1, hp.2.2.2, hp.1⟩
+  right
+  exact ⟨hp.1, hp.2.1, hp.2.2.1⟩
 
 /-- Corridor inclusion is monotone with respect to corridor width `c1.width ≤ c2.width`. -/
 theorem inCorridor_mono (c1 c2 : LCorridor) (hw : c1.width ≤ c2.width) (p : Point2D)
