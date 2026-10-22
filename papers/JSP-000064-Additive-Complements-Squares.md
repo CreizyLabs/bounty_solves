@@ -36,8 +36,8 @@ $$S_N := \{k^2 \in \mathbb{N} \mid 1 \le k, \; k^2 \le N\} = \{1^2, 2^2, 3^2, \d
 
 In Lean 4, this is constructed by taking the image under $k \mapsto k^2$ of the interval $[1, \lfloor\sqrt{N}\rfloor]$:
 ```lean
-def targetInterval (N : ℕ) : Finset ℕ :=
-  Finset.Icc 1 N
+def posInterval (M : ℕ) : Finset ℕ :=
+  (Finset.range (M + 1)).filter (fun k => 1 ≤ k)
 
 def squaresUpTo (N : ℕ) : Finset ℕ :=
   (Finset.Icc 1 (Nat.sqrt N)).image (fun k => k^2)
@@ -110,7 +110,7 @@ Every mathematical definition, lemma, and theorem presented in this paper maps d
 | **Definition 2.1** | Target interval $[1, N]$ | `targetInterval` | — | Definition |
 | **Definition 2.1** | Squares up to $N$ | `squaresUpTo` | — | Definition |
 | **Definition 2.2** | Additive complement property | `IsAdditiveComplementOn` | — | Definition |
-| **Theorem 3.1** | Target interval size $|[1, N]| = N$ | `card_target_interval` | `[propext, Classical.choice, Quot.sound]` | Verified (0 sorry) |
+| **Theorem 3.1** | Target interval size $|[1, N]| = N$ | `card_posInterval` | `[propext, Classical.choice, Quot.sound]` | Verified (0 sorry) |
 | **Theorem 3.2** | Squares cardinality bound $|S_N| \le \lfloor\sqrt{N}\rfloor$ | `card_squares_up_to` | `[propext, Classical.choice, Quot.sound]` | Verified (0 sorry) |
 | **Theorem 3.3** | Product floor bound $N \le \lfloor\sqrt{N}\rfloor \cdot |B|$ | `erdos_complement_product_bound` | `[propext, Classical.choice, Quot.sound]` | Verified (0 sorry) |
 | **Theorem 3.4** | Asymptotic lower bound $|B| \ge \lfloor\sqrt{N}\rfloor$ | `erdos_complement_card_lower_bound` | `[propext, Classical.choice, Quot.sound]` | Verified (0 sorry) |

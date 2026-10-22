@@ -57,5 +57,5 @@ Implemented in [`BountySolves/EdwardsBookTheorem.lean`](../BountySolves/EdwardsB
 * `mem_bookTriangles_iff`: Proves $w \in \text{bookTriangles}(G, u, v) \iff G.\text{Adj}(u, w) \land G.\text{Adj}(v, w)$.
 * `degree_add_degree_le_card_add_edgeBookSize`: Proves $d(u) + d(v) \le |V| + t(u, v)$ on `SimpleGraph V`.
 * `triangle_degree_sum_bound`: Proves $2(d(u) + d(v) + d(w)) \le 3|V| + t(u,v) + t(v,w) + t(w,u)$.
-* `cauchy_schwarz_inductive_syzygy`, `finset_cauchy_schwarz` & `degree_sq_sum_ge_four_edges_sq`: Proves $n \sum_{v \in s} d(v)^2 \ge 4m^2$ from first principles.
+* `cauchy_schwarz_inductive_syzygy`, `finset_cauchy_schwarz` & `degree_sq_sum_ge_four_edges_sq`: Proves $n \sum_{v \in s} d(v)^2 \ge 4m^2$ from first principles, loading the inductive boundary fact $0 \le n \cdot S_2 - S_1^2$ into the local context before invoking the arithmetic solver.
 * `edwards_bound_from_edge_degree_sum`, `edwards_turan_syzygy`, `edwards_strict_book_lower_bound`, & `erdos_book_conjecture_at_mantel_plus_one`: Proves $3n \cdot \text{bk} \ge 6m - n^2 \implies 6 \cdot \text{bk} > n$ for $4m > n^2$.

@@ -33,7 +33,7 @@ yields Hadamard matrices of orders $1, 2, 4, 8$.
 ### 2.2 Paley Type I Construction ($n = p + 1 \equiv 0 \pmod 4$)
 For odd prime $p \equiv 3 \pmod 4$ (here $p = 11$, order $n = 12$), the Paley matrix is constructed from the Legendre quadratic residue character $\chi(x) = (x/p)$:
 $$Q_{i, j} = \chi(j - i) \pmod p.$$
-Bordering $Q$ with a row and column of all $1$'s yields the skew-Hadamard matrix $H_{12}$.
+Bordering $Q$ with a row and column of all $1$'s yields the skew-Hadamard matrix $H_{12}$. The signs of $H_{12}$ in `Problem13_HadamardMatrices` are strictly realigned to the quadratic residue construction mod 11, ensuring all row pairs have dot product 0 and row inner products equal 12 so that `decide` evaluates cleanly to true in the kernel.
 
 ---
 

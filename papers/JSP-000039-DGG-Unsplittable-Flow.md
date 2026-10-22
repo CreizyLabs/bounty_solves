@@ -63,6 +63,8 @@ $$\text{cost}(b_1, b_2, b_3) = 30 b_1 + 30 b_2 + 30 b_3.$$
 Implemented in [`BountySolves/DGGCostPreserving.lean`](../BountySolves/DGGCostPreserving.lean) (`namespace Problem39_DGG_UnsplittableFlow`):
 
 * `fractional_demands_valid`: Certifies $z_i + f_i = d_i$, $d_i \le d_{\max}$, $x(a_1)=24, x(a_2)=14, x(a_3)=9$, and $\text{fractional\_cost} = 58$.
+All boolean quantifiers are resolved via explicit finite structural branching (`cases b1 <;> cases b2 <;> cases b3`) allowing the kernel to exhaustively decide each configuration directly:
+
 * `dgg_cost_preserving_conjecture_disproved`: Proves that for all $b_1, b_2, b_3 \in \text{Bool}$, `SatisfiesDGGCongestion b1 b2 b3 → unsplittable_cost b1 b2 b3 ≥ 60 ∧ unsplittable_cost b1 b2 b3 > fractional_cost`.
 * `dgg_cost_preserving_forces_congestion_violation`: Proves the dual implication `unsplittable_cost b1 b2 b3 ≤ fractional_cost → ¬ SatisfiesDGGCongestion b1 b2 b3`.
 * `no_cost_preserving_dgg_unsplittable_flow`: Proves `¬ ∃ b1 b2 b3 : Bool, SatisfiesDGGCongestion b1 b2 b3 ∧ unsplittable_cost b1 b2 b3 ≤ fractional_cost`.

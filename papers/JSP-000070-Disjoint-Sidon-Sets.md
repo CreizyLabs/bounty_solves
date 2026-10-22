@@ -56,6 +56,6 @@ we obtain $(a + b)^2 - 2(a + b) \le 4N - 4$, and when $a^2 + b^2 \le 2N$, $(a + 
 Implemented in [`BountySolves/CauchySchwarz.lean`](../BountySolves/CauchySchwarz.lean) (`namespace Problem70_And_79_CauchySchwarz`):
 * `sidon_unique_nonzero_diff`: Proves distinctness of nonzero differences in any Sidon set.
 * `card_scaleSet` & `isSidon_scaleSet`: Proves cardinality and Sidon invariance under nonzero dilation.
-* `disjointNonzeroDiffs_scaleSet`: Proves `(A - A) ∩ (K · S - K · S) = {0}` whenever $K > D$.
+* `disjointNonzeroDiffs_scaleSet`: Proves `(A - A) ∩ (K · S - K · S) = {0}` whenever $K > D$, restructuring inequality steps to explicitly supply boundaries like $K \cdot (s_1 - s_2) \le -K$ via `nlinarith`.
 * `exists_disjoint_diff_sidon_same_card` & `exists_sidon_of_any_card_disjoint_diffs`: Complete constructive proof that for every finite Sidon set $A$, there exists a Sidon set $B$ of the same cardinality (or any reference Sidon cardinality $M$) with no common nonzero differences.
 * `disjoint_sidon_sum_sq_bound` & `disjoint_sidon_ordered_diff_bound`: Proves the Cauchy–Schwarz interval bounds.

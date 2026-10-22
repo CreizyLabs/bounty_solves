@@ -141,7 +141,7 @@ The complete mathematical theory is formalized in [`BountySolves/InfiniteSidonDe
 | **Def 2.3** ($\mathbb{Z}[\varphi]$ Sidon Set) | `InfiniteSidonDensity.ZPhi.IsZPhiSidonSet` | L162–168 | None |
 | **Thm 3.5** (Distinct Pairwise Sums) | `InfiniteSidonDensity.ZPhi.sidon_pairwise_sums_distinct` | L170–186 | None |
 | **Sec 2.3** (Zero Additive Collision) | `InfiniteSidonDensity.ZPhi.zero_collision_shared` | L188–193 | `[propext, Classical.choice, Quot.sound]` |
-| **Sec 2.3** (Concrete Sum Distinctness) | `InfiniteSidonDensity.ZPhi.diff_a1_a2_sums` | L210–223 | None |
+| **Sec 2.3** (15 Pairwise Sums Nodup) | `InfiniteSidonDensity.ZPhi.golden_fifteen_pairwise_sums_nodup` | L185–205 | None |
 
 ---
 

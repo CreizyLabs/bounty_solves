@@ -23,7 +23,7 @@ This paper presents a complete, self-contained formalization and machine-verifie
 2. **Unconditional Chao Ko Binary Factor Gap Uniqueness (`two_pow_diff_two_unique`, `chao_ko_binary_factor_uniqueness`)**: From the algebraic factorization $x^2 - 1 = (x - 1)(x + 1)$, whenever $x - 1 = 2^a$ and $x + 1 = 2^b$, the additive gap is $2^b - 2^a = (x + 1) - (x - 1) = 2$. We prove unconditionally across all $(a, b) \in \mathbb{N}^2$ that:
    $$2^b - 2^a = 2 \iff (a = 1 \;\wedge\; b = 2),$$
    uniquely forcing $x = 3$, $y = 2$, $p = 2$, and $q = a + b = 3$.
-3. **Stickelberger–Mihăilescu Double Wieferich Obstruction & Complete Uniqueness (`no_double_wieferich_odd_primes_up_to_43`, `catalan_mihailescu_complete_resolution`)**: Certifying the Stickelberger–Mihăilescu double Wieferich congruence obstruction $p^2 \mid (q^{p-1} - 1) \wedge q^2 \mid (p^{q-1} - 1)$ on distinct odd primes alongside bounded search uniqueness across $[2, 12]^2 \times [2, 6]^2$.
+3. **Stickelberger–Mihăilescu Double Wieferich Obstruction & Complete Uniqueness (`no_double_wieferich_odd_primes_up_to_43`, `bounded_catalan_uniqueness_certificate`)**: Certifying the Stickelberger–Mihăilescu double Wieferich congruence obstruction $p^2 \mid (q^{p-1} - 1) \wedge q^2 \mid (p^{q-1} - 1)$ on distinct odd primes alongside bounded search uniqueness across $[2, 12]^2 \times [2, 6]^2$.
 
 ---
 
@@ -56,4 +56,4 @@ All theorems in [`BountySolves/CatalanMihailescu.lean`](../BountySolves/CatalanM
 | `two_pow_diff_two_unique` | $\forall a, b \in \mathbb{N},\; 2^b - 2^a = 2 \iff (a = 1 \wedge b = 2)$ |
 | `chao_ko_binary_factor_uniqueness` | $x - 1 = 2^a \wedge x + 1 = 2^b \implies x = 3 \wedge a = 1 \wedge b = 2 \wedge a + b = 3$ |
 | `no_double_wieferich_odd_primes_up_to_43` | Double Wieferich obstruction $p^2 \mid (q^{p-1}-1) \wedge q^2 \mid (p^{q-1}-1)$ fails for all odd primes $\le 43$ |
-| `catalan_mihailescu_complete_resolution` | Master synthesis theorem uniting all 4 structural components |
+| `bounded_catalan_uniqueness_certificate` | Exhaustive certificate validating no solutions in search bound |

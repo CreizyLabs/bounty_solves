@@ -27,6 +27,10 @@ In this paper, we formalize exact deterministic subset-transition semantics for 
 
 ## 2. Automata Architecture: The Extremal Family $\mathcal{C}_n$
 
+### 2.1 State Bitmask Representation and Transition Guard
+Subset states are encoded as integer bitmasks where bit $s$ is set if state $s$ is active. In `stepA`, an explicit conditional guard (`if bit0 == 1`) ensures that state bit clearing and transformation only occur when state 0 is actively set, preserving the intact state mask otherwise.
+
+
 The Černý automaton $\mathcal{C}_n$ has state set $Q = \{0, 1, \dots, n-1\}$ and binary alphabet $\Sigma = \{a, b\}$ with transitions:
 * **Letter $a$:** Maps state $0 \mapsto 1$, leaving all other states fixed:
   $$\delta(0, a) = 1, \quad \delta(s, a) = s \; (\forall s \ge 1).$$

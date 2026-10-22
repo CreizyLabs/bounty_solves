@@ -68,6 +68,7 @@ Because $N(Z_h) = 1$, scaling by $Z_h$ preserves the exact norm capacity $N = 36
 | $Z_h^{-1}$ | `MovingSofa.ZPhi.Z_h_inv` | Inverse impedance modulus $\langle 1, 1 \rangle$ |
 | $N = 36$ | `MovingSofa.hextology_sofa_norm_closed` | Main invariant closure theorem |
 | $V_{\text{sofa}}$ | `MovingSofa.moving_sofa_invariant_closed` | Obstruction variety vanishing theorem |
+| $[0, w] \times [0, w] \subset L$ | `MovingSofa.corner_square_in_corridor` | Corner junction turning square corridor inclusion (right disjunct) |
 
 ---
 

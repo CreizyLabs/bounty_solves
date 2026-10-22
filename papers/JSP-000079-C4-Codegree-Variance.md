@@ -52,7 +52,7 @@ Consequently, $M \sum_{p \in P} c(p)^2 \ge \left(\sum_{p \in P} c(p)\right)^2$. 
 
 Implemented in [`BountySolves/CauchySchwarz.lean`](../BountySolves/CauchySchwarz.lean) (`namespace Problem70_And_79_CauchySchwarz`):
 * `cauchy_schwarz_step_identity` & `finset_cauchy_schwarz`: Proves the general `Finset` Cauchy–Schwarz theorem from first principles.
-* `codeg_pair_excess_nonneg`: Proves $0 \le (k - 1)(k - 2)$ and $2(k - 1) \le k(k - 1)$ for all $k \in \mathbb{Z}$.
+* `universal_convexity_int` & `cherry_inequality`: Proves $(k - 1)(k - 2) \ge 0$ and $k(k - 1) \ge 2(k - 1)$ for all $k \in \mathbb{Z}$.
 * `forced_c4_linear_from_cherry_excess`: Proves $2(\sum_{p \in P} c(p) - |P|) \le \sum_{p \in P} c(p)(c(p) - 1)$.
 * `forced_c4_quadratic_supersaturation`: Proves $|P| \sum_{p \in P} c(p)(c(p) - 1) \ge S(S - |P|)$.
 * `forced_c4_above_reiman_threshold`: Proves $4n \cdot c_4 \ge 2m(2m - n) - n^2(n - 1)$ and $c_4 \ge 1$ above the threshold.

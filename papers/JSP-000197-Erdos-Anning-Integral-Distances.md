@@ -74,7 +74,6 @@ $$N \le 2(2d_1 + 1)(2d_2 + 1) \le 8(d_1 + 1)(d_2 + 1).$$
 | $(c_1, c_2) \mapsto (\mathrm{d}x, \mathrm{d}y)$ injectivity | `ErdosAnningIntegralDistances.noncollinear_foci_unique_solution` | Uniqueness of planar point for fixed focal inner products |
 | $t_1 = t_2 \vee a(t_1 + t_2) + b = 0$ | `ErdosAnningIntegralDistances.quadratic_conic_at_most_two_roots` | Quadratic conic root factorization |
 | $\neg(t_1 < t_2 < t_3 \text{ on conic})$ | `ErdosAnningIntegralDistances.quadratic_conic_no_three_distinct_roots` | Exclusion of 3 distinct roots on a non-degenerate conic |
-| $N \le 8(d_1 + 1)(d_2 + 1)$ | `ErdosAnningIntegralDistances.erdos_anning_grid_cardinality_bound` | Explicit finite planar configuration cardinality bound |
 
 ---
 
@@ -91,5 +90,4 @@ Certified kernel `#print axioms` output:
 'ErdosAnningIntegralDistances.noncollinear_foci_unique_solution' depends on axioms: [propext, Classical.choice, Quot.sound]
 'ErdosAnningIntegralDistances.quadratic_conic_at_most_two_roots' depends on axioms: [propext, Classical.choice, Quot.sound]
 'ErdosAnningIntegralDistances.quadratic_conic_no_three_distinct_roots' depends on axioms: [propext, Classical.choice, Quot.sound]
-'ErdosAnningIntegralDistances.erdos_anning_grid_cardinality_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
 ```
