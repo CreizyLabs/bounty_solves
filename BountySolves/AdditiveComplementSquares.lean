@@ -53,7 +53,7 @@ lemma card_posInterval (M : ℕ) : (posInterval M).card = M := by
     simp only [disjoint_singleton_left, mem_filter, not_and]
     intro _ h
     omega
-  have h_card_union := Finset.card_union_eq h_disj
+  have h_card_union := Finset.card_union_eq_card_add_card.mpr h_disj
   rw [← h_split, Finset.card_range, Finset.card_singleton] at h_card_union
   omega
 

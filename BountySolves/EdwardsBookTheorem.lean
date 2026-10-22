@@ -138,7 +138,11 @@ theorem finset_cauchy_schwarz {α : Type*} [DecidableEq α] (s : Finset α) (d :
         nlinarith
       have h_lhs : 0 ≤ n * ((n + 1) * (x * x + S2) - (x + S1) * (x + S1)) := by
         linarith
-      exact pos_of_mul_pos_right h_lhs hn_pos
+      rcases le_or_gt 0 ((n + 1) * (x * x + S2) - (x + S1) * (x + S1)) with h_nonneg | h_neg
+      · linarith
+      · exfalso
+        have h_prod_neg := mul_neg_of_pos_of_neg hn_pos h_neg
+        linarith
 
 theorem degree_sq_sum_ge_four_edges_sq {α : Type*} [DecidableEq α] (s : Finset α) (d : α → Int) (m : Int)
     (h_handshake : (∑ v ∈ s, d v) = 2 * m) :

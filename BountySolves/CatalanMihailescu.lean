@@ -81,24 +81,14 @@ theorem chao_ko_three_factors :
   decide
 
 /-- Helper lemma: for any `a ≥ 2`, `2^a ≥ 4`. -/
-theorem two_pow_ge_four {a : Nat} (ha : 2 ≤ a) : 4 ≤ 2 ^ a := by
-  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le ha
-  rw [Nat.pow_add]
-  induction k with
-  | zero => decide
-  | succ k' _ => 
-    have : 4 ≤ 4 * 2 ^ k' := by linarith [Nat.one_le_pow k' 2 (by decide)]
-    exact this
+theorem two_pow_ge_four {a : Nat} (ha : 2 ≤ a) : 4 ≤ 2 ^ a :=
+  calc 4 = 2 ^ 2 := rfl
+    _ ≤ 2 ^ a := Nat.pow_le_pow_right (by decide) ha
 
 /-- Helper lemma: for any `b ≥ 3`, `2^b ≥ 8`. -/
-theorem two_pow_ge_eight {b : Nat} (hb : 3 ≤ b) : 8 ≤ 2 ^ b := by
-  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hb
-  rw [Nat.pow_add]
-  induction k with
-  | zero => decide
-  | succ k' _ =>
-    have : 8 ≤ 8 * 2 ^ k' := by linarith [Nat.one_le_pow k' 2 (by decide)]
-    exact this
+theorem two_pow_ge_eight {b : Nat} (hb : 3 ≤ b) : 8 ≤ 2 ^ b :=
+  calc 8 = 2 ^ 3 := rfl
+    _ ≤ 2 ^ b := Nat.pow_le_pow_right (by decide) hb
 
 /-- Helper lemma: for `a ≥ 2`, `2^b - 2^a ≠ 2` for all `b ∈ ℕ`. -/
 theorem two_pow_diff_two_ge_two {a b : Nat} (ha : 2 ≤ a) : 2 ^ b - 2 ^ a ≠ 2 := by
@@ -126,7 +116,8 @@ theorem two_pow_diff_two_unique (a b : Nat) :
         · omega
         · rw [Nat.pow_zero] at h
           have : 2 ^ (b'' + 2) = 3 := by omega
-          revert this; decide
+          have h4 : 4 ≤ 2 ^ (b'' + 2) := two_pow_ge_four (by omega)
+          omega
     · rcases a' with _ | a''
       · rcases b with _ | _ | _ | b''
         · omega
@@ -134,7 +125,8 @@ theorem two_pow_diff_two_unique (a b : Nat) :
         · exact ⟨rfl, rfl⟩
         · rw [Nat.pow_one] at h
           have : 2 ^ (b'' + 3) = 4 := by omega
-          revert this; decide
+          have h8 : 8 ≤ 2 ^ (b'' + 3) := two_pow_ge_eight (by omega)
+          omega
       · have ha_ge : 2 ≤ a'' + 2 := by omega
         exfalso
         exact two_pow_diff_two_ge_two ha_ge h

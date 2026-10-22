@@ -7,6 +7,7 @@ import Mathlib.Data.Finset.Image
 import Mathlib.Data.Finset.Card
 import Mathlib.Algebra.BigOperators.Group.Finset.Basic
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
+import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Tactic.Ring
 import Mathlib.Tactic.Linarith
 
