@@ -119,4 +119,7 @@ theorem erdos_complement_card_lower_bound (B : Finset ℕ) (N : ℕ)
     le_trans h_sqrt_sq h_prod
   exact Nat.le_of_mul_le_mul_left h_chain h_sqrt_pos
 
+#print axioms erdos_complement_product_bound
+#print axioms erdos_complement_card_lower_bound
+
 end AdditiveComplementSquares

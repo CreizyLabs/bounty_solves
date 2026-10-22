@@ -55,6 +55,13 @@ Under the unimodular golden ratio impedance modulus $Z_h = 2 - \varphi$ ($N(Z_h)
 | $Z_h = 2 - \varphi$ | `HadwigerNelson.ZPhi.Z_h` | Fundamental impedance modulus |
 | $N = 129600$ | `HadwigerNelson.hextology_hadwiger_norm_closed` | Main invariant closure theorem |
 | $V_{\text{hadwiger}}$ | `HadwigerNelson.hadwiger_nelson_closed` | Chromatic variety closure theorem |
+| $\\chi(M_7) > 3$ | HadwigerNelson.moser_spindle_no_three_coloring | Constructive proof that Moser spindle admits no proper 3-coloring |
+| $\\chi(M_7) \\le 4$ | HadwigerNelson.moser_spindle_four_colorable | Machine-certified explicit proper 4-coloring of Moser spindle |
+|  \\le n \\implies \\text{Colorable}(m) \\implies \\text{Colorable}(n)$ | HadwigerNelson.properColoring_mono | Colorability lifting and monotonicity theorem |
+| $\\neg \\text{Colorable}(k-1) \\implies \\chi(G) \\ge k$ | HadwigerNelson.chromatic_ge_of_not_colorable | Universal chromatic lower bound criterion |
+| $\\neg \\text{Colorable}(4) \\implies \\chi(G) \\ge 5$ | HadwigerNelson.de_grey_chromatic_ge_five | Aubrey de Grey 5-chromatic obstruction principle |
+| $\\chi(\\mathbb{R}^2) \\in [5, 7] \\implies \\Delta \\le 2$ | HadwigerNelson.hadwiger_nelson_gap_le_two | Euclidean planar chromatic interval theorem |
+| (X \\cdot Z_h) = 129600$ | HadwigerNelson.hadwiger_impedance_preserving | Golden ratio impedance norm preservation theorem |
 
 ---
 

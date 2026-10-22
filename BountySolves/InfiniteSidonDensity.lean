@@ -224,4 +224,7 @@ theorem golden_fifteen_pairwise_sums_nodup : goldenFifteenPairwiseSums.Nodup := 
 
 end ZPhi
 
+#print axioms sidon_counting_function_bound
+#print axioms liminf_sqrt_density_floor
+
 end InfiniteSidonDensity

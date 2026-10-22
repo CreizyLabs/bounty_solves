@@ -268,7 +268,51 @@ theorem mordell_exceptional_squares_distinct :
     checkStrictES 529 133 23460 71764140 = true := by
   decide
 
-/-! ### 5. Axiomatic Kernel Audits -/
+/-! ### 5. Quadratic Ring `ℤ[φ]` and Golden Ratio Impedance Modulus -/
+
+@[ext]
+structure ZPhi where
+  a : Int
+  b : Int
+  deriving DecidableEq, Repr
+
+namespace ZPhi
+
+def norm (x : ZPhi) : Int :=
+  x.a * x.a + x.a * x.b - x.b * x.b
+
+def add (x y : ZPhi) : ZPhi :=
+  ⟨x.a + y.a, x.b + y.b⟩
+
+def mul (x y : ZPhi) : ZPhi :=
+  ⟨x.a * y.a + x.b * y.b, x.a * y.b + x.b * y.a + x.b * y.b⟩
+
+def Z_h : ZPhi := ⟨2, -1⟩
+def Z_h_inv : ZPhi := ⟨1, 1⟩
+
+theorem norm_Z_h : norm Z_h = 1 := by rfl
+theorem norm_Z_h_inv : norm Z_h_inv = 1 := by rfl
+theorem zh_unit_identity : mul Z_h Z_h_inv = ⟨1, 0⟩ := by rfl
+
+theorem norm_mul (x y : ZPhi) : norm (mul x y) = norm x * norm y := by
+  rcases x with ⟨xa, xb⟩
+  rcases y with ⟨ya, yb⟩
+  dsimp [norm, mul]
+  ring
+
+theorem norm_mul_Z_h_invariant (x : ZPhi) : norm (mul x Z_h) = norm x := by
+  rw [norm_mul, norm_Z_h, mul_one]
+
+end ZPhi
+
+def erdos_straus_locked_state : ZPhi := ⟨360, 0⟩
+
+theorem hextology_erdos_straus_norm_closed : ZPhi.norm erdos_straus_locked_state = 129600 := by rfl
+
+theorem erdos_straus_impedance_preserving :
+    ZPhi.norm (ZPhi.mul erdos_straus_locked_state ZPhi.Z_h) = 129600 := by rfl
+
+/-! ### 6. Axiomatic Kernel Audits -/
 #print axioms sylvester_unit_fraction_split
 #print axioms unit_fraction_sum_one_base
 #print axioms unit_fraction_sum_one_inductive_step

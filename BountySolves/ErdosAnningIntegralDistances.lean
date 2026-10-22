@@ -174,4 +174,7 @@ theorem quadratic_conic_no_three_distinct_roots (a b c t₁ t₂ t₃ : ℝ)
   · exact ha ha_zero
   · linarith
 
+#print axioms distance_difference_quantization
+#print axioms noncollinear_foci_unique_solution
+
 end ErdosAnningIntegralDistances

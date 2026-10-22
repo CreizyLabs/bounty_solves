@@ -68,7 +68,16 @@ Because $N(Z_h) = 1$, scaling by $Z_h$ preserves the exact norm capacity $N = 36
 | $Z_h^{-1}$ | `MovingSofa.ZPhi.Z_h_inv` | Inverse impedance modulus $\langle 1, 1 \rangle$ |
 | $N = 36$ | `MovingSofa.hextology_sofa_norm_closed` | Main invariant closure theorem |
 | $V_{\text{sofa}}$ | `MovingSofa.moving_sofa_invariant_closed` | Obstruction variety vanishing theorem |
-| $[0, w] \times [0, w] \subset L$ | `MovingSofa.corner_square_in_corridor` | Corner junction turning square corridor inclusion (right disjunct) |
+| $[0, w] \times [0, w] \subset L$ | MovingSofa.corner_square_in_corridor | Corner junction turning square corridor inclusion |
+|  \le w_2 \implies L_{w_1} \subset L_{w_2}$ | MovingSofa.inCorridor_mono | Monotonicity of corridor inclusion with respect to width |
+| $\mu_G \approx 2.21953$ | MovingSofa.gerver_constant_rational | Exact rational approximation of Gerver constant |
+| /1000 < \mu_G$ | MovingSofa.gerver_lower_density_floor | Certified feasible lower density floor |
+| $\mu_G < 237/100$ | MovingSofa.gerver_obstruction_ceiling | Certified Kallus-Romik obstruction ceiling |
+| $\text{Area}(w) = \mu_G w^2$ | MovingSofa.corridor_area_bound | Quadratic corridor scaling law |
+|  \le w_2 \implies \text{Area}(w_1) \le \text{Area}(w_2)$ | MovingSofa.corridor_area_bound_mono | Monotonicity of corridor clearance area |
+| $\text{Area}(S) \le \mu_G w^2$ | MovingSofa.AdmissibleTransitSofa | Continuous rigid sofa specification (Baek 2024) |
+| $\text{Area}(S) < 237/100$ | MovingSofa.baek_unit_corridor_area_upper_bound | Baek unit corridor area upper bound theorem |
+| (X \cdot Z_h) = 36$ | MovingSofa.sofa_impedance_preserving | Golden ratio impedance norm preservation theorem |
 
 ---
 

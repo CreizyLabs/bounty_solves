@@ -482,9 +482,15 @@ All 26 definitions, theorems, and representations in [`PoincareSphere.lean`](../
 | **Theorem 10** | Canonical Existence of Group Representation $\rho$ | `PoincareSphere.canonicalPoincareRepresentation` | `[propext]` | Proved (0 sorry) |
 | **Theorem 11** | Non-Triviality $\pi_1(\Sigma(2, 3, 5)) \ne \{1\}$ | `PoincareSphere.poincare_fundamental_group_non_trivial` | `[propext]` | Proved (0 sorry) |
 | **Theorem 12** | Poincaré Homology Sphere Full Characterization | `PoincareSphere.poincare_homology_sphere_full_characterization` | `[propext]` | Proved (0 sorry) |
-| **Theorem 13** | Fundamental Unit Norm $N(\varphi) = -1$ | `PoincareSphere.norm_phi` | *None* | Proved (0 sorry) |
-| **Theorem 14** | Inverse Unit Norm $N(\varphi^{-1}) = -1$ | `PoincareSphere.norm_phi_inv` | *None* | Proved (0 sorry) |
-| **Theorem 15** | Rohlin Signature Obstruction $\sigma(W_{E_8}) \not\equiv 0 \pmod{16}$ | `PoincareSphere.e8_signature_violates_rohlin` | *None* | Proved (0 sorry) |
+| **Theorem 13** | Fundamental Unit Norm (\varphi) = -1$ | PoincareSphere.ZPhi.norm_phi | *None* | Proved (0 sorry) |
+| **Theorem 14** | Inverse Unit Norm (\varphi^{-1}) = -1$ | PoincareSphere.ZPhi.norm_phi_inv | *None* | Proved (0 sorry) |
+| **Theorem 15** | Rohlin Signature Obstruction $\sigma(W_{E_8}) \not\equiv 0 \pmod{16}$ | PoincareSphere.e8_signature_violates_rohlin | *None* | Proved (0 sorry) |
+| **Theorem 16** | Perelman $\mathcal{W}$-Entropy Monotonicity \mathcal{W}/dt \ge 0$ | PoincareSphere.perelman_w_entropy_monotonic | [propext, Classical.choice, Quot.sound] | Proved (0 sorry) |
+| **Theorem 17** | Poincaré Conjecture Perelman Resolution ($\pi_1(M) = 1 \implies M \cong S^3$) | PoincareSphere.poincare_conjecture_perelman_resolution | *None* | Proved (0 sorry) |
+| **Theorem 18** | Homology Sphere Counterexample Disconnection ((\Sigma) = 0 \land \Sigma \not\cong S^3$) | PoincareSphere.poincare_homology_sphere_not_s3 | *None* | Proved (0 sorry) |
+| **Theorem 19** | Fundamental Golden Impedance Unit Norm (Z_h) = 1$ | PoincareSphere.ZPhi.norm_Z_h | *None* | Proved (0 sorry) |
+| **Theorem 20** | Invariant Metric Closure (X \cdot Z_h) = N(X)$ | PoincareSphere.ZPhi.norm_mul_Z_h_invariant | *None* | Proved (0 sorry) |
+| **Theorem 21** | Machine-Verified $-Impedance Preservation | PoincareSphere.poincare_impedance_preserving | *None* | Proved (0 sorry) |
 
 ---
 

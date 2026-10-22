@@ -125,4 +125,7 @@ theorem no_cost_preserving_dgg_unsplittable_flow :
   have h_contra := dgg_cost_preserving_forces_congestion_violation b1 b2 b3 h_cost
   exact h_contra h_congest
 
+#print axioms dgg_cost_preserving_conjecture_disproved
+#print axioms no_cost_preserving_dgg_unsplittable_flow
+
 end Problem39_DGG_UnsplittableFlow

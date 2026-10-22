@@ -278,4 +278,7 @@ def halasz_spectral_floor_norm : ℤ :=
 theorem halasz_spectral_floor_norm_eq_one : halasz_spectral_floor_norm = 1 :=
   ZPhi.norm_phi_inv_sq
 
+#print axioms disc_succ
+#print axioms disc_of_constant_on_progression
+
 end ErdosDiscrepancy

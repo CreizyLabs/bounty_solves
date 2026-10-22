@@ -171,4 +171,8 @@ theorem forced_c4_above_reiman_threshold (n m c4 : Int) (hn : 0 < n)
   have hn_pos : 4 * n > 0 := by linarith
   exact pos_of_mul_pos_right h_comb (by linarith)
 
+#print axioms sidon_unique_nonzero_diff
+#print axioms exists_disjoint_diff_sidon_same_card
+#print axioms forced_c4_above_reiman_threshold
+
 end Problem70_And_79_CauchySchwarz

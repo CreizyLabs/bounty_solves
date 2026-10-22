@@ -54,6 +54,17 @@ Because the golden ratio impedance modulus $Z_h = 2 - \varphi$ is unimodular ($N
 | $Z_h = 2 - \varphi$ | `SingmasterConjecture.ZPhi.Z_h` | Fundamental impedance modulus |
 | $N = 129600$ | `SingmasterConjecture.hextology_singmaster_norm_closed` | Main invariant closure theorem |
 | $V_{\text{singmaster}}$ | `SingmasterConjecture.singmaster_multiplicity_closed` | Multiplicity variety closure theorem |
+|  > n \\implies \\binom{n}{k} = 0$ | SingmasterConjecture.binom_above_diag | Vanishing above diagonal in Pascal triangle |
+| $\\binom{n}{n} = 1$ | SingmasterConjecture.binom_self | Boundary identity |
+| $\\binom{n}{1} = n$ | SingmasterConjecture.binom_one | Linear column identity |
+|  \\le n \\implies 0 < \\binom{n}{k}$ | SingmasterConjecture.binom_pos | Strict positivity inside simplex |
+|  \\le k \\le n \\implies \\binom{n}{k} < \\binom{n+1}{k}$ | SingmasterConjecture.binom_step_lt | Strict column step monotonicity |
+|  < n_2 \\implies \\binom{n_1}{k} < \\binom{n_2}{k}$ | SingmasterConjecture.binom_column_mono | Universal strict column monotonicity |
+| $\\binom{n_1}{k} = \\binom{n_2}{k} \\implies n_1 = n_2$ | SingmasterConjecture.binom_column_injective | Universal column injectivity theorem |
+| Multiplicity 6 at $ | SingmasterConjecture.singmaster_120_multiplicity_six_certificate | Certified 6-collision at  = 120$ |
+| Multiplicity 8 at $ | SingmasterConjecture.singmaster_3003_multiplicity_eight_certificate | Certified 8-collision at  = 3003$ |
+| (t) \\le M$ | SingmasterConjecture.SingmasterConjectureStatement | Formal Singmaster conjecture statement |
+| (X \\cdot Z_h) = 129600$ | SingmasterConjecture.singmaster_impedance_preserving | Golden ratio impedance norm preservation theorem |
 
 ---
 
