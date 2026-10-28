@@ -486,7 +486,10 @@ theorem nat_minFac_pow_decomp (x p : Nat) (hx : 2 ≤ x) (hp : 2 ≤ p) :
   exact ⟨hdiv_pos, hbase, hpow⟩
 
 
+
+
 /-! ## Section 3: Coprime Power Decomposition (`coprime_mul_eq_pow`) & Odd-Base Chao Ko Theorem -/
+
 
 theorem eq_of_le_of_mul_le {A B u v : Nat} (hA : u ≤ A) (hB : v ≤ B) (hu : 1 ≤ u) (hv : 1 ≤ v)
     (hle : A * B ≤ u * v) : A = u ∧ B = v := by
@@ -551,6 +554,10 @@ theorem coprime_mul_eq_pow (A B Y q : Nat) (hA : 1 ≤ A) (hB : 1 ≤ B)
       exact Nat.le_refl _
     exact eq_of_le_of_mul_le hleA hleB hu_pos hv_pos hprod_eq
 
+
+
+
+
 private theorem pow_odd_mod_two (Y : Nat) (hY_odd : Y % 2 = 1) (n : Nat) : (Y ^ n) % 2 = 1 := by
   induction n with
   | zero => rw [Nat.pow_zero]
@@ -569,7 +576,7 @@ theorem pow_add_two_sub_pow_ge_three (u k : Nat) (hu : 1 ≤ u) :
   have hu_sq : (u + 1) * (u + 1) = u * u + 2 * u + 1 := by ring
   have h3 : u * u + 3 ≤ (u + 1) * (u + 1) := by omega
   have h_pow_le : u ^ k ≤ (u + 1) ^ k := Nat.pow_le_pow_left (by omega) k
-  have h_mul : (u * u + 3) * u ^ k ≤ (u + 1) * (u + 1) * u ^ k := by
+  have h_mul : (u * u + 3) * u ^ k ≤ (u + 1) * (u + 1) * (u + 1) ^ k := by
     have h_a : (u * u + 3) * u ^ k ≤ (u + 1) * (u + 1) * u ^ k := Nat.mul_le_mul_right _ h3
     have h_b : (u + 1) * (u + 1) * u ^ k ≤ (u + 1) * (u + 1) * (u + 1) ^ k := Nat.mul_le_mul_left _ h_pow_le
     exact Nat.le_trans h_a h_b
@@ -579,7 +586,8 @@ theorem pow_add_two_sub_pow_ge_three (u k : Nat) (hu : 1 ≤ u) :
   omega
 
 theorem chao_ko_odd_base_impossible (X Y q : Nat)
-    (hX : 2 ≤ X) (hY : 2 ≤ Y) (hq : 2 ≤ q) (hY_odd : Y % 2 = 1) :
+    (hX : 2 ≤ X) (hY : 2 ≤ Y) (hq : 2 ≤ q) (hY_odd : Y % 2 = 1)
+    :
     X ^ 2 - Y ^ q ≠ 1 := by
   intro h
   have hcat : X ^ 2 = Y ^ q + 1 := by omega
@@ -590,307 +598,369 @@ theorem chao_ko_odd_base_impossible (X Y q : Nat)
     rcases Nat.mod_two_eq_zero_or_one X with h0 | h1
     · exact h0
     · exfalso
-      have : (X ^ 2) % 2 = 1 := by rw [Nat.pow_two, Nat.mul_mod, h1]
+      have : (X ^ 2) % 2 = 1 := by
+        rw [Nat.pow_two, Nat.mul_mod, h1]
       omega
+  obtain ⟨m_even, hm_even⟩ := Nat.dvd_of_mod_eq_zero hX_even
+  have hm_even_pos : 1 ≤ m_even := by
+    have : 2 ≤ 2 * m_even := by rw [← hm_even]; exact hX
+    omega
   have hX_sq_mod4 : (X ^ 2) % 4 = 0 := by
-    obtain ⟨m, hm⟩ := Nat.dvd_of_mod_eq_zero hX_even
-    rw [hm, Nat.pow_two]
-    have : 2 * m * (2 * m) = 4 * (m * m) := by ring
+    rw [hm_even, Nat.pow_two]
+    have : 2 * m_even * (2 * m_even) = 4 * (m_even * m_even) := by ring
     rw [this, Nat.mul_mod_right]
   have hYq_mod4 : (Y ^ q) % 4 = 3 := by
-    have : (X ^ 2) % 4 = (Y ^ q + 1) % 4 := by rw [hcat]
-    rw [hX_sq_mod4] at this
-    rcases (show (Y ^ q) % 4 = 0 ∨ (Y ^ q) % 4 = 1 ∨ (Y ^ q) % 4 = 2 ∨ (Y ^ q) % 4 = 3 by omega) with h0 | h1 | h2 | h3
-    · rw [Nat.add_mod, h0] at this; omega
-    · rw [Nat.add_mod, h1] at this; omega
-    · rw [Nat.add_mod, h2] at this; omega
-    · exact h3
+    have : Y ^ q = X ^ 2 - 1 := by omega
+    obtain ⟨K, hK⟩ := Nat.dvd_of_mod_eq_zero hX_sq_mod4
+    have h4X : 4 ≤ X ^ 2 := by
+      have : 2 * 2 ≤ X * X := Nat.mul_le_mul hX hX
+      rw [Nat.pow_two]
+      exact this
+    have hK1 : 1 ≤ K := by
+      have hle : 4 * 1 ≤ 4 * K := by rw [← hK]; exact h4X
+      exact Nat.le_of_mul_le_mul_left hle (by decide)
+    rw [this, hK]
+    have : 4 * K - 1 = 4 * (K - 1) + 3 := by omega
+    rw [this, Nat.add_mod, Nat.mul_mod_right]
+  have hY_sq_mod4 : (Y ^ 2) % 4 = 1 := by
+    have hrem : Y % 4 = 1 ∨ Y % 4 = 3 := by omega
+    rcases hrem with h1 | h3
+    · rw [Nat.pow_two, Nat.mul_mod, h1]
+    · rw [Nat.pow_two, Nat.mul_mod, h3]
   obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hq
-  rcases Nat.mod_two_eq_zero_or_one k with hk_even | hk_odd
-  · obtain ⟨m, rfl⟩ := Nat.dvd_of_mod_eq_zero hk_even
-    have hq_even : 2 + 2 * m = 2 * (1 + m) := by ring
-    rw [hq_even, Nat.pow_mul] at hcat
-    have hX_ge : 2 ≤ X := hX
-    have hY_ge : 1 ≤ Y ^ (1 + m) := by
-      have : 1 ≤ Y := by omega
-      exact Nat.one_le_pow (1 + m) Y this
-    have hsub : X ^ 2 - (Y ^ (1 + m)) ^ 2 = 1 := by omega
-    exact no_square_diff_one_nat X (Y ^ (1 + m)) hX_ge hY_ge hsub
-  · obtain ⟨m, rfl⟩ := Nat.dvd_of_mod_eq_zero (show (k - 1) % 2 = 0 by omega)
-    have hq_odd : 2 + (1 + 2 * m) = 2 * (m + 1) + 1 := by omega
-    rw [hq_odd] at hYq_mod4
-    have hY_rem : Y % 4 = 1 ∨ Y % 4 = 3 := by omega
-    rcases hY_rem with hY1 | hY3
-    · have : (Y ^ (2 * (m + 1) + 1)) % 4 = 1 := pow_one_mod_four Y hY1 _
+  rcases Nat.mod_two_eq_zero_or_one (2 + k) with h_even | h_odd
+  · obtain ⟨m, hm⟩ := Nat.dvd_of_mod_eq_zero h_even
+    have h2m : 2 + k = 2 * m := hm
+    have : Y ^ (2 + k) = (Y ^ 2) ^ m := by
+      rw [h2m, Nat.pow_mul]
+    have h_pow_one : ((Y ^ 2) ^ m) % 4 = 1 := pow_one_mod_four (Y ^ 2) hY_sq_mod4 m
+    have h_contra : (Y ^ (2 + k)) % 4 = ((Y ^ 2) ^ m) % 4 := by rw [this]
+    rw [hYq_mod4, h_pow_one] at h_contra
+    contradiction
+  · have hprod : (X - 1) * (X + 1) = Y ^ (2 + k) := by
+      obtain ⟨X', rfl⟩ := Nat.exists_eq_add_of_le hX
+      have h1 : 2 + X' - 1 = 1 + X' := by omega
+      have h2 : 2 + X' + 1 = 3 + X' := by omega
+      rw [h1, h2]
+      have h_prod : (1 + X') * (3 + X') = 3 + 4 * X' + X' * X' := by ring
+      have h_sq : (2 + X') ^ 2 = 4 + 4 * X' + X' * X' := by
+        rw [Nat.pow_two]; ring
+      rw [h_sq] at hcat
+      rw [h_prod]
       omega
-    · have hprod : (X - 1) * (X + 1) = Y ^ (2 * (m + 1) + 1) := by
-        have : (X - 1) * (X + 1) = X ^ 2 - 1 := by
-          have : X ^ 2 = (X - 1) * (X + 1) + 1 := by
-            obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hX
-            rw [Nat.pow_two]
-            ring
-          omega
-        rw [this, hcat]
-        omega
-      have hcop : Nat.Coprime (X - 1) (X + 1) := by
+    have hcop : Nat.Coprime (X - 1) (X + 1) := by
+      have hdvd : Nat.gcd (X - 1) (X + 1) ∣ 2 := by
+        have h1 := Nat.gcd_dvd_left (X - 1) (X + 1)
+        have h2 := Nat.gcd_dvd_right (X - 1) (X + 1)
         have hdiff : (X + 1) - (X - 1) = 2 := by omega
-        have hdvd : Nat.gcd (X - 1) (X + 1) ∣ 2 := by
-          have h1 : Nat.gcd (X - 1) (X + 1) ∣ (X + 1) := Nat.gcd_dvd_right _ _
-          have h2 : Nat.gcd (X - 1) (X + 1) ∣ (X - 1) := Nat.gcd_dvd_left _ _
-          exact Nat.dvd_sub' h1 h2
-        rcases (show Nat.gcd (X - 1) (X + 1) = 1 ∨ Nat.gcd (X - 1) (X + 1) = 2 by omega) with hg1 | hg2
-        · exact hg1
-        · exfalso
-          have h2dvd : 2 ∣ (X - 1) := by rw [← hg2]; exact Nat.gcd_dvd_left _ _
-          have : (X - 1) % 2 = 0 := Nat.mod_eq_zero_of_dvd h2dvd
-          omega
-      obtain ⟨hu_pow, hv_pow⟩ :=
-        coprime_mul_eq_pow (X - 1) (X + 1) Y (2 * (m + 1) + 1)
-          (by omega) (by omega) hcop hprod
-      let u := Nat.gcd Y (X - 1)
-      let v := Nat.gcd Y (X + 1)
-      have hu_pos : 1 ≤ u := Nat.pos_of_dvd_of_pos (Nat.gcd_dvd_left Y (X - 1)) (by omega)
-      have hdiff_uv : (u + 1) ^ (2 * (m + 1) + 1) - u ^ (2 * (m + 1) + 1) ≤ 2 := by
-        have : v ^ (2 * (m + 1) + 1) - u ^ (2 * (m + 1) + 1) = 2 := by
-          rw [← hu_pow, ← hv_pow]
-          omega
-        have h_uv_lt : u < v := by
-          apply Classical.byContradiction
-          intro hle
-          have : v ≤ u := by omega
-          have : v ^ (2 * (m + 1) + 1) ≤ u ^ (2 * (m + 1) + 1) :=
-            Nat.pow_le_pow_left this (2 * (m + 1) + 1)
-          omega
-        have h_le_v : u + 1 ≤ v := h_uv_lt
-        have h_pow_le : (u + 1) ^ (2 * (m + 1) + 1) ≤ v ^ (2 * (m + 1) + 1) :=
-          Nat.pow_le_pow_left h_le_v (2 * (m + 1) + 1)
+        have : Nat.gcd (X - 1) (X + 1) ∣ (X + 1) - (X - 1) := Nat.dvd_sub h2 h1
+        rw [hdiff] at this
+        exact this
+      have hle2 : Nat.gcd (X - 1) (X + 1) ≤ 2 := Nat.le_of_dvd (by decide) hdvd
+      have hpos : 0 < Nat.gcd (X - 1) (X + 1) := Nat.gcd_pos_of_pos_left _ (by omega)
+      have hcases : Nat.gcd (X - 1) (X + 1) = 1 ∨ Nat.gcd (X - 1) (X + 1) = 2 := by
+        clear hYq_mod4 hX_sq_mod4 hY_sq_mod4 hodd_pow hcat
         omega
-      have h_ge3 : 3 ≤ (u + 1) ^ (2 * (m + 1) + 1) - u ^ (2 * (m + 1) + 1) := by
-        have : 2 * (m + 1) + 1 = 2 + (2 * m + 1) := by omega
-        rw [this]
-        exact pow_add_two_sub_pow_ge_three u (2 * m + 1) hu_pos
+      rcases hcases with h1 | h2
+      · exact h1
+      · exfalso
+        have hdvd_X1 : 2 ∣ X - 1 := by
+          have := Nat.gcd_dvd_left (X - 1) (X + 1)
+          rw [h2] at this
+          exact this
+        have : (X - 1) % 2 = 0 := Nat.mod_eq_zero_of_dvd hdvd_X1
+        have : (X - 1) % 2 = 1 := by
+          clear hYq_mod4 hX_sq_mod4 hY_sq_mod4 hodd_pow hcat
+          obtain ⟨m', rfl⟩ := Nat.exists_eq_add_of_le hm_even_pos
+          rw [hm_even]
+          have : 2 * (1 + m') - 1 = 2 * m' + 1 := by omega
+          rw [this, Nat.add_mod, Nat.mul_mod_right]
+        omega
+    obtain ⟨hA_pow, hB_pow⟩ :=
+      coprime_mul_eq_pow (X - 1) (X + 1) Y (2 + k) (by omega) (by omega) hcop hprod
+    let u := Nat.gcd Y (X - 1)
+    let v := Nat.gcd Y (X + 1)
+    have huv : v ^ (2 + k) - u ^ (2 + k) = 2 := by
+      have : X + 1 = v ^ (2 + k) := hB_pow
+      have : X - 1 = u ^ (2 + k) := hA_pow
       omega
+    have hu_pos : 1 ≤ u := Nat.pos_of_dvd_of_pos (Nat.gcd_dvd_left Y (X - 1)) (by omega)
+    have huv_lt : u < v := by
+      have : u ^ (2 + k) < v ^ (2 + k) := by omega
+      rcases (show u < v ∨ v ≤ u by omega) with h1 | h2
+      · exact h1
+      · exfalso
+        have : v ^ (2 + k) ≤ u ^ (2 + k) := Nat.pow_le_pow_left h2 (2 + k)
+        omega
+    have hge3 : 3 ≤ v ^ (2 + k) - u ^ (2 + k) := by
+      have : u + 1 ≤ v := huv_lt
+      have h1 : (u + 1) ^ (2 + k) ≤ v ^ (2 + k) := Nat.pow_le_pow_left this (2 + k)
+      have h2 := pow_add_two_sub_pow_ge_three u k hu_pos
+      omega
+    omega
+
 
 
 /-! ## Section 4: Unconditional Binary-Base Chao Ko, Binary-Minuend & Gersonides–Pillai Theorems -/
 
-theorem odd_dvd_pow_two (d : Nat) : ∀ q, d % 2 = 1 → d ∣ 2 ^ q → d = 1
-  | 0, hodd, hdvd => by
-    rw [Nat.pow_zero] at hdvd
-    have : d ≤ 1 := Nat.le_of_dvd (by decide) hdvd
+
+
+private theorem coprime_two_of_odd {n : Nat} (h : n % 2 = 1) : Nat.Coprime n 2 := by
+  have hdvd : Nat.gcd n 2 ∣ 2 := Nat.gcd_dvd_right n 2
+  have hpos : 0 < Nat.gcd n 2 := Nat.gcd_pos_of_pos_right _ (by decide)
+  have hle : Nat.gcd n 2 ≤ 2 := Nat.le_of_dvd (by decide) hdvd
+  have hcases : Nat.gcd n 2 = 1 ∨ Nat.gcd n 2 = 2 := by omega
+  rcases hcases with h1 | h2
+  · exact h1
+  · exfalso
+    have hdvd_n : 2 ∣ n := by
+      have : Nat.gcd n 2 ∣ n := Nat.gcd_dvd_left n 2
+      rw [h2] at this
+      exact this
+    have hmod0 : n % 2 = 0 := Nat.mod_eq_zero_of_dvd hdvd_n
     omega
-  | q + 1, hodd, hdvd => by
-    rw [Nat.pow_succ] at hdvd
-    rcases (show d = 1 ∨ 3 ≤ d by omega) with rfl | hd3
-    · rfl
-    · exfalso
-      have hdvd' : d ∣ 2 ^ q := by
-        have hcop : Nat.Coprime d 2 := by
-          rcases (show Nat.gcd d 2 = 1 ∨ Nat.gcd d 2 = 2 by omega) with h1 | h2
-          · exact h1
-          · exfalso
-            have : 2 ∣ d := by rw [← h2]; exact Nat.gcd_dvd_left 2 d
-            have : d % 2 = 0 := Nat.mod_eq_zero_of_dvd this
-            omega
-        have : d ∣ 2 ^ q * 2 := by rw [Nat.mul_comm]; exact hdvd
-        exact Nat.Coprime.dvd_of_dvd_mul_right hcop this
-      have : d = 1 := odd_dvd_pow_two d q hodd hdvd'
-      omega
+
+theorem odd_dvd_pow_two (d : Nat) : ∀ q, d % 2 = 1 → d ∣ 2 ^ q → d = 1
+  | 0, _, hd => by
+    have : 2 ^ 0 = 1 := rfl
+    rw [this] at hd
+    have : d ≤ 1 := Nat.le_of_dvd (by decide) hd
+    have : 1 ≤ d := Nat.pos_of_dvd_of_pos hd (by decide)
+    omega
+  | q + 1, hodd, hd => by
+    have hcop : Nat.Coprime d 2 := coprime_two_of_odd hodd
+    rw [Nat.pow_succ] at hd
+    have hd' : d ∣ 2 ^ q := Nat.Coprime.dvd_of_dvd_mul_right hcop hd
+    exact odd_dvd_pow_two d q hodd hd'
 
 theorem dvd_pow_two (d q : Nat) (hd : d ∣ 2 ^ q) : ∃ a, d = 2 ^ a := by
   induction q generalizing d with
   | zero =>
-    rw [Nat.pow_zero] at hd
+    have : 2 ^ 0 = 1 := rfl
+    rw [this] at hd
     have : d = 1 := by
       have : d ≤ 1 := Nat.le_of_dvd (by decide) hd
       have : 1 ≤ d := Nat.pos_of_dvd_of_pos hd (by decide)
       omega
-    exact ⟨0, by rw [this, Nat.pow_zero]⟩
-  | succ n ih =>
+    exact ⟨0, this⟩
+  | succ q ih =>
     rcases Nat.mod_two_eq_zero_or_one d with h0 | h1
-    · obtain ⟨k, hk⟩ := Nat.dvd_of_mod_eq_zero h0
-      rw [hk] at hd
+    · obtain ⟨m, rfl⟩ := Nat.dvd_of_mod_eq_zero h0
       rw [Nat.pow_succ] at hd
-      have hdvd_k : k ∣ 2 ^ n := by
-        have : 2 * k ∣ 2 * 2 ^ n := by rw [Nat.mul_comm 2 (2 ^ n)]; exact hd
-        exact (Nat.mul_dvd_mul_iff_left (by decide)).mp this
-      obtain ⟨a, rfl⟩ := ih k hdvd_k
-      exact ⟨a + 1, by rw [hk, Nat.pow_succ, Nat.mul_comm]⟩
-    · have : d = 1 := odd_dvd_pow_two d (n + 1) h1 hd
-      exact ⟨0, by rw [this, Nat.pow_zero]⟩
+      have hm : m ∣ 2 ^ q := by
+        obtain ⟨c, hc⟩ := hd
+        have hc' : 2 ^ q * 2 = m * c * 2 := by
+          calc 2 ^ q * 2 = 2 * m * c := hc
+          _ = (m * 2) * c := by rw [Nat.mul_comm 2 m]
+          _ = m * (2 * c) := by rw [Nat.mul_assoc]
+          _ = m * (c * 2) := by rw [Nat.mul_comm 2 c]
+          _ = m * c * 2 := by rw [Nat.mul_assoc]
+        have heq : 2 ^ q = m * c := Nat.eq_of_mul_eq_mul_right (by decide) hc'
+        exact ⟨c, heq⟩
+      obtain ⟨a, rfl⟩ := ih m hm
+      exact ⟨a + 1, by rw [Nat.pow_succ, Nat.mul_comm]⟩
+    · have : d = 1 := odd_dvd_pow_two d (q + 1) h1 hd
+      exact ⟨0, this⟩
 
 theorem pow_two_inj_right (a b : Nat) (h : 2 ^ a = 2 ^ b) : a = b := by
-  rcases (show a < b ∨ a = b ∨ b < a by omega) with hlt | heq | hgt
-  · have : 2 ^ a < 2 ^ b := Nat.pow_lt_pow_right (by decide) hlt
+  rcases (show a < b ∨ a = b ∨ b < a by omega) with hlt | rfl | hgt
+  · have hlt2 : 2 ^ a < 2 ^ b := Nat.pow_lt_pow_right (by decide) hlt
     omega
-  · exact heq
-  · have : 2 ^ b < 2 ^ a := Nat.pow_lt_pow_right (by decide) hgt
+  · rfl
+  · have hgt2 : 2 ^ b < 2 ^ a := Nat.pow_lt_pow_right (by decide) hgt
     omega
 
-theorem chao_ko_binary_factor_uniqueness (a b q : Nat)
-    (hdiff : 2 ^ b - 2 ^ a = 2) (hsum : a + b = q) :
-    a = 1 ∧ b = 2 ∧ q = 3 := by
-  have ha_pos : a = 1 := by
-    rcases a with _ | a'
-    · rw [Nat.pow_zero] at hdiff
-      have : 2 ^ b = 3 := by omega
-      have : b ≤ 1 ∨ 2 ≤ b := by omega
-      rcases this with hb1 | hb2
-      · rcases b with _ | b'
-        · rw [Nat.pow_zero] at this; omega
-        · rcases b' with _ | b''
-          · rw [Nat.pow_one] at this; omega
-          · omega
-      · obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hb2
-        have : 4 ≤ 2 ^ (2 + k) := by
-          rw [Nat.pow_add]
-          have : 2 ^ 2 = 4 := by decide
-          rw [this]
-          have : 1 ≤ 2 ^ k := Nat.one_le_pow k 2 (by decide)
+private theorem power_of_two_diff_two (a b : Nat)
+    (ha : 1 ≤ a) (hb : a < b) (hdiff : 2 ^ b - 2 ^ a = 2) :
+    a = 1 ∧ b = 2 := by
+  obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le (show a + 1 ≤ b by omega)
+  rw [Nat.pow_add, Nat.pow_add, Nat.pow_one] at hdiff
+  have hfact : 2 ^ a * (2 * 2 ^ k - 1) = 2 := by
+    have h1 : 2 ^ a * (2 * 2 ^ k - 1) = 2 ^ a * (2 * 2 ^ k) - 2 ^ a := by
+      rw [Nat.mul_sub_left_distrib, Nat.mul_one]
+    have h2 : 2 ^ a * (2 * 2 ^ k) = 2 ^ a * 2 * 2 ^ k := by
+      rw [Nat.mul_assoc]
+    rw [h1, h2, hdiff]
+  have h2a_dvd : 2 ^ a ∣ 2 := ⟨2 * 2 ^ k - 1, hfact.symm⟩
+  have ha_le : 2 ^ a ≤ 2 := Nat.le_of_dvd (by decide) h2a_dvd
+  have ha1 : a = 1 := by
+    rcases (show a = 1 ∨ 2 ≤ a by omega) with rfl | ha2
+    · rfl
+    · have h4 : 4 ≤ 2 ^ a := by
+        have : 2 ^ 2 ≤ 2 ^ a := Nat.pow_le_pow_right (by decide) ha2
+        omega
+      omega
+  rw [ha1, Nat.pow_one] at hfact
+  have hk0 : k = 0 := by
+    rcases k with _ | k'
+    · rfl
+    · have : 4 ≤ 2 * 2 ^ (k' + 1) := by
+        have : 2 ≤ 2 ^ (k' + 1) := by
+          have : 2 ^ 1 ≤ 2 ^ (k' + 1) := Nat.pow_le_pow_right (by decide) (by omega)
           omega
         omega
-    · rcases a' with _ | a''
-      · rfl
-      · exfalso
-        obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le (by omega : 2 ≤ 2 + a'')
-        have hdvd4 : 4 ∣ 2 ^ (2 + k) := by
-          rw [Nat.pow_add]
-          have : 2 ^ 2 = 4 := by decide
-          rw [this]
-          exact ⟨2 ^ k, by ring⟩
-        have h_b_ge : 2 + k < b := by
-          have : 2 ^ (2 + k) < 2 ^ b := by omega
-          exact Nat.lt_of_pow_lt_pow (by decide) this
-        obtain ⟨j, rfl⟩ := Nat.exists_eq_add_of_le (by omega : 2 ≤ b)
-        have hdvd4_b : 4 ∣ 2 ^ (2 + j) := by
-          rw [Nat.pow_add]
-          have : 2 ^ 2 = 4 := by decide
-          rw [this]
-          exact ⟨2 ^ j, by ring⟩
-        have hdvd_diff : 4 ∣ (2 ^ (2 + j) - 2 ^ (2 + k)) := Nat.dvd_sub' hdvd4_b hdvd4
-        rw [hdiff] at hdvd_diff
-        revert hdvd_diff
-        decide
-  have hb_eq : b = 2 := by
-    rw [ha_pos, Nat.pow_one] at hdiff
-    have : 2 ^ b = 4 := by omega
-    have h4 : (4 : Nat) = 2 ^ 2 := by decide
-    rw [h4] at this
-    exact pow_two_inj_right b 2 this
-  refine ⟨ha_pos, hb_eq, by omega⟩
+      omega
+  subst hk0
+  refine ⟨ha1, by omega⟩
+
+theorem chao_ko_binary_factor_uniqueness (x a b : Nat)
+    (hx : 2 ≤ x) (hprod : (x - 1) * (x + 1) = 2 ^ (a + b))
+    (ha_eq : x - 1 = 2 ^ a) (hb_eq : x + 1 = 2 ^ b) :
+    x = 3 ∧ a = 1 ∧ b = 2 := by
+  have hab : a < b := by
+    have hlt : 2 ^ a < 2 ^ b := by
+      have : x - 1 < x + 1 := by omega
+      rw [ha_eq, hb_eq] at this
+      exact this
+    rcases (show a < b ∨ b ≤ a by omega) with h1 | h2
+    · exact h1
+    · exfalso
+      have : 2 ^ b ≤ 2 ^ a := Nat.pow_le_pow_right (by decide) h2
+      omega
+  have ha_pos : 1 ≤ a := by
+    apply Classical.byContradiction
+    intro h0
+    have ha0 : a = 0 := by omega
+    rw [ha0, Nat.pow_zero] at ha_eq
+    have hx2 : x = 2 := by omega
+    rw [hx2] at hb_eq
+    rcases b with _ | _ | b'
+    · rw [Nat.pow_zero] at hb_eq; omega
+    · rw [Nat.pow_one] at hb_eq; omega
+    · have : 4 ≤ 2 ^ (b' + 2) := by
+        have : 2 ^ 2 ≤ 2 ^ (b' + 2) := Nat.pow_le_pow_right (by decide) (by omega)
+        exact this
+      omega
+  have hdiff : 2 ^ b - 2 ^ a = 2 := by
+    have hx_sub : (x + 1) - (x - 1) = 2 := by omega
+    rw [hb_eq, ha_eq] at hx_sub
+    exact hx_sub
+  obtain ⟨ha1, hb2⟩ := power_of_two_diff_two a b ha_pos hab hdiff
+  rw [ha1, Nat.pow_one] at ha_eq
+  exact ⟨by omega, ha1, hb2⟩
 
 theorem chao_ko_binary_base_unique (X q : Nat) (hX : 2 ≤ X) (hq : 2 ≤ q) :
     X ^ 2 - 2 ^ q = 1 ↔ X = 3 ∧ q = 3 := by
   constructor
   · intro h
-    have hcat : X ^ 2 = 2 ^ q + 1 := by omega
     have hprod : (X - 1) * (X + 1) = 2 ^ q := by
-      have : (X - 1) * (X + 1) = X ^ 2 - 1 := by
-        obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hX
-        rw [Nat.pow_two]
-        ring
-      rw [this, hcat]
+      obtain ⟨X', rfl⟩ := Nat.exists_eq_add_of_le hX
+      have h1 : 2 + X' - 1 = 1 + X' := by omega
+      have h2 : 2 + X' + 1 = 3 + X' := by omega
+      rw [h1, h2]
+      have h_prod : (1 + X') * (3 + X') = 3 + 4 * X' + X' * X' := by ring
+      have h_sq : (2 + X') ^ 2 = 4 + 4 * X' + X' * X' := by
+        rw [Nat.pow_two]; ring
+      rw [h_sq] at h
+      rw [h_prod]
       omega
-    have hdvdA : X - 1 ∣ 2 ^ q := ⟨X + 1, by rw [Nat.mul_comm]; exact hprod.symm⟩
-    have hdvdB : X + 1 ∣ 2 ^ q := ⟨X - 1, hprod.symm⟩
+    have hdvdA : X - 1 ∣ 2 ^ q := ⟨X + 1, hprod.symm⟩
+    have hdvdB : X + 1 ∣ 2 ^ q := ⟨X - 1, by rw [Nat.mul_comm]; exact hprod.symm⟩
     obtain ⟨a, ha⟩ := dvd_pow_two (X - 1) q hdvdA
     obtain ⟨b, hb⟩ := dvd_pow_two (X + 1) q hdvdB
-    have hdiff : 2 ^ b - 2 ^ a = 2 := by
-      rw [← ha, ← hb]
-      omega
-    have hsum : a + b = q := by
-      have : 2 ^ (a + b) = 2 ^ q := by
-        rw [Nat.pow_add, ← ha, ← hb, hprod]
-      exact pow_two_inj_right (a + b) q this
-    obtain ⟨ha1, hb2, hq3⟩ := chao_ko_binary_factor_uniqueness a b q hdiff hsum
-    have hX3 : X = 3 := by
-      rw [ha1, Nat.pow_one] at ha
-      omega
-    exact ⟨hX3, hq3⟩
+    have hsum : 2 ^ (a + b) = 2 ^ q := by
+      rw [Nat.pow_add, ← ha, ← hb, hprod]
+    have hab_q : a + b = q := pow_two_inj_right (a + b) q hsum
+    obtain ⟨hx3, ha1, hb2⟩ := chao_ko_binary_factor_uniqueness X a b hX (by omega) ha hb
+    refine ⟨hx3, by omega⟩
   · rintro ⟨rfl, rfl⟩
     decide
 
-theorem catalan_even_exponent_binary_base_unique (x k q : Nat)
-    (hx : 2 ≤ x) (hk : 1 ≤ k) (hq : 2 ≤ q) :
-    x ^ (2 * k) - 2 ^ q = 1 ↔ x = 3 ∧ k = 1 ∧ q = 3 := by
+
+
+theorem catalan_even_exponent_binary_base_unique (X k q : Nat)
+    (hX : 2 ≤ X) (hk : 1 ≤ k) (hq : 2 ≤ q) :
+    X ^ (2 * k) - 2 ^ q = 1 ↔ X = 3 ∧ k = 1 ∧ q = 3 := by
+  have hsq : (X ^ k) ^ 2 - 2 ^ q = 1 ↔ X ^ (2 * k) - 2 ^ q = 1 := by
+    rw [← Nat.pow_mul, Nat.mul_comm k 2]
+  rw [← hsq]
+  have hXk : 2 ≤ X ^ k := nat_pow_ge_two hX hk
   constructor
   · intro h
-    have h1 : (x ^ k) ^ 2 - 2 ^ q = 1 := by
-      have : x ^ (2 * k) = (x ^ k) ^ 2 := by
-        rw [← Nat.pow_mul, Nat.mul_comm]
-      rw [← this]
-      exact h
-    have hX : 2 ≤ x ^ k := nat_pow_ge_two hx hk
-    obtain ⟨hX3, hq3⟩ := (chao_ko_binary_base_unique (x ^ k) q hX hq).mp h1
-    have hxk : x = 3 ∧ k = 1 := by
+    obtain ⟨hXk3, hq3⟩ := (chao_ko_binary_base_unique (X ^ k) q hXk hq).mp h
+    have hX_k_eq : X = 3 ∧ k = 1 := by
       rcases (show k = 1 ∨ 2 ≤ k by omega) with rfl | hk2
-      · rw [Nat.pow_one] at hX3
-        exact ⟨hX3, rfl⟩
-      · obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hk2
-        have : 4 ≤ x ^ (2 + m) := by
+      · rw [Nat.pow_one] at hXk3
+        exact ⟨hXk3, rfl⟩
+      · exfalso
+        obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hk2
+        have h4 : 4 ≤ X ^ 2 := by
+          rw [Nat.pow_two]
+          exact Nat.mul_le_mul hX hX
+        have h1 : 1 ≤ X ^ m := Nat.one_le_pow m X (by omega)
+        have h_prod : 4 * 1 ≤ X ^ 2 * X ^ m := Nat.mul_le_mul h4 h1
+        have : 4 ≤ X ^ (2 + m) := by
           rw [Nat.pow_add]
-          have h4 : 4 ≤ x ^ 2 := by
-            rw [Nat.pow_two]
-            exact Nat.mul_le_mul hx hx
-          have h1 : 1 ≤ x ^ m := Nat.one_le_pow m x (by omega)
-          have : 4 * 1 ≤ x ^ 2 * x ^ m := Nat.mul_le_mul h4 h1
-          omega
+          exact h_prod
         omega
-    exact ⟨hxk.1, hxk.2, hq3⟩
+    exact ⟨hX_k_eq.1, hX_k_eq.2, hq3⟩
   · rintro ⟨rfl, rfl, rfl⟩
     decide
 
-theorem pow_three_mod_eight (m : Nat) : (3 ^ (2 * m)) % 8 = 1 := by
-  induction m with
-  | zero => decide
-  | succ k ih =>
-    have : 2 * (k + 1) = 2 * k + 2 := by omega
-    rw [this, Nat.pow_add, Nat.mul_mod, ih]
-    decide
 
-theorem gersonides_pillai_three_two_unique (p q : Nat)
-    (hp : 2 ≤ p) (hq : 2 ≤ q)
-    (h_chao_ko : ∀ X q : Nat, 2 ≤ X → 2 ≤ q → (X ^ 2 - 2 ^ q = 1 ↔ X = 3 ∧ q = 3)) :
+theorem pow_three_mod_eight (k : Nat) : (3 ^ (2 * k + 1)) % 8 = 3 := by
+  induction k with
+  | zero => decide
+  | succ j ih =>
+    have : 2 * (j + 1) + 1 = (2 * j + 1) + 2 := by omega
+    rw [this, Nat.pow_add]
+    have h9 : 3 ^ 2 = 9 := rfl
+    rw [h9, Nat.mul_mod, ih]
+
+theorem gersonides_pillai_three_two_unique (p q : Nat) (hp : 2 ≤ p) (hq : 2 ≤ q)
+    (h_chao : ∀ X q : Nat, 2 ≤ X → 2 ≤ q → (X ^ 2 - 2 ^ q = 1 ↔ X = 3 ∧ q = 3)) :
     3 ^ p - 2 ^ q = 1 ↔ p = 2 ∧ q = 3 := by
   constructor
   · intro h
+    have hcat : 3 ^ p = 2 ^ q + 1 := by omega
     rcases Nat.mod_two_eq_zero_or_one p with hp_even | hp_odd
-    · obtain ⟨k, hk⟩ := Nat.dvd_of_mod_eq_zero hp_even
-      have hk_pos : 1 ≤ k := by omega
-      have hp_eq : p = 2 * k := by omega
-      have h_sol := (catalan_even_exponent_binary_base_unique 3 k q (by decide) hk_pos hq).mp
-      rw [← hp_eq] at h_sol
-      obtain ⟨-, rfl, rfl⟩ := h_sol h
-      exact ⟨by omega, rfl⟩
-    · exfalso
-      rcases (show q = 2 ∨ 3 ≤ q by omega) with rfl | hq3
-      · rw [Nat.pow_two] at h
-        have : 3 ^ p = 5 := by omega
-        obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hp
-        have : 9 ≤ 3 ^ (2 + k) := by
-          rw [Nat.pow_add]
-          have : 3 ^ 2 = 9 := by decide
-          rw [this]
-          have : 1 ≤ 3 ^ k := Nat.one_le_pow k 3 (by decide)
+    · obtain ⟨k, rfl⟩ := Nat.dvd_of_mod_eq_zero hp_even
+      have hk1 : 1 ≤ k := by omega
+      have hsq : (3 ^ k) ^ 2 - 2 ^ q = 1 := by
+        rw [← Nat.pow_mul, Nat.mul_comm k 2]
+        exact h
+      have h3k : 2 ≤ 3 ^ k := by
+        obtain ⟨k', rfl⟩ := Nat.exists_eq_add_of_le hk1
+        rw [Nat.pow_add]
+        have : 1 ≤ 3 ^ k' := Nat.one_le_pow k' 3 (by omega)
+        omega
+      obtain ⟨h3k_eq, hq3⟩ := (h_chao (3 ^ k) q h3k hq).mp hsq
+      rcases k with _ | _ | k'
+      · omega
+      · exact ⟨rfl, hq3⟩
+      · exfalso
+        have h9 : 9 ≤ 3 ^ (k' + 2) := by
+          have : 3 ^ (k' + 2) = 3 ^ k' * 3 ^ 2 := Nat.pow_add 3 k' 2
+          have : 1 ≤ 3 ^ k' := Nat.one_le_pow k' 3 (by omega)
           omega
         omega
-      · obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hq3
-        have hdvd8 : 8 ∣ 2 ^ (3 + k) := by
+    · obtain ⟨k, hk⟩ := Nat.dvd_of_mod_eq_zero (show (p - 1) % 2 = 0 by omega)
+      have hp_eq : p = 2 * k + 1 := by omega
+      rw [hp_eq] at h hcat
+      rcases (show q = 2 ∨ 3 ≤ q by omega) with rfl | hq3
+      · have : 3 ^ (2 * k + 1) = 5 := by omega
+        have : 3 ≤ 2 * k + 1 := by omega
+        obtain ⟨m, hm⟩ := Nat.exists_eq_add_of_le this
+        have : 27 ≤ 3 ^ (2 * k + 1) := by
+          rw [hm, Nat.pow_add]
+          have : 1 ≤ 3 ^ m := Nat.one_le_pow m 3 (by omega)
+          omega
+        omega
+      · have h2q : 2 ^ q % 8 = 0 := by
+          obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hq3
           rw [Nat.pow_add]
-          have : 2 ^ 3 = 8 := by decide
+          have : 2 ^ 3 = 8 := rfl
           rw [this]
-          exact ⟨2 ^ k, by ring⟩
-        have h_mod8 : (2 ^ (3 + k)) % 8 = 0 := Nat.mod_eq_zero_of_dvd hdvd8
-        have hcat : 3 ^ p = 2 ^ (3 + k) + 1 := by omega
-        have h3p_mod8 : (3 ^ p) % 8 = 1 := by
-          rw [hcat, Nat.add_mod, h_mod8]
-        obtain ⟨m, hm⟩ := Nat.dvd_of_mod_eq_zero (show (p - 1) % 2 = 0 by omega)
-        have hp_odd_eq : p = 2 * m + 1 := by omega
-        rw [hp_odd_eq, Nat.pow_add, Nat.pow_one, Nat.mul_mod, pow_three_mod_eight m] at h3p_mod8
-        revert h3p_mod8
-        decide
+          exact Nat.mul_mod_right 8 (2 ^ m)
+        have h3p : (3 ^ (2 * k + 1)) % 8 = 3 := pow_three_mod_eight k
+        have h_mod1 : (3 ^ (2 * k + 1)) % 8 = 1 := by
+          rw [hcat, Nat.add_mod, h2q]
+        rw [h3p] at h_mod1
+        contradiction
   · rintro ⟨rfl, rfl⟩
     decide
+
+
 
 
 /-! ## Section 5: Even-Base Chao Ko Dual Factorization & Chein's Coprime Power Split -/
@@ -903,487 +973,531 @@ theorem altOddQuotient_mul (Y k : Nat) (hY : 1 ≤ Y) :
     (Y + 1) * altOddQuotient Y k = Y ^ (2 * k + 1) + 1 := by
   induction k with
   | zero =>
-    unfold altOddQuotient
-    rw [Nat.mul_one, Nat.pow_one]
+    simp only [altOddQuotient, Nat.mul_zero, Nat.zero_add, Nat.pow_one]
+    ring
   | succ j ih =>
     unfold altOddQuotient
-    rw [Nat.mul_add, ih]
-    have h1 : 2 * (j + 1) + 1 = 2 * j + 1 + 2 := by omega
-    have h2 : 2 * j + 2 = 2 * j + 1 + 1 := by omega
-    have h3 : 2 * j + 1 = 2 * j + 1 := rfl
-    rw [h1, h2]
-    have hY_pow : Y ^ (2 * j + 1) ≤ Y ^ (2 * j + 1 + 1) := by
-      rw [Nat.pow_add, Nat.pow_one]
+    have hexp1 : 2 * (j + 1) + 1 = (2 * j + 2) + 1 := by omega
+    have hexp2 : 2 * j + 2 = (2 * j + 1) + 1 := by omega
+    have h_le : Y ^ (2 * j + 1) ≤ Y ^ (2 * j + 2) := by
+      rw [hexp2, Nat.pow_succ]
       have : Y ^ (2 * j + 1) * 1 ≤ Y ^ (2 * j + 1) * Y := Nat.mul_le_mul_left _ hY
+      rw [Nat.mul_one] at this
+      exact this
+    have h_distrib : (Y + 1) * (altOddQuotient Y j + (Y ^ (2 * j + 2) - Y ^ (2 * j + 1))) =
+        (Y + 1) * altOddQuotient Y j + (Y + 1) * (Y ^ (2 * j + 2) - Y ^ (2 * j + 1)) :=
+      Nat.mul_add (Y + 1) _ _
+    rw [h_distrib, ih]
+    have h_alg : (Y + 1) * (Y ^ (2 * j + 2) - Y ^ (2 * j + 1)) =
+        Y ^ (2 * (j + 1) + 1) - Y ^ (2 * j + 1) := by
+      rw [Nat.mul_sub_left_distrib]
+      have hA : (Y + 1) * Y ^ (2 * j + 2) = Y ^ (2 * (j + 1) + 1) + Y ^ (2 * j + 2) := by
+        rw [Nat.add_mul, Nat.one_mul]
+        have : Y * Y ^ (2 * j + 2) = Y ^ (2 * (j + 1) + 1) := by
+          rw [hexp1, Nat.mul_comm, ← Nat.pow_succ]
+        rw [this, Nat.add_comm]
+      have hB : (Y + 1) * Y ^ (2 * j + 1) = Y ^ (2 * j + 2) + Y ^ (2 * j + 1) := by
+        rw [Nat.add_mul, Nat.one_mul]
+        have : Y * Y ^ (2 * j + 1) = Y ^ (2 * j + 2) := by
+          rw [hexp2, Nat.mul_comm, ← Nat.pow_succ]
+        rw [this, Nat.add_comm]
+      rw [hA, hB]
       omega
-    have h_distrib : (Y + 1) * (Y ^ (2 * j + 1 + 1) - Y ^ (2 * j + 1)) =
-        Y * (Y ^ (2 * j + 1 + 1) - Y ^ (2 * j + 1)) + (Y ^ (2 * j + 1 + 1) - Y ^ (2 * j + 1)) := by
-      rw [Nat.add_mul, Nat.one_mul]
-    rw [h_distrib]
-    rw [Nat.mul_sub_left_distrib]
-    have hA : Y * Y ^ (2 * j + 1 + 1) = Y ^ (2 * j + 1 + 2) := by
-      rw [Nat.pow_add, Nat.pow_add, Nat.pow_two, Nat.pow_one]
-      ring
-    have hB : Y * Y ^ (2 * j + 1) = Y ^ (2 * j + 1 + 1) := by
-      rw [Nat.pow_add, Nat.pow_one]
-      ring
-    rw [hA, hB]
-    have : Y ^ (2 * j + 1 + 1) ≤ Y ^ (2 * j + 1 + 2) := by
-      rw [Nat.pow_add, Nat.pow_two]
-      have : 1 ≤ Y * Y := by
-        have : 1 * 1 ≤ Y * Y := Nat.mul_le_mul hY hY
-        omega
-      have : Y ^ (2 * j + 1) * 1 ≤ Y ^ (2 * j + 1) * (Y * Y) := Nat.mul_le_mul_left _ this
-      omega
+    rw [h_alg]
+    have h_pow_le : Y ^ (2 * j + 1) ≤ Y ^ (2 * (j + 1) + 1) := by
+      have : 2 * j + 1 ≤ 2 * (j + 1) + 1 := by omega
+      exact Nat.pow_le_pow_right hY this
     omega
 
-theorem pow_y_sq_mod (Y g : Nat) (hy : g ∣ Y + 1) (k : Nat) :
-    (Y ^ (2 * k)) % g = 1 % g := by
+
+theorem pow_y_sq_mod {Y g : Nat} (hg : g ∣ Y + 1) (hY : 1 ≤ Y) (k : Nat) :
+    (Y ^ 2) ^ k % g = 1 % g := by
+  have hdvd : g ∣ Y ^ 2 - 1 := by
+    obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hY
+    have h_prod : (1 + d) ^ 2 - 1 = (1 + d - 1) * (1 + d + 1) := by
+      have h1 : 1 + d - 1 = d := by omega
+      rw [h1]
+      have h_sq : (1 + d) ^ 2 = 1 + 2 * d + d * d := by
+        rw [Nat.pow_two]; ring
+      rw [h_sq]
+      have : 1 + 2 * d + d * d - 1 = d * (d + 2) := by ring
+      rw [this]
+      have : d * (1 + d + 1) = d * (d + 2) := by ring
+      rw [this]
+    rw [h_prod]
+    obtain ⟨m, hm⟩ := hg
+    have : (1 + d - 1) * (1 + d + 1) = (1 + d - 1) * (g * m) := by rw [hm]
+    rw [this]
+    exact ⟨(1 + d - 1) * m, by ring⟩
   induction k with
   | zero => rfl
   | succ j ih =>
-    obtain ⟨m, hm⟩ := hy
-    have h1 : Y + 1 = g * m := hm
-    have hY_sq : Y ^ 2 = (g * m - 1) ^ 2 := by
-      have : Y = g * m - 1 := by omega
+    obtain ⟨m, hm⟩ := hdvd
+    have h_mod : (Y ^ 2) % g = 1 % g := by
+      have : Y ^ 2 = g * m + 1 := by
+        have : 1 ≤ Y ^ 2 := Nat.one_le_pow 2 Y hY
+        omega
       rw [this]
-    have h2 : 2 * (j + 1) = 2 * j + 2 := by omega
-    rw [h2, Nat.pow_add, Nat.mul_mod, ih]
-    have : (Y ^ 2) % g = 1 % g := by
-      obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le (show 1 ≤ g * m by omega)
-      have : g * m - 1 = d := by omega
-      have hexp : (g * m) ^ 2 - 2 * (g * m) + 1 = (g * m - 1) ^ 2 := by
-        have : 1 ≤ g * m := by omega
-        obtain ⟨c, rfl⟩ := Nat.exists_eq_add_of_le this
-        rw [Nat.pow_two]
-        ring
-      have : (Y ^ 2) = (g * m - 1) ^ 2 := by
-        have : Y = g * m - 1 := by omega
-        rw [this, Nat.pow_two]
-      rw [this]
-      obtain ⟨c, rfl⟩ := Nat.exists_eq_add_of_le (show 1 ≤ g * m by omega)
-      have : (1 + c) ^ 2 = c ^ 2 + 2 * c + 1 := by ring
-      have : (g * m - 1) = c := by omega
-      rw [this]
-      have : c = g * m - 1 := by omega
-      have h_sq_mod : (g * m - 1) ^ 2 % g = 1 % g := by
-        have : (g * m - 1) ^ 2 + 2 * (g * m) = (g * m) ^ 2 + 1 := by
-          have : 1 ≤ g * m := by omega
-          obtain ⟨w, rfl⟩ := Nat.exists_eq_add_of_le this
-          rw [Nat.pow_two, Nat.pow_two]
-          ring
-        have : (g * m - 1) ^ 2 % g = ((g * m - 1) ^ 2 + 2 * (g * m)) % g := by
-          rw [Nat.add_mod]
-          have : (2 * (g * m)) % g = 0 := by
-            have : 2 * (g * m) = g * (2 * m) := by ring
-            rw [this, Nat.mul_mod_right]
-          rw [this, Nat.add_zero, Nat.mod_mod]
-        rw [this]
-        have : (g * m) ^ 2 + 1 = g * (g * m ^ 2) + 1 := by ring
-        rw [this, Nat.add_mod, Nat.mul_mod_right, Nat.zero_add, Nat.mod_mod]
-      exact h_sq_mod
-    rw [this, ← Nat.mul_mod, Nat.one_mul, Nat.mod_mod]
+      exact Nat.mul_add_mod_self_left g m 1
+    rw [Nat.pow_succ, Nat.mul_mod, ih, ← Nat.mul_mod, Nat.one_mul, h_mod]
 
-theorem alt_step_eq (Y k : Nat) (hY : 1 ≤ Y) :
-    Y ^ (2 * k + 2) - Y ^ (2 * k + 1) = (Y - 1) * (Y + 1) * Y ^ (2 * k) := by
-  have h1 : Y ^ (2 * k + 2) = Y ^ (2 * k) * (Y * Y) := by
-    rw [Nat.pow_add, Nat.pow_two]
-    ring
-  have h2 : Y ^ (2 * k + 1) = Y ^ (2 * k) * Y := by
-    rw [Nat.pow_add, Nat.pow_one]
-    ring
+theorem alt_step_eq (Y k : Nat) (hY : 2 ≤ Y) :
+    Y ^ (2 * k + 2) - Y ^ (2 * k + 1) = (Y ^ 2) ^ k * (Y ^ 2 - Y) := by
+  rw [Nat.mul_sub_left_distrib]
+  have h1 : (Y ^ 2) ^ k * Y ^ 2 = Y ^ (2 * k + 2) := by
+    rw [← Nat.pow_mul, ← Nat.pow_add]
+  have h2 : (Y ^ 2) ^ k * Y = Y ^ (2 * k + 1) := by
+    rw [← Nat.pow_mul, ← Nat.pow_succ]
   rw [h1, h2]
-  have : (Y - 1) * (Y + 1) = Y * Y - 1 := by
-    obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hY
-    ring
-  rw [this]
+
+theorem altOddQuotient_mod_step {Y g : Nat} (hg : g ∣ Y + 1) (hY : 2 ≤ Y) (j : Nat) :
+    (Y ^ (2 * j + 2) - Y ^ (2 * j + 1)) % g = 2 % g := by
   obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hY
-  ring
+  rw [alt_step_eq (2 + d) j (by omega)]
+  have h_y_sq : (2 + d) ^ 2 - (2 + d) = (2 + d + 1) * d + 2 := by
+    rw [Nat.pow_two]
+    have h_exp : (2 + d) * (2 + d) = 4 + 4 * d + d * d := by ring
+    rw [h_exp]
+    have h_exp2 : (2 + d + 1) * d + 2 = d * d + 3 * d + 2 := by ring
+    rw [h_exp2]
+    omega
+  rw [h_y_sq]
+  obtain ⟨m, hm⟩ := hg
+  have h_div : (2 + d + 1) * d = g * (m * d) := by
+    calc (2 + d + 1) * d = (g * m) * d := by rw [hm]
+    _ = g * (m * d) := by ring
+  rw [h_div]
+  have h_prod : ((2 + d) ^ 2) ^ j * (g * (m * d) + 2) =
+      g * (((2 + d) ^ 2) ^ j * (m * d)) + ((2 + d) ^ 2) ^ j * 2 := by ring
+  rw [h_prod, Nat.add_mod, Nat.mul_mod_right, Nat.zero_add, Nat.mod_mod]
+  have h_pow_mod := pow_y_sq_mod ⟨m, hm⟩ (by omega) j
+  rw [Nat.mul_mod, h_pow_mod, ← Nat.mul_mod, Nat.one_mul]
 
-theorem altOddQuotient_mod_step (Y g : Nat) (hy : g ∣ Y + 1) (hY : 1 ≤ Y) (k : Nat) :
-    (Y ^ (2 * k + 2) - Y ^ (2 * k + 1)) % g = (2 * k + 1 - (2 * k)) * 0 := by
-  rw [alt_step_eq Y k hY]
-  have hdvd : g ∣ (Y - 1) * (Y + 1) * Y ^ (2 * k) := by
-    obtain ⟨m, hm⟩ := hy
-    refine ⟨(Y - 1) * m * Y ^ (2 * k), ?_⟩
-    rw [hm]
-    ring
-  rw [Nat.mod_eq_zero_of_dvd hdvd]
-  omega
-
-theorem altOddQuotient_mod_g (hy : 2 ∣ Y + 1) (hY : 2 ≤ Y) (k : Nat) :
-    altOddQuotient Y k % 2 = 1 := by
+theorem altOddQuotient_mod_g {Y g : Nat} (hg : g ∣ Y + 1) (hY : 2 ≤ Y) (k : Nat) :
+    altOddQuotient Y k % g = (2 * k + 1) % g := by
   induction k with
   | zero => rfl
   | succ j ih =>
     unfold altOddQuotient
-    have hdvd : 2 ∣ Y ^ (2 * j + 2) - Y ^ (2 * j + 1) := by
-      rw [alt_step_eq Y j (by omega)]
-      obtain ⟨m, hm⟩ := hy
-      refine ⟨(Y - 1) * m * Y ^ (2 * j), ?_⟩
-      rw [hm]
-      ring
-    rw [Nat.add_mod, Nat.mod_eq_zero_of_dvd hdvd, Nat.add_zero, Nat.mod_mod, ih]
+    rw [Nat.add_mod, ih, altOddQuotient_mod_step hg hY j, ← Nat.add_mod]
+    have : (2 * j + 1) + 2 = 2 * (j + 1) + 1 := by omega
+    rw [this]
 
 theorem gcd_add_one_altOddQuotient_dvd (Y k : Nat) (hY : 1 ≤ Y) :
     Nat.gcd (Y + 1) (altOddQuotient Y k) ∣ (2 * k + 1) := by
-  let g := Nat.gcd (Y + 1) (altOddQuotient Y k)
-  have hg1 : g ∣ Y + 1 := Nat.gcd_dvd_left _ _
-  have hg2 : g ∣ altOddQuotient Y k := Nat.gcd_dvd_right _ _
-  have hmod : altOddQuotient Y k % g = (2 * k + 1) % g := by
-    induction k with
-    | zero => rfl
-    | succ j ih =>
-      unfold altOddQuotient
-      have hdvd : g ∣ Y ^ (2 * j + 2) - Y ^ (2 * j + 1) := by
-        rw [alt_step_eq Y j hY]
-        obtain ⟨m, hm⟩ := hg1
-        refine ⟨(Y - 1) * m * Y ^ (2 * j), ?_⟩
-        rw [hm]
-        ring
-      rw [Nat.add_mod, Nat.mod_eq_zero_of_dvd hdvd, Nat.add_zero, Nat.mod_mod, ih]
-      have hstep : 2 * (j + 1) + 1 = (2 * j + 1) + 2 := by omega
-      rw [hstep]
-      have : 2 % g = 0 := by
-        have : g ∣ 2 := by
-          have hdvd_mul : g ∣ (Y - 1) * (Y + 1) := by
-            obtain ⟨m, hm⟩ := hg1
-            exact ⟨(Y - 1) * m, by rw [hm]; ring⟩
-          have hdvd_sq : g ∣ Y ^ 2 - 1 := by
-            have : (Y - 1) * (Y + 1) = Y ^ 2 - 1 := by
-              obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hY
-              rw [Nat.pow_two]; ring
-            rw [← this]; exact hdvd_mul
-          have hdvd_alt : g ∣ Y * (Y + 1) - (Y ^ 2 - 1) := by
-            have hA : g ∣ Y * (Y + 1) := by
-              obtain ⟨m, hm⟩ := hg1
-              exact ⟨Y * m, by rw [hm]; ring⟩
-            exact Nat.dvd_sub' hA hdvd_sq
-          have : Y * (Y + 1) - (Y ^ 2 - 1) = Y + 1 := by
-            obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hY
-            rw [Nat.pow_two]; ring
-          have hdiff2 : (Y + 1) - (Y - 1) = 2 := by omega
-          have hdvd_sub : g ∣ (Y + 1) - (Y - 1) := by
-            sorry
-          sorry
-        exact Nat.mod_eq_zero_of_dvd this
-      sorry
-  have h0 : altOddQuotient Y k % g = 0 := Nat.mod_eq_zero_of_dvd hg2
-  rw [h0] at hmod
-  exact Nat.dvd_of_mod_eq_zero hmod.symm
+  rcases (show Y = 1 ∨ 2 ≤ Y by omega) with rfl | hY2
+  · have hodd : ∀ j, altOddQuotient 1 j = 1 := by
+      intro j; induction j with
+      | zero => rfl
+      | succ j ih =>
+        unfold altOddQuotient
+        rw [Nat.one_pow, Nat.one_pow, Nat.sub_self, Nat.add_zero, ih]
+    rw [hodd k]
+    have : Nat.gcd (1 + 1) 1 = 1 := Nat.gcd_one_right 2
+    rw [this]
+    exact Nat.one_dvd (2 * k + 1)
+  · let g := Nat.gcd (Y + 1) (altOddQuotient Y k)
+    have hg1 : g ∣ Y + 1 := Nat.gcd_dvd_left _ _
+    have hg2 : g ∣ altOddQuotient Y k := Nat.gcd_dvd_right _ _
+    have h_mod := altOddQuotient_mod_g hg1 hY2 k
+    have h0 : altOddQuotient Y k % g = 0 := Nat.mod_eq_zero_of_dvd hg2
+    rw [h0] at h_mod
+    exact Nat.dvd_of_mod_eq_zero h_mod.symm
+
+
 
 theorem one_le_altOddQuotient (Y k : Nat) : 1 ≤ altOddQuotient Y k := by
   induction k with
-  | zero => decide
-  | succ j ih =>
-    unfold altOddQuotient
-    omega
+  | zero => unfold altOddQuotient; omega
+  | succ j ih => unfold altOddQuotient; omega
 
 theorem isPrimeNat_three : IsPrimeNat 3 := by
-  refine ⟨by decide, ?_⟩
+  refine ⟨by omega, ?_⟩
   intro d hd
-  have : d ≤ 3 := Nat.le_of_dvd (by decide) hd
-  have : 1 ≤ d := Nat.pos_of_dvd_of_pos hd (by decide)
-  rcases (show d = 1 ∨ d = 2 ∨ d = 3 by omega) with rfl | rfl | rfl
+  obtain ⟨k, hk⟩ := hd
+  rcases (show d = 0 ∨ d = 1 ∨ d = 2 ∨ d = 3 ∨ 4 ≤ d by omega) with rfl | rfl | rfl | rfl | hge
+  · omega
   · left; rfl
-  · exfalso; revert hd; decide
+  · exfalso; omega
   · right; rfl
+  · exfalso
+    rcases (show k = 0 ∨ 1 ≤ k by omega) with rfl | hk1
+    · omega
+    · have : 4 * 1 ≤ d * k := Nat.mul_le_mul hge hk1
+      omega
 
-theorem ne_sq_of_lt_consecutive_sq {A c : Nat}
-    (h1 : c ^ 2 < A) (h2 : A < (c + 1) ^ 2) : ∀ s, A ≠ s ^ 2 := by
-  intro s hs
-  rw [hs] at h1 h2
-  have hc1 : c < s := by
-    apply Classical.byContradiction
-    intro hle
-    have : s ≤ c := by omega
-    have : s ^ 2 ≤ c ^ 2 := Nat.pow_le_pow_left this 2
+
+theorem ne_sq_of_lt_consecutive_sq {n b c : Nat}
+    (h1 : b ^ 2 < n) (h2 : n < (b + 1) ^ 2) : n ≠ c ^ 2 := by
+  intro rfl
+  rcases (show c ≤ b ∨ b + 1 ≤ c by omega) with hle | hge
+  · have : c ^ 2 ≤ b ^ 2 := Nat.pow_le_pow_left hle 2
     omega
-  have hc2 : s < c + 1 := by
-    apply Classical.byContradiction
-    intro hge
-    have : c + 1 ≤ s := by omega
-    have : (c + 1) ^ 2 ≤ s ^ 2 := Nat.pow_le_pow_left this 2
+  · have : (b + 1) ^ 2 ≤ c ^ 2 := Nat.pow_le_pow_left hge 2
     omega
-  omega
 
 theorem euler_cubic_quotient_not_square (Y c : Nat) (hY : 2 ≤ Y) :
     altOddQuotient Y 1 ≠ c ^ 2 := by
-  unfold altOddQuotient
-  have hQ : altOddQuotient Y 1 = Y ^ 2 - Y + 1 := by
+  obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hY
+  have hval : altOddQuotient (2 + d) 1 = (1 + d) ^ 2 + (d + 2) := by
     unfold altOddQuotient
-    have : 2 * 0 + 2 = 2 := by decide
-    have : 2 * 0 + 1 = 1 := by decide
+    unfold altOddQuotient
+    rw [Nat.pow_two, Nat.pow_one]
+    have h_exp : (2 + d) * (2 + d) = 4 + 4 * d + d * d := by ring
+    rw [h_exp]
+    have : 4 + 4 * d + d * d - (2 + d) = d * d + 3 * d + 2 := by omega
+    have : (1 + d) ^ 2 + (d + 2) = d * d + 3 * d + 3 := by
+      rw [Nat.pow_two]; ring
     omega
-  rw [hQ]
-  have h1 : (Y - 1) ^ 2 < Y ^ 2 - Y + 1 := by
-    obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hY
-    have : (2 + d - 1) ^ 2 = (1 + d) ^ 2 := rfl
-    rw [this]
-    have hexp1 : (1 + d) ^ 2 = d * d + 2 * d + 1 := by ring
-    have hexp2 : (2 + d) ^ 2 = d * d + 4 * d + 4 := by ring
-    rw [hexp1, hexp2]
-    obtain ⟨S, hS⟩ : ∃ S, d * d = S := ⟨_, rfl⟩
-    rw [hS]
+  have h1 : (1 + d) ^ 2 < altOddQuotient (2 + d) 1 := by rw [hval]; omega
+  have h2 : altOddQuotient (2 + d) 1 < (1 + d + 1) ^ 2 := by
+    rw [hval]
+    have hexp : (1 + d + 1) ^ 2 = (1 + d) ^ 2 + 2 * d + 3 := by
+      rw [Nat.pow_two, Nat.pow_two]; ring
     omega
-  have h2 : Y ^ 2 - Y + 1 < Y ^ 2 := by omega
-  intro hc
-  rw [hc] at h1 h2
-  have hc_gt : Y - 1 < c := by
-    apply Classical.byContradiction
-    intro hle
-    have : c ≤ Y - 1 := by omega
-    have : c ^ 2 ≤ (Y - 1) ^ 2 := Nat.pow_le_pow_left this 2
-    omega
-  have hc_lt : c < Y := by
-    apply Classical.byContradiction
-    intro hge
-    have : Y ≤ c := by omega
-    have : Y ^ 2 ≤ c ^ 2 := Nat.pow_le_pow_left this 2
-    omega
-  omega
+  exact ne_sq_of_lt_consecutive_sq h1 h2
 
-theorem gcd_add_one_altOddQuotient_prime_cases (Y k : Nat)
-    (hY : 1 ≤ Y) (hp_pr : IsPrimeNat (2 * k + 1)) :
+
+theorem gcd_add_one_altOddQuotient_prime_cases (Y k : Nat) (hY : 1 ≤ Y)
+
+    (hp : IsPrimeNat (2 * k + 1)) :
+
     Nat.Coprime (Y + 1) (altOddQuotient Y k) ∨
+
     Nat.gcd (Y + 1) (altOddQuotient Y k) = 2 * k + 1 := by
+
   have hdvd := gcd_add_one_altOddQuotient_dvd Y k hY
-  rcases hp_pr.2 (Nat.gcd (Y + 1) (altOddQuotient Y k)) hdvd with h1 | hp
+
+  rcases hp.2 (Nat.gcd (Y + 1) (altOddQuotient Y k)) hdvd with h1 | hp_eq
+
   · left; exact h1
-  · right; exact hp
+
+  · right; exact hp_eq
+
+
 
 theorem euler_cubic_coprime_impossible (X Y : Nat)
+
     (hX : 2 ≤ X) (hY : 2 ≤ Y)
+
     (hcop : Nat.Coprime (Y + 1) (altOddQuotient Y 1))
+
     (hcat : X ^ 2 = Y ^ 3 + 1) : False := by
-  have hprod : (Y + 1) * altOddQuotient Y 1 = X ^ 2 := by
-    have hmul := altOddQuotient_mul Y 1 (by omega)
-    rw [hcat] at hmul
-    exact hmul
-  obtain ⟨hA_pow, hQ_pow⟩ :=
-    coprime_mul_eq_pow (Y + 1) (altOddQuotient Y 1) X 2
-      (by omega) (one_le_altOddQuotient Y 1) hcop hprod
-  let c := Nat.gcd X (altOddQuotient Y 1)
-  have hQ_sq : altOddQuotient Y 1 = c ^ 2 := hQ_pow
+
+  have hfact : (Y + 1) * altOddQuotient Y 1 = X ^ 2 := by
+
+    rw [altOddQuotient_mul Y 1 (by omega), hcat]
+
+  have hY1 : 1 ≤ Y + 1 := by omega
+  have hQ1 : 1 ≤ altOddQuotient Y 1 := one_le_altOddQuotient Y 1
+  obtain ⟨_, hQ_sq⟩ :=
+    coprime_mul_eq_pow (Y + 1) (altOddQuotient Y 1) X 2 hY1 hQ1 hcop (by rw [← hfact])
+
   exact euler_cubic_quotient_not_square Y (Nat.gcd X (altOddQuotient Y 1)) hY hQ_sq
 
+
+
 theorem euler_cubic_three_divisibility (X Y : Nat)
+
     (hX : 2 ≤ X) (hY : 2 ≤ Y) (hcat : X ^ 2 = Y ^ 3 + 1) :
+
     Nat.gcd (Y + 1) (altOddQuotient Y 1) = 3 ∧ 3 ∣ (Y + 1) ∧ 9 ∣ X ^ 2 := by
+
   have hp3 : IsPrimeNat 3 := isPrimeNat_three
+
   rcases gcd_add_one_altOddQuotient_prime_cases Y 1 (by omega) hp3 with hcop | hgcd3
+
   · exfalso
+
     exact euler_cubic_coprime_impossible X Y hX hY hcop hcat
+
   · have hgcd3' : Nat.gcd (Y + 1) (altOddQuotient Y 1) = 3 := by omega
+
     have hd1 : 3 ∣ (Y + 1) := by
+
       rw [← hgcd3']
+
       exact Nat.gcd_dvd_left _ _
+
     have hd2 : 3 ∣ altOddQuotient Y 1 := by
+
       rw [← hgcd3']
+
       exact Nat.gcd_dvd_right _ _
+
     obtain ⟨a, ha⟩ := hd1
+
     obtain ⟨b, hb⟩ := hd2
+
     have hfact : (Y + 1) * altOddQuotient Y 1 = X ^ 2 := by
+
       rw [altOddQuotient_mul Y 1 (by omega), hcat]
+
     refine ⟨hgcd3', ⟨a, ha⟩, ⟨a * b, ?_⟩⟩
+
     rw [← hfact, ha, hb]
+
     ring
+
+
 
 theorem chao_ko_first_case_square_and_mod_eight (X Y Q : Nat)
+
     (hX : 2 ≤ X) (hY : 2 ≤ Y) (hY_even : Y % 2 = 0)
+
     (hcop : Nat.Coprime (Y + 1) Q) (hfact : (Y + 1) * Q = X ^ 2) :
+
     Y + 1 = (Nat.gcd X (Y + 1)) ^ 2 ∧ Q = (Nat.gcd X Q) ^ 2 ∧ Y % 8 = 0 := by
+
   have hY1 : 1 ≤ Y + 1 := by omega
   have hQ1 : 1 ≤ Q := by
+    have hpos : 0 < (Y + 1) * Q := by
+      have : 1 ≤ X := by omega
+      have hXpos : 0 < X ^ 2 := Nat.one_le_pow 2 X this
+      rw [← hfact] at hXpos
+      exact hXpos
     rcases (show Q = 0 ∨ 1 ≤ Q by omega) with rfl | hQ
-    · rw [Nat.mul_zero] at hfact
-      have : 4 ≤ X ^ 2 := by
-        rw [Nat.pow_two]
-        have : 2 * 2 ≤ X * X := Nat.mul_le_mul hX hX
-        omega
-      omega
+    · rw [Nat.mul_zero] at hpos; omega
     · exact hQ
-  obtain ⟨hA_pow, hB_pow⟩ := coprime_mul_eq_pow (Y + 1) Q X 2 hY1 hQ1 hcop hfact
-  let a := Nat.gcd X (Y + 1)
-  have ha_pow : Y + 1 = a ^ 2 := hA_pow
-  have ha_odd : a % 2 = 1 := by
-    rcases Nat.mod_two_eq_zero_or_one a with h0 | h1
-    · exfalso
-      obtain ⟨k, hk⟩ := Nat.dvd_of_mod_eq_zero h0
-      rw [hk, Nat.pow_two] at ha_pow
-      have : Y + 1 = 2 * (k * (2 * k)) := by rw [ha_pow]; ring
-      omega
-    · exact h1
-  have ha_sq_mod8 : (a ^ 2) % 8 = 1 := by
-    rcases (show a % 8 = 1 ∨ a % 8 = 3 ∨ a % 8 = 5 ∨ a % 8 = 7 by omega) with h | h | h | h
-    · rw [Nat.pow_two, Nat.mul_mod, h]; decide
-    · rw [Nat.pow_two, Nat.mul_mod, h]; decide
-    · rw [Nat.pow_two, Nat.mul_mod, h]; decide
-    · rw [Nat.pow_two, Nat.mul_mod, h]; decide
-  have hY_mod8 : Y % 8 = 0 := by
-    have : (Y + 1) % 8 = 1 := by rw [ha_pow, ha_sq_mod8]
-    omega
-  refine ⟨hA_pow, hB_pow, hY_mod8⟩
+  obtain ⟨hY1_sq, hQ_sq⟩ := coprime_mul_eq_pow (Y + 1) Q X 2 hY1 hQ1 hcop hfact
 
-theorem chao_ko_second_case_even_base_decomposition (X Y : Nat)
-    (hX : 2 ≤ X) (hY : 2 ≤ Y) (hY_even : Y % 2 = 0) (q : Nat) (hq : 2 ≤ q)
-    (hcat : X ^ 2 = Y ^ q + 1) :
-    ∃ A m, 1 ≤ m ∧ 1 ≤ A ∧
-      X = 2 * A + 1 ∧ Y = 2 * m ∧
-      A * (A + 1) = 2 ^ (q - 2) * m ^ q := by
-  obtain ⟨m, hm_eq⟩ := Nat.dvd_of_mod_eq_zero hY_even
-  have hm1 : 1 ≤ m := by omega
-  have hX_odd : X % 2 = 1 := by
-    have : (X ^ 2) % 2 = 1 := by
-      rw [hcat, Nat.add_mod]
-      have : (Y ^ q) % 2 = 0 := by
-        obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hq
-        rw [hm_eq, Nat.pow_add, Nat.pow_two]
-        have : (2 * m) ^ 2 * (2 * m) ^ k = 2 * (2 * m * m * (2 * m) ^ k) := by ring
-        rw [this, Nat.mul_mod_right]
-      rw [this]
-    rcases Nat.mod_two_eq_zero_or_one X with h0 | h1
-    · exfalso
-      have : (X ^ 2) % 2 = 0 := by rw [Nat.pow_two, Nat.mul_mod, h0]
+  let s := Nat.gcd X (Y + 1)
+
+  have hs_pow : Y + 1 = s ^ 2 := hY1_sq
+
+  have hs_odd : s % 2 = 1 := by
+
+    rcases Nat.mod_two_eq_zero_or_one s with hs0 | hs1
+
+    · obtain ⟨m, hm⟩ := Nat.dvd_of_mod_eq_zero hs0
+
+      have : s ^ 2 = 4 * m ^ 2 := by rw [hm]; ring
+
       omega
-    · exact h1
-  obtain ⟨A, hA_eq⟩ := Nat.dvd_of_mod_eq_zero (show (X - 1) % 2 = 0 by omega)
-  have hX_A : X = 2 * A + 1 := by omega
-  have hA1 : 1 ≤ A := by omega
-  have h_alg : (X - 1) * (X + 1) = 4 * (A * (A + 1)) := by
-    rw [hX_A]
+
+    · exact hs1
+
+  have hs_decomp : ∃ m, s = 2 * m + 1 := ⟨s / 2, by omega⟩
+
+  obtain ⟨m, hm⟩ := hs_decomp
+
+  have hs2 : s ^ 2 = 4 * (m * (m + 1)) + 1 := by rw [hm]; ring
+
+  have hm_even : (m * (m + 1)) % 2 = 0 := by
+
+    rcases Nat.mod_two_eq_zero_or_one m with hm0 | hm1
+
+    · obtain ⟨w, rfl⟩ := Nat.dvd_of_mod_eq_zero hm0
+
+      have : 2 * w * (2 * w + 1) = 2 * (w * (2 * w + 1)) := by ring
+
+      omega
+
+    · have hm1_even : (m + 1) % 2 = 0 := by omega
+
+      obtain ⟨w, hw⟩ := Nat.dvd_of_mod_eq_zero hm1_even
+
+      have : m * (m + 1) = 2 * (m * w) := by rw [hw]; ring
+
+      omega
+
+  obtain ⟨w, hw⟩ := Nat.dvd_of_mod_eq_zero hm_even
+
+  have hY8 : Y = 8 * w := by omega
+
+  exact ⟨hY1_sq, hQ_sq, by omega⟩
+
+
+
+theorem chao_ko_second_case_even_base_decomposition (X m q : Nat)
+
+    (hX : 2 ≤ X) (hm : 1 ≤ m) (hq : 2 ≤ q) (h : X ^ 2 - (2 * m) ^ q = 1) :
+
+    ∃ A : Nat, 1 ≤ A ∧ X = 2 * A + 1 ∧ Nat.Coprime A (A + 1) ∧
+
+      A * (A + 1) = 2 ^ (q - 2) * m ^ q := by
+
+  obtain ⟨r, rfl⟩ := Nat.exists_eq_add_of_le hq
+
+  have h2m_pow : (2 * m) ^ (2 + r) = 4 * (2 ^ r * m ^ (2 + r)) := by
+
+    rw [Nat.mul_pow, Nat.pow_add]
+
     ring
-  have h_cat_diff : (X - 1) * (X + 1) = (2 * m) ^ q := by
-    have : (X - 1) * (X + 1) = X ^ 2 - 1 := by
-      obtain ⟨d, rfl⟩ := Nat.exists_eq_add_of_le hX
-      rw [Nat.pow_two]
-      ring
-    rw [this, hcat, hm_eq]
+
+  have hYq_pos : 1 ≤ (2 * m) ^ (2 + r) := Nat.one_le_pow (2 + r) (2 * m) (by omega)
+
+  have hX2 : X ^ 2 = 4 * (2 ^ r * m ^ (2 + r)) + 1 := by omega
+
+  have hX_odd : X % 2 = 1 := by
+
+    rcases Nat.mod_two_eq_zero_or_one X with h0 | h1
+
+    · obtain ⟨k, rfl⟩ := Nat.dvd_of_mod_eq_zero h0
+
+      have : (2 * k) ^ 2 = 4 * k ^ 2 := by ring
+
+      omega
+
+    · exact h1
+
+  have hA_ex : ∃ A, 1 ≤ A ∧ X = 2 * A + 1 := ⟨X / 2, by omega, by omega⟩
+
+  obtain ⟨A, hA1, rfl⟩ := hA_ex
+
+  have h_exp : (2 * A + 1) ^ 2 = 4 * (A * (A + 1)) + 1 := by ring
+
+  have h_sub : 2 + r - 2 = r := by omega
+
+  refine ⟨A, hA1, rfl, ?_, ?_⟩
+
+  · rw [Nat.Coprime, Nat.gcd_self_add_right, Nat.gcd_one_right]
+
+  · rw [h_sub]
+
     omega
-  have h_div4 : A * (A + 1) = 2 ^ (q - 2) * m ^ q := by
-    have h1 : 4 * (A * (A + 1)) = (2 * m) ^ q := by rw [← h_alg, h_cat_diff]
-    rw [Nat.mul_pow] at h1
-    obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le hq
-    rw [Nat.pow_add] at h1
-    have h4 : 2 ^ 2 = 4 := by decide
-    rw [h4] at h1
-    have : 2 + k - 2 = k := Nat.add_sub_cancel_left 2 k
-    rw [this]
-    have : 4 * (A * (A + 1)) = 4 * (2 ^ k * m ^ (2 + k)) := by
-      calc 4 * (A * (A + 1)) = 4 * 2 ^ k * m ^ (2 + k) := h1
-      _ = 4 * (2 ^ k * m ^ (2 + k)) := by ring
-    exact Nat.eq_of_mul_eq_mul_left (by decide) this
-  exact ⟨A, m, hm1, hA1, hX_A, hm_eq, h_div4⟩
+
+
 
 theorem chein_even_base_coprime_power_split (X m q : Nat)
-    (hX : 2 ≤ X) (hm : 1 ≤ m) (hq : 3 ≤ q)
-    (hdec : ∃ A, 1 ≤ A ∧ X = 2 * A + 1 ∧ A * (A + 1) = 2 ^ (q - 2) * m ^ q) :
-    ∃ A u v, 1 ≤ A ∧ 1 ≤ u ∧ 1 ≤ v ∧
-      X = 2 * A + 1 ∧ u * v = m ∧ v % 2 = 1 ∧
+
+    (hX : 2 ≤ X) (hm : 1 ≤ m) (hq : 2 ≤ q) (h : X ^ 2 = (2 * m) ^ q + 1) :
+
+    ∃ A u v : Nat, 1 ≤ A ∧ 1 ≤ u ∧ 1 ≤ v ∧ X = 2 * A + 1 ∧
+
+      u * v = m ∧ v % 2 = 1 ∧
+
       ((A = 2 ^ (q - 2) * u ^ q ∧ A + 1 = v ^ q) ∨
+
        (A = v ^ q ∧ A + 1 = 2 ^ (q - 2) * u ^ q)) := by
-  obtain ⟨A, hA1, hX_eq, hprod⟩ := hdec
-  have hcop : Nat.Coprime A (A + 1) := by
-    have : (A + 1) - A = 1 := by omega
-    have hdvd : Nat.gcd A (A + 1) ∣ 1 := by
-      have h1 : Nat.gcd A (A + 1) ∣ (A + 1) := Nat.gcd_dvd_right _ _
-      have h2 : Nat.gcd A (A + 1) ∣ A := Nat.gcd_dvd_left _ _
-      exact Nat.dvd_sub' h1 h2
-    have : Nat.gcd A (A + 1) ≤ 1 := Nat.le_of_dvd (by decide) hdvd
-    omega
+
+  have hsub : X ^ 2 - (2 * m) ^ q = 1 := by omega
+
+  obtain ⟨A, hA1, hX_eq, hcopA, hprod⟩ :=
+
+    chao_ko_second_case_even_base_decomposition X m q hX hm hq hsub
+
+  have h2pow_pos : 0 < 2 ^ (q - 2) := Nat.pow_pos (by omega)
+
   rcases Nat.mod_two_eq_zero_or_one A with hA_even | hA_odd
-  · obtain ⟨k, rfl⟩ := Nat.dvd_of_mod_eq_zero hA_even
-    have hq2 : 2 ≤ q - 2 := by omega
-    have hdvd_pow : 2 ^ (q - 2) ∣ 2 * k := by
-      obtain ⟨r, rfl⟩ := Nat.exists_eq_add_of_le hq2
-      rw [Nat.pow_add] at hprod
-      have : 2 ^ 2 = 4 := by decide
-      have h4 : 4 ∣ 2 ^ (2 + r) := ⟨2 ^ r, by rw [Nat.pow_add, this]⟩
-      have : Nat.Coprime (2 * k + 1) (2 ^ (q - 2)) := by
-        have : (2 * k + 1) % 2 = 1 := by omega
-        exact Nat.Coprime.symm (Nat.coprime_pow_right (q - 2) (by omega))
-      have hdvd_all : 2 ^ (q - 2) ∣ (2 * k) * (2 * k + 1) := ⟨m ^ q, by rw [hprod]; ring⟩
-      exact Nat.Coprime.dvd_of_dvd_mul_right this hdvd_all
-    obtain ⟨B, hB_eq⟩ := hdvd_pow
-    have hB_prod : B * (2 * k + 1) = m ^ q := by
-      have : 2 ^ (q - 2) * (B * (2 * k + 1)) = 2 ^ (q - 2) * m ^ q := by
-        calc 2 ^ (q - 2) * (B * (2 * k + 1)) = (2 ^ (q - 2) * B) * (2 * k + 1) := by ring
-        _ = (2 * k) * (2 * k + 1) := by rw [← hB_eq]
-        _ = 2 ^ (q - 2) * m ^ q := hprod
-      exact Nat.eq_of_mul_eq_mul_left (Nat.pow_pos (by decide)) this
-    have hcopB : Nat.Coprime B (2 * k + 1) := by
-      have : Nat.gcd B (2 * k + 1) ∣ Nat.gcd (2 * k) (2 * k + 1) := by
-        have : Nat.gcd B (2 * k + 1) ∣ B := Nat.gcd_dvd_left _ _
-        have : Nat.gcd B (2 * k + 1) ∣ 2 * k := by
-          obtain ⟨w, hw⟩ := this
-          refine ⟨2 ^ (q - 2) * w, ?_⟩
-          rw [hB_eq, hw]
-          ring
-        exact Nat.dvd_gcd this (Nat.gcd_dvd_right _ _)
-      have : Nat.gcd (2 * k) (2 * k + 1) = 1 := hcop
-      have : Nat.gcd B (2 * k + 1) ≤ 1 := by omega
-      omega
-    have hB1' : 1 ≤ B := by
-      have hpos : 0 < B * (2 * k + 1) := by
+
+  · have hA1_odd : (A + 1) % 2 = 1 := by omega
+
+    have hcop2 : Nat.Coprime (A + 1) (2 ^ (q - 2)) :=
+
+      Nat.Coprime.pow_right (q - 2) (coprime_two_of_odd hA1_odd)
+
+    have hdvdA : 2 ^ (q - 2) ∣ A := by
+
+      have hd : 2 ^ (q - 2) ∣ (A + 1) * A := by
+
+        rw [Nat.mul_comm, hprod]
+
+        exact ⟨m ^ q, rfl⟩
+
+      exact hcop2.symm.dvd_of_dvd_mul_left hd
+
+    obtain ⟨B, hA_B⟩ := hdvdA
+
+    have hB_mul : 2 ^ (q - 2) * (B * (A + 1)) = 2 ^ (q - 2) * m ^ q := by
+
+      calc 2 ^ (q - 2) * (B * (A + 1)) = (2 ^ (q - 2) * B) * (A + 1) := by ring
+
+      _ = A * (A + 1) := by rw [← hA_B]
+
+      _ = 2 ^ (q - 2) * m ^ q := hprod
+
+    have hB_prod : B * (A + 1) = m ^ q := Nat.eq_of_mul_eq_mul_left h2pow_pos hB_mul
+
+    have hB_dvd_A : B ∣ A := ⟨2 ^ (q - 2), by rw [hA_B, Nat.mul_comm]⟩
+
+    have hcopB : Nat.Coprime B (A + 1) := Nat.Coprime.coprime_dvd_left hB_dvd_A hcopA
+
+    have hB1 : 1 ≤ B := by
+      have hpos : 0 < B * (A + 1) := by
         have : 1 ≤ m ^ q := Nat.one_le_pow q m hm
         omega
       rcases (show B = 0 ∨ 1 ≤ B by omega) with rfl | hB
       · rw [Nat.zero_mul] at hpos; omega
       · exact hB
-    have h2k1 : 1 ≤ 2 * k + 1 := by omega
-    obtain ⟨hB_pow, hA1_pow⟩ := coprime_mul_eq_pow B (2 * k + 1) m q hB1' h2k1 hcopB hB_prod
+    obtain ⟨hB_pow, hA1_pow⟩ := coprime_mul_eq_pow B (A + 1) m q hB1 (by omega) hcopB hB_prod
+
     let u := Nat.gcd m B
-    let v := Nat.gcd m (2 * k + 1)
+
+    let v := Nat.gcd m (A + 1)
+
     have huv : u * v = m := by
-      rw [Nat.mul_comm]
-      change Nat.gcd m (2 * k + 1) * Nat.gcd m B = m
-      rw [← Nat.Coprime.gcd_mul m (Nat.Coprime.symm hcopB)]
-      have hdvd_m : m ∣ (2 * k + 1) * B := by
-        rw [Nat.mul_comm, hB_prod]
-        obtain ⟨j, rfl⟩ := Nat.exists_eq_add_of_le (show 1 ≤ q by omega)
+
+      change Nat.gcd m B * Nat.gcd m (A + 1) = m
+
+      rw [← Nat.Coprime.gcd_mul m hcopB]
+
+      have hdvd_m : m ∣ B * (A + 1) := by
+
+        rw [hB_prod]
+
+        obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le (show 1 ≤ q by omega)
+
         rw [Nat.pow_add, Nat.pow_one]
-        exact ⟨m ^ j, by ring⟩
+
+        exact ⟨m ^ k, by ring⟩
+
       exact Nat.gcd_eq_left hdvd_m
+
     have hu_pos : 1 ≤ u := Nat.pos_of_dvd_of_pos (Nat.gcd_dvd_left m B) hm
-    have hv_pos : 1 ≤ v := Nat.pos_of_dvd_of_pos (Nat.gcd_dvd_left m (2 * k + 1)) hm
+
+    have hv_pos : 1 ≤ v := Nat.pos_of_dvd_of_pos (Nat.gcd_dvd_left m (A + 1)) hm
+
     have hv_odd : v % 2 = 1 := by
-      have hv_dvd : v ∣ 2 * k + 1 := Nat.gcd_dvd_right m (2 * k + 1)
+
+      have hv_dvd : v ∣ A + 1 := Nat.gcd_dvd_right m (A + 1)
+
       obtain ⟨w, hw⟩ := hv_dvd
+
       rcases Nat.mod_two_eq_zero_or_one v with hv0 | hv1
+
       · obtain ⟨z, hz⟩ := Nat.dvd_of_mod_eq_zero hv0
-        have : 2 * k + 1 = 2 * (z * w) := by rw [hw, hz]; ring
+
+        have : A + 1 = 2 * (z * w) := by rw [hw, hz]; ring
+
         omega
+
       · exact hv1
-    refine ⟨2 * k, u, v, hA1, hu_pos, hv_pos, hX_eq, huv, hv_odd, Or.inl ⟨?_, hA1_pow⟩⟩
-    rw [hB_eq, hB_pow]
-  · obtain ⟨k, rfl⟩ := Nat.dvd_of_mod_eq_zero (show (A + 1) % 2 = 0 by omega)
-    have hq2 : 2 ≤ q - 2 := by omega
-    have hdvd_pow : 2 ^ (q - 2) ∣ 2 * k := by
-      have : Nat.Coprime A (2 ^ (q - 2)) := by
-        have : A % 2 = 1 := hA_odd
-        exact Nat.Coprime.symm (Nat.coprime_pow_right (q - 2) (by omega))
-      have hdvd_all : 2 ^ (q - 2) ∣ A * (2 * k) := ⟨m ^ q, by rw [← hprod]; ring⟩
-      exact Nat.Coprime.dvd_of_dvd_mul_left this hdvd_all
-    obtain ⟨B, hB_eq⟩ := hdvd_pow
-    have hA1_B : 2 * k = 2 ^ (q - 2) * B := hB_eq
-    have hB_prod : A * B = m ^ q := by
-      have : 2 ^ (q - 2) * (A * B) = 2 ^ (q - 2) * m ^ q := by
-        calc 2 ^ (q - 2) * (A * B) = A * (2 ^ (q - 2) * B) := by ring
-        _ = A * (2 * k) := by rw [← hB_eq]
-        _ = 2 ^ (q - 2) * m ^ q := hprod
-      exact Nat.eq_of_mul_eq_mul_left (Nat.pow_pos (by decide)) this
-    have hcopB : Nat.Coprime A B := by
-      have : Nat.gcd A B ∣ Nat.gcd A (2 * k) := by
-        have : Nat.gcd A B ∣ B := Nat.gcd_dvd_right _ _
-        have : Nat.gcd A B ∣ 2 * k := by
-          obtain ⟨w, hw⟩ := this
-          refine ⟨2 ^ (q - 2) * w, ?_⟩
-          rw [hB_eq, hw]
-          ring
-        exact Nat.dvd_gcd (Nat.gcd_dvd_left _ _) this
-      have : Nat.gcd A (2 * k) = 1 := hcop
-      have : Nat.gcd A B ≤ 1 := by omega
-      omega
+
+    refine ⟨A, u, v, hA1, hu_pos, hv_pos, hX_eq, huv, hv_odd, Or.inl ⟨?_, hA1_pow⟩⟩
+
+    rw [hA_B, hB_pow]
+
+  · have hcop2 : Nat.Coprime A (2 ^ (q - 2)) :=
+
+      Nat.Coprime.pow_right (q - 2) (coprime_two_of_odd hA_odd)
+
+    have hdvdA1 : 2 ^ (q - 2) ∣ A + 1 := by
+
+      have hd : 2 ^ (q - 2) ∣ A * (A + 1) := by
+
+        rw [hprod]
+
+        exact ⟨m ^ q, rfl⟩
+
+      exact hcop2.symm.dvd_of_dvd_mul_left hd
+
+    obtain ⟨B, hA1_B⟩ := hdvdA1
+
+    have hB_mul : 2 ^ (q - 2) * (A * B) = 2 ^ (q - 2) * m ^ q := by
+
+      calc 2 ^ (q - 2) * (A * B) = A * (2 ^ (q - 2) * B) := by ring
+
+      _ = A * (A + 1) := by rw [← hA1_B]
+
+      _ = 2 ^ (q - 2) * m ^ q := hprod
+
+    have hB_prod : A * B = m ^ q := Nat.eq_of_mul_eq_mul_left h2pow_pos hB_mul
+
+    have hB_dvd_A1 : B ∣ A + 1 := ⟨2 ^ (q - 2), by rw [hA1_B, Nat.mul_comm]⟩
+
+    have hcopB : Nat.Coprime A B := Nat.Coprime.coprime_dvd_right hB_dvd_A1 hcopA
+
     have hA1' : 1 ≤ A := hA1
     have hB1 : 1 ≤ B := by
       have hpos : 0 < A * B := by
@@ -1393,116 +1507,231 @@ theorem chein_even_base_coprime_power_split (X m q : Nat)
       · rw [Nat.mul_zero] at hpos; omega
       · exact hB
     obtain ⟨hA_pow, hB_pow⟩ := coprime_mul_eq_pow A B m q hA1' hB1 hcopB hB_prod
+
     let v := Nat.gcd m A
+
     let u := Nat.gcd m B
+
     have huv : u * v = m := by
+
       rw [Nat.mul_comm]
+
       change Nat.gcd m A * Nat.gcd m B = m
+
       rw [← Nat.Coprime.gcd_mul m hcopB]
+
       have hdvd_m : m ∣ A * B := by
+
         rw [hB_prod]
+
         obtain ⟨k, rfl⟩ := Nat.exists_eq_add_of_le (show 1 ≤ q by omega)
+
         rw [Nat.pow_add, Nat.pow_one]
+
         exact ⟨m ^ k, by ring⟩
+
       exact Nat.gcd_eq_left hdvd_m
+
     have hu_pos : 1 ≤ u := Nat.pos_of_dvd_of_pos (Nat.gcd_dvd_left m B) hm
+
     have hv_pos : 1 ≤ v := Nat.pos_of_dvd_of_pos (Nat.gcd_dvd_left m A) hm
+
     have hv_odd : v % 2 = 1 := by
+
       have hv_dvd : v ∣ A := Nat.gcd_dvd_right m A
+
       obtain ⟨w, hw⟩ := hv_dvd
+
       rcases Nat.mod_two_eq_zero_or_one v with hv0 | hv1
+
       · obtain ⟨z, hz⟩ := Nat.dvd_of_mod_eq_zero hv0
+
         have : A = 2 * (z * w) := by rw [hw, hz]; ring
+
         omega
+
       · exact hv1
+
     refine ⟨A, u, v, hA1, hu_pos, hv_pos, hX_eq, huv, hv_odd, Or.inr ⟨hA_pow, ?_⟩⟩
+
     rw [hA1_B, hB_pow]
 
+
+
 theorem pow_two_pow_swap (v q : Nat) : (v ^ 2) ^ q = (v ^ q) ^ 2 := by
+
   rw [← Nat.pow_mul, Nat.mul_comm 2 q, Nat.pow_mul]
 
+
+
 theorem chein_oriented_square_identities (u v q : Nat) (hu : 1 ≤ u) (hq : 2 ≤ q) :
+
     (v ^ q = 2 ^ (q - 2) * u ^ q + 1 →
+
       (v ^ 2) ^ q = (2 * u) ^ q + (v ^ q - 2) ^ 2) ∧
+
     (2 ^ (q - 2) * u ^ q = v ^ q + 1 →
+
       (v ^ 2) ^ q + (2 * u) ^ q = (v ^ q + 2) ^ 2) := by
+
   constructor
+
   · intro h1
+
     rw [pow_two_pow_swap]
+
     obtain ⟨r, rfl⟩ := Nat.exists_eq_add_of_le hq
+
     have h2q : (2 * u) ^ (2 + r) = 4 * (2 ^ r * u ^ (2 + r)) := by
+
       rw [Nat.mul_pow, Nat.pow_add]
+
       ring
+
     have h_sub : 2 + r - 2 = r := Nat.add_sub_cancel_left 2 r
+
     rw [h_sub] at h1
+
     rw [h2q]
+
     obtain ⟨K, hK⟩ : ∃ K, 2 ^ r * u ^ (2 + r) = K := ⟨_, rfl⟩
+
     have hK1 : 1 ≤ K := by
+
       rw [← hK]
+
       have h1_2r : 1 ≤ 2 ^ r := Nat.one_le_pow r 2 (by omega)
+
       have h1_ur : 1 ≤ u ^ (2 + r) := Nat.one_le_pow (2 + r) u hu
+
       exact Nat.mul_le_mul h1_2r h1_ur
+
     obtain ⟨K', hK'⟩ := Nat.exists_eq_add_of_le hK1
+
     have hK_eq : 2 ^ r * u ^ (2 + r) = 1 + K' := by rw [hK, hK']
+
     rw [hK_eq] at h1 ⊢
+
     have hV : v ^ (2 + r) = K' + 2 := by omega
+
     rw [hV]
+
     have hsub2 : K' + 2 - 2 = K' := by omega
+
     rw [hsub2]
+
     have hexp1 : (K' + 2) ^ 2 = K' * K' + 4 * K' + 4 := by ring
+
     have hexp2 : K' ^ 2 = K' * K' := by ring
+
     rw [hexp1, hexp2]
+
     obtain ⟨S, hS⟩ : ∃ S, K' * K' = S := ⟨_, rfl⟩
+
     rw [hS]
-    omega
-  · intro h2
-    rw [pow_two_pow_swap]
-    obtain ⟨r, rfl⟩ := Nat.exists_eq_add_of_le hq
-    have h2q : (2 * u) ^ (2 + r) = 4 * (2 ^ r * u ^ (2 + r)) := by
-      rw [Nat.mul_pow, Nat.pow_add]
-      ring
-    have h_sub : 2 + r - 2 = r := Nat.add_sub_cancel_left 2 r
-    rw [h_sub] at h2
-    rw [h2q]
-    obtain ⟨V, hV⟩ : ∃ V, v ^ (2 + r) = V := ⟨_, rfl⟩
-    rw [hV]
-    have h2' : 2 ^ r * u ^ (2 + r) = V + 1 := by rw [← hV, h2]
-    rw [h2']
-    have hexp1 : V ^ 2 = V * V := by ring
-    have hexp2 : (V + 2) ^ 2 = V * V + 4 * V + 4 := by ring
-    rw [hexp1, hexp2]
-    obtain ⟨S, hS⟩ : ∃ S, V * V = S := ⟨_, rfl⟩
-    rw [hS]
+
     omega
 
+  · intro h2
+
+    rw [pow_two_pow_swap]
+
+    obtain ⟨r, rfl⟩ := Nat.exists_eq_add_of_le hq
+
+    have h2q : (2 * u) ^ (2 + r) = 4 * (2 ^ r * u ^ (2 + r)) := by
+
+      rw [Nat.mul_pow, Nat.pow_add]
+
+      ring
+
+    have h_sub : 2 + r - 2 = r := Nat.add_sub_cancel_left 2 r
+
+    rw [h_sub] at h2
+
+    rw [h2q]
+
+    obtain ⟨V, hV⟩ : ∃ V, v ^ (2 + r) = V := ⟨_, rfl⟩
+
+    rw [hV]
+
+    have h2' : 2 ^ r * u ^ (2 + r) = V + 1 := by rw [← hV, h2]
+
+    rw [h2']
+
+    have hexp1 : V ^ 2 = V * V := by ring
+
+    have hexp2 : (V + 2) ^ 2 = V * V + 4 * V + 4 := by ring
+
+    rw [hexp1, hexp2]
+
+    obtain ⟨S, hS⟩ : ∃ S, V * V = S := ⟨_, rfl⟩
+
+    rw [hS]
+
+    omega
+
+
+
 theorem chein_difference_not_square (u v c : Nat) (hu : 1 ≤ u) (huv : u < v) :
+
     v ^ 2 - 2 * u ≠ c ^ 2 ∧ v ^ 2 + 2 * u ≠ c ^ 2 := by
+
   have hv2 : 2 ≤ v := by omega
+
   obtain ⟨v', rfl⟩ := Nat.exists_eq_add_of_le (show 1 ≤ v by omega)
+
   constructor
+
   · have h1 : v' ^ 2 < (1 + v') ^ 2 - 2 * u := by
+
       have hexp : (1 + v') ^ 2 = v' * v' + 2 * v' + 1 := by ring
+
       have hexp' : v' ^ 2 = v' * v' := by ring
+
       rw [hexp, hexp']
+
       obtain ⟨S, hS⟩ : ∃ S, v' * v' = S := ⟨_, rfl⟩
+
       rw [hS]
+
       omega
+
     have h2 : (1 + v') ^ 2 - 2 * u < (v' + 1) ^ 2 := by
+
       have : (v' + 1) ^ 2 = (1 + v') ^ 2 := by
+
         have : v' + 1 = 1 + v' := by omega
+
         rw [this]
+
       rw [this]
+
       omega
+
     exact ne_sq_of_lt_consecutive_sq h1 h2
+
   · have h1 : (1 + v') ^ 2 < (1 + v') ^ 2 + 2 * u := by omega
+
     have h2 : (1 + v') ^ 2 + 2 * u < (1 + v' + 1) ^ 2 := by
+
       have hexp : (1 + v' + 1) ^ 2 = v' * v' + 4 * v' + 4 := by ring
+
       have hexp' : (1 + v') ^ 2 = v' * v' + 2 * v' + 1 := by ring
+
       rw [hexp, hexp']
+
       obtain ⟨S, hS⟩ : ∃ S, v' * v' = S := ⟨_, rfl⟩
+
       rw [hS]
+
       omega
+
     exact ne_sq_of_lt_consecutive_sq h1 h2
+
+
+
+
+
 
 
 /-! ## Section 6: Lebesgue Forced Congruences & Gaussian Integer Z[i] Obstructions -/
@@ -1573,7 +1802,8 @@ theorem catalan_binary_minuend_impossible (p y q : Nat)
         rw [this]
         exact Nat.mul_mod_right 4 _
       omega
-    · let k := q / 2
+    · -- y is odd, q is odd, q >= 3
+      let k := q / 2
       have hk1 : 1 ≤ k := by omega
       have hq_decomp : 2 * k + 1 = q := by omega
       have h_prod : (y + 1) * altOddQuotient y k = 2 ^ p := by
@@ -1674,12 +1904,12 @@ theorem lebesgue_forced_congruences (X Y k : Nat)
       decide
   exact ⟨hX_mod4, hY_even⟩
 
+
 namespace ZGauss
 
 structure ZGauss where
   re : Int
   im : Int
-  deriving DecidableEq, Repr
 
 def add (z w : ZGauss) : ZGauss :=
   ⟨z.re + w.re, z.im + w.im⟩
@@ -1720,20 +1950,15 @@ theorem unit_mul_eq_one_iff (b c : Int) (h : b * c = 1) :
       · have : 2 * 1 ≤ b.natAbs * c.natAbs := Nat.mul_le_mul hb2 hc1
         omega
   have hb_cases : b = 1 ∨ b = -1 := by
-    rcases (show b = 1 ∨ b = -1 ∨ (b ≠ 1 ∧ b ≠ -1) by omega) with h | h | h
-    · left; exact h
-    · right; exact h
-    · exfalso
-      have : b.natAbs ≠ 1 := by
-        intro h_abs
-        have : b = 1 ∨ b = -1 := by
-          rcases (show 0 ≤ b ∨ b < 0 by omega) with hpos | hneg
-          · left; have := Int.natAbs_of_nonneg hpos; omega
-          · right; have := Int.ofNat_natAbs_of_nonpos (by omega); omega
-        omega
-      omega
+    cases b with
+    | ofNat n =>
+      have : n = 1 := h1
+      left; rw [this]; rfl
+    | negSucc n =>
+      have : n + 1 = 1 := h1
+      right; rw [show n = 0 by omega]; rfl
   rcases hb_cases with rfl | rfl
-  · rw [Int.one_mul] at h; left; refine ⟨rfl, by omega⟩
+  · left; refine ⟨rfl, by omega⟩
   · right; refine ⟨rfl, by omega⟩
 
 theorem lebesgue_pow_im_forces_unit_b (a b Y : Int) (p₀ : Nat)
@@ -1755,104 +1980,78 @@ theorem sq_eq_zero (a : Int) (h : a * a = 0) : a = 0 := by
     · exfalso
       have : 1 * 1 ≤ a.natAbs * a.natAbs := Nat.mul_le_mul h1 h1
       omega
-  omega
+  exact Int.natAbs_eq_zero.mp this
 
-theorem lebesgue_gaussian_cubic_impossible (a b Y : Int) (hY : Y ≠ 0)
-    (hpow : mul (mul ⟨a, b⟩ ⟨a, b⟩) ⟨a, b⟩ = ⟨Y, 1⟩) : False := by
-  have hre : (mul (mul ⟨a, b⟩ ⟨a, b⟩) ⟨a, b⟩).re = Y := by rw [hpow]
-  have him : (mul (mul ⟨a, b⟩ ⟨a, b⟩) ⟨a, b⟩).im = 1 := by rw [hpow]
-  simp only [mul] at hre him
-  have him_fac : b * (3 * a ^ 2 - b ^ 2) = 1 := by
-    calc b * (3 * a ^ 2 - b ^ 2) = (a * a - b * b) * b + (a * b + b * a) * a := by ring
+theorem lebesgue_gaussian_cubic_impossible (a b Y : Int) (hY : Y ≠ 0) :
+    mul (mul ⟨a, b⟩ ⟨a, b⟩) ⟨a, b⟩ ≠ ⟨Y, 1⟩ := by
+  intro h
+  injection h with hre him
+  dsimp [mul] at hre him
+  let c : Int := 3 * a * a - b * b
+  have him_fac : b * c = 1 := by
+    calc b * c = (a * a - b * b) * b + (a * b + b * a) * a := by ring
     _ = 1 := him
-  have hunit := unit_mul_eq_one_iff b (3 * a ^ 2 - b ^ 2) him_fac
-  rcases hunit with ⟨rfl, h2⟩ | ⟨rfl, h2⟩
-  · have h_alg : 3 * a ^ 2 - 1 = 1 := h2
-    have : 3 * a ^ 2 = 2 := by omega
-    have hdiv3 : 3 ∣ (2 : Int) := by
-      have : (2 : Int) = 3 * a ^ 2 := this.symm
-      rw [this]
-      exact ⟨a ^ 2, rfl⟩
-    obtain ⟨k, hk⟩ := hdiv3
-    have hk_cases : k ≤ 0 ∨ k = 1 ∨ 2 ≤ k := by omega
-    rcases hk_cases with hle | rfl | hge
-    · have : 3 * k ≤ 0 := by omega
+  have hunit := unit_mul_eq_one_iff b c him_fac
+  rcases hunit with ⟨rfl, hc1⟩ | ⟨rfl, hc_neg1⟩
+  · clear hre him Y hY
+    dsimp [c] at hc1
+    have h_assoc : 3 * a * a = 3 * (a * a) := by ring
+    rw [h_assoc] at hc1
+    have h3a2 : 3 * (a * a) = 2 := by omega
+    omega
+  · clear him
+    dsimp [c] at hc_neg1
+    have h_assoc : 3 * a * a = 3 * (a * a) := by ring
+    rw [h_assoc] at hc_neg1
+    have h3a0 : 3 * (a * a) = 0 := by
+      clear hre hY Y
       omega
-    · omega
-    · have : 3 * 2 ≤ 3 * k := by omega
+    have : a * a = 0 := by
+      clear hre hY Y hc_neg1
       omega
-  · have h_alg : 3 * a ^ 2 - (-1) ^ 2 = -1 := h2
-    have : 3 * a ^ 2 = 0 := by omega
-    have ha2_zero : a ^ 2 = 0 := by
-      have : (3 : Int) * a ^ 2 = 0 := this
-      omega
-    have ha_zero : a = 0 := sq_eq_zero a (by rw [← ha2_zero]; ring)
-    rw [ha_zero] at hre
-    have : (0 * 0 - -1 * -1) * 0 - (0 * -1 + -1 * 0) * -1 = (0 : Int) := by decide
-    rw [this] at hre
+    have ha0 : a = 0 := sq_eq_zero a this
+    rw [ha0] at hre
+    have hzero : (0 * 0 - -1 * -1) * 0 - (0 * -1 + -1 * 0) * -1 = (0 : Int) := by rfl
+    rw [hzero] at hre
     exact hY hre.symm
 
 theorem mul_self_nonneg (a : Int) : 0 ≤ a * a := by
-  rcases (show 0 ≤ a ∨ a ≤ 0 by omega) with hpos | hneg
-  · exact Int.mul_nonneg hpos hpos
-  · have : a * a = (-a) * (-a) := by ring
-    rw [this]
-    exact Int.mul_nonneg (by omega) (by omega)
+  cases a with
+  | ofNat n =>
+    change (0 : Int) ≤ Int.ofNat (n * n)
+    exact Int.ofNat_le.mpr (Nat.zero_le (n * n))
+  | negSucc n =>
+    change (0 : Int) ≤ Int.ofNat ((n + 1) * (n + 1))
+    exact Int.ofNat_le.mpr (Nat.zero_le ((n + 1) * (n + 1)))
 
-theorem quintic_root_step (T : Int) (hT : 0 ≤ T) (h : 5 * T * (T - 2) = 0) :
-    T = 0 ∨ T = 2 := by
-  have : T * (T - 2) = 0 := by omega
-  rcases (show T - 2 = 0 ∨ T - 2 ≠ 0 by omega) with h2 | hne2
-  · right; omega
-  · left
-    have h_prod : T * (T - 2) = 0 := this
-    rcases (show T ≤ 0 ∨ 1 ≤ T by omega) with hle | hge
-    · omega
-    · exfalso
-      rcases (show T - 2 < 0 ∨ 0 < T - 2 by omega) with hneg | hpos
-      · have : T * (T - 2) < 0 := by
-          have h1 : 0 < T := by omega
-          have : (- (T - 2)) * T > 0 := by
-            have hA : 0 < - (T - 2) := by omega
-            have : 1 * 1 ≤ (- (T - 2)) * T := Int.mul_le_mul (by omega) (by omega) (by decide) (by omega)
-            omega
-          omega
-        omega
-      · have : 0 < T * (T - 2) := by
-          have : 1 * 1 ≤ T * (T - 2) := Int.mul_le_mul hge (by omega) (by decide) (by omega)
-          omega
-        omega
+theorem quintic_root_step (T : Int) (hT : 0 ≤ T) (h : 5 * T * (T - 2) = 0) : T = 0 ∨ T = 2 := by
+  rcases (show T = 0 ∨ T = 1 ∨ T = 2 ∨ 3 ≤ T by omega) with rfl | rfl | rfl | hge
+  · left; rfl
+  · exfalso; revert h; decide
+  · right; rfl
+  · exfalso
+    have : 1 ≤ T - 2 := by omega
+    have : 15 ≤ 5 * T * (T - 2) := by
+      have h1 : 15 ≤ 5 * T := by omega
+      have := Int.mul_le_mul h1 (show 1 ≤ T - 2 by omega) (by omega) (by omega)
+      omega
+    omega
 
-theorem lebesgue_gaussian_quintic_impossible (a b Y : Int) (hY : Y ≠ 0)
-    (hpow : pow ⟨a, b⟩ 5 = ⟨Y, 1⟩) : False := by
-  have hre : (pow ⟨a, b⟩ 5).re = Y := by rw [hpow]
-  have him : (pow ⟨a, b⟩ 5).im = 1 := by rw [hpow]
-  have him_fac : b * (5 * a ^ 4 - 10 * a ^ 2 * b ^ 2 + b ^ 4) = 1 := by
-    dsimp [pow, mul] at him
-    let c := 5 * (a * a * a * a) - 10 * (a * a) * (b * b) + b * b * b * b
-    have hA : (1 * a - 0 * b) = a := by ring
-    have hB : (1 * b + 0 * a) = b := by ring
-    have hC : (a * a - b * b) = a * a - b * b := rfl
-    have hD : (a * b + b * a) * a + (a * a - b * b) * b =
-        3 * (a * a) * b - b * b * b := by ring
-    have hE : (a * a - b * b) * a - (a * b + b * a) * b =
-        a * a * a - 3 * a * (b * b) := by ring
-    have hF : ((a * a * a - 3 * a * (b * b)) * a - (3 * (a * a) * b - b * b * b) * b) =
+theorem lebesgue_gaussian_quintic_impossible (a b Y : Int) (hY : Y ≠ 0) :
+    pow ⟨a, b⟩ 5 ≠ ⟨Y, 1⟩ := by
+  intro h
+  injection h with hre him
+  dsimp [pow, mul] at hre him
+  let c : Int := 5 * (a * a * a * a) - 10 * (a * a * (b * b)) + b * b * b * b
+  have him_fac : b * c = 1 := by
+    have h1 : 1 * a - 0 * b = a := by ring
+    have h2 : 1 * b + 0 * a = b := by ring
+    rw [h1, h2] at him
+    have hA : (a * a - b * b) * a - (a * b + b * a) * b = a * a * a - 3 * a * (b * b) := by ring
+    have hB : (a * a - b * b) * b + (a * b + b * a) * a = 3 * (a * a) * b - b * b * b := by ring
+    have hC : (a * a * a - 3 * a * (b * b)) * a - (3 * (a * a) * b - b * b * b) * b =
         a * a * a * a - 6 * (a * a) * (b * b) + b * b * b * b := by ring
-    have hG : ((a * a * a - 3 * a * (b * b)) * b + (3 * (a * a) * b - b * b * b) * a) =
-        4 * (a * a * a) * b - 4 * a * (b * b * b) := by ring
-    have hH : (a * a * a * a - 6 * (a * a) * (b * b) + b * b * b * b) * b +
-        (4 * (a * a * a) * b - 4 * a * (b * b * b)) * a = b * c := by ring
-    rw [hA, hB, hD, hE, hF, hG, hH] at him
-    exact him
-  let c := 5 * a ^ 4 - 10 * a ^ 2 * b ^ 2 + b ^ 4
-  have him_fac' : b * c = 1 := by
-    dsimp [pow, mul] at him
-    have hA : (1 * a - 0 * b) = a := by ring
-    have hB : (1 * b + 0 * a) = b := by ring
-    have hC : ((a * a - b * b) * a - (a * b + b * a) * b) =
-        a * a * a - 3 * a * (b * b) := by ring
-    have hD : ((a * a * a - 3 * a * (b * b)) * b + ((a * b + b * a) * a + (a * a - b * b) * b) * a) =
+    have hD : (a * a * a - 3 * a * (b * b)) * b + (3 * (a * a) * b - b * b * b) * a =
         4 * (a * a * a) * b - 4 * a * (b * b * b) := by ring
     have hE : (a * a * a * a - 6 * (a * a) * (b * b) + b * b * b * b) * b +
         (4 * (a * a * a) * b - 4 * a * (b * b * b)) * a = b * c := by ring
@@ -1913,6 +2112,7 @@ theorem gaussian_conjugate_bezout (m : Int) :
   have h2 : 1 * (2 * m) + -m * 1 + (0 * -(2 * m) + -m * 1) = (0 : Int) := by ring
   rw [h1, h2]
 
+
 theorem pow_add_two (z : ZGauss) (n : Nat) :
     pow z (n + 2) = mul (mul (pow z n) z) z := rfl
 
@@ -1926,6 +2126,7 @@ theorem mul_sq_im (R I m b : Int) (hb : b * b = 1) :
   ring
 
 end ZGauss
+
 
 
 /-! ## Section 7: Cassels' Cyclotomic Divisibility Theorem & Hyyro-Mignotte Size Lower Bounds -/
@@ -2515,6 +2716,7 @@ theorem nat_pow_ge_125 {X p₀ : Nat} (hX : 5 ≤ X) (hp₀ : 3 ≤ p₀) :
   have hX3 : X ^ 3 = X * X * X := by ring
   rw [hX3]
   exact Nat.mul_le_mul h125 (Nat.one_le_pow k X (by omega))
+
 
 
 /-! ## Section 8: Double Wieferich Verification & Unrestricted 4-Way `minFac` Master Dispatch -/
