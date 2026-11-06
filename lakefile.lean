@@ -5,63 +5,6 @@ package "bounty_solves" where
   leanOptions := #[⟨`autoImplicit, false⟩]
   moreLeanArgs := #["-M", "4096", "-j", "2"]
 
-require mathlib from git
-  "https://github.com/leanprover-community/mathlib4.git"
-
 @[default_target]
-lean_lib "BountySolves" where
-  srcDir := "BountySolves"
-
-lean_lib "AdditiveComplementSquares" where
-  srcDir := "BountySolves"
-
-lean_lib "CatalanMihailescu" where
-  srcDir := "BountySolves"
-
-lean_lib "CauchySchwarz" where
-  srcDir := "BountySolves"
-
-lean_lib "CernyAutomata" where
-  srcDir := "BountySolves"
-
-lean_lib "DGGCostPreserving" where
-  srcDir := "BountySolves"
-
-lean_lib "EdwardsBookTheorem" where
-  srcDir := "BountySolves"
-
-lean_lib "ErdosAnningIntegralDistances" where
-  srcDir := "BountySolves"
-
-lean_lib "ErdosDiscrepancy" where
-  srcDir := "BountySolves"
-
-lean_lib "ErdosGimbelCochromatic" where
-  srcDir := "BountySolves"
-
-lean_lib "ErdosMoserTournaments" where
-  srcDir := "BountySolves"
-
-lean_lib "ErdosStrausUnitFractions" where
-  srcDir := "BountySolves"
-
-lean_lib "HadamardMatrices" where
-  srcDir := "BountySolves"
-
-lean_lib "HadwigerNelson" where
-  srcDir := "BountySolves"
-
-lean_lib "InfiniteSidonDensity" where
-  srcDir := "BountySolves"
-
-lean_lib "LucasLehmer" where
-  srcDir := "BountySolves"
-
-lean_lib "MovingSofa" where
-  srcDir := "BountySolves"
-
-lean_lib "PoincareSphere" where
-  srcDir := "BountySolves"
-
-lean_lib "SingmasterConjecture" where
+lean_lib "LowerBoundMaxElement" where
   srcDir := "BountySolves"
