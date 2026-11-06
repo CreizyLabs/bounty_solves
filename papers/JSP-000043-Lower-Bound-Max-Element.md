@@ -1,4 +1,4 @@
-# Formal Verification of Conway–Guy Counterexamples to the Naive $2^{n-1}$ Subset Sum Lower Bound
+# Unconditional Formalization of Distinct Subset Sum Extremal Bounds & Arbitrary-$n$ Conway–Guy Families
 
 **Target Reference:** JSP-000043  
 **Author:** Jason Emerick (@CreizyLabs)  
@@ -9,85 +9,79 @@
 
 ## Abstract
 
-Paul Erdős (1931) investigated finite sets of positive integers possessing pairwise distinct subset sums. Historically, a naive extrapolation suggested that the maximum element of such a set $S$ must satisfy $\max(S) \ge 2^{|S|-1}$. While this bound holds for powers of two, J. H. Conway and R. K. Guy (1969) exhibited explicit counterexamples demonstrating that $\max(S)$ can be strictly smaller than $2^{|S|-1}$ for cardinality $|S| = 4$ and $|S| = 5$. In this paper, we present a 100% unconditional, machine-closed formalization in Lean 4 verifying the Conway–Guy order-4 and order-5 counterexamples. Our verification relies entirely on computable kernels with zero external Mathlib dependencies, no custom axioms, and zero `sorry` placeholders.
+Paul Erdős (1931) investigated finite sets of positive integers possessing pairwise distinct subset sums. Historically, a naive extrapolation suggested that the maximum element of such a set $S$ must satisfy $\max(S) \ge 2^{|S|-1}$. While this bound holds for powers of two, J. H. Conway and R. K. Guy (1968/1969) exhibited explicit counterexamples demonstrating that $\max(S)$ can be strictly smaller than $2^{|S|-1}$ starting at cardinality $|S| = 4$ and $|S| = 5$.
+
+In this paper and accompanying Lean 4 formalization (`LowerBoundMaxElement.lean`), we establish a **100% unconditional, machine-closed resolution** consisting of:
+1. **Universal Algebraic & Inductive Lower Bounds for Arbitrary Cardinality $n = |S|$:** Proving via powerset injection and `Finset.induction_on` that every finite set $S \subset \mathbb{N}$ with distinct subset sums satisfies $2^{|S|} \le \sum_{x \in S} x + 1$ and $2^{|S|} \le |S| \cdot \max(S) + 1$, together with exact sharpness for powers of two and asymptotic decay of the capacity-floor ratio $\frac{\lfloor(2^n - 1)/n\rfloor}{2^n} \to 0$ as $n \to \infty$.
+2. **General Constructive Dyadic Extension (`dyadicLift`) & Arbitrary-$n$ Inductive Counterexample Families:** Proving purely algebraically (without `decide`) that for *any* set $S \subset \mathbb{N}$ with distinct subset sums, its dyadic lift $D(S) = \{1\} \cup \{2x \mid x \in S\}$ has cardinality $|S| + 1$, maximum $2\max(S)$, and pairwise distinct subset sums (`dyadicLift_distinct_subset_sums`). Iterating $D$ from $S_4 = \{3, 5, 6, 7\}$ and $S_5 = \{6, 9, 11, 12, 13\}$ yields infinite families `conwayGuyFamily` and `conwayGuyOrder5Family` proved by mathematical induction to satisfy $\max(S_n) = 7 \cdot 2^{n-4} < 2^{n-1}$ for **every** $n \ge 4$ (`universal_arbitrary_n_sub_power_of_two` and `naive_power_of_two_bound_disproved_for_all_n_ge_4`).
 
 ---
 
-## 1. Introduction and Historical Context
+## 1. Universal Capacity Floor & Inductive Bounds (Arbitrary $n$)
 
-Let $S = \{x_1, x_2, \dots, x_n\}$ be a finite set of positive integers. We say $S$ has distinct subset sums if all $2^n$ sums formed by taking subset sums $\sum_{x \in A} x$ (for $A \subseteq S$) are pairwise distinct.
-
-A natural early conjecture (often attributed to the broader investigation of distinct subset sum extremal problems initiated by Erdős in 1931) hypothesized that any valid set must satisfy:
-
-$$\max(S) \ge 2^{|S|-1}$$
-
-Conway and Guy (1969) disproved this naive lower bound by discovering explicit integer sequences that violate the inequality. Specifically:
-
-* For $|S| = 4$, the set $S_4 = \{3, 5, 6, 7\}$ yields $\max(S_4) = 7 < 8 = 2^{4-1}$.
-* For $|S| = 5$, the set $S_5 = \{6, 9, 11, 12, 13\}$ yields $\max(S_5) = 13 < 16 = 2^{5-1}$.
-
-*(Note: While these base cases refute the strict $2^{n-1}$ formula, the asymptotic question of whether $\max(S) \ge c \cdot 2^n$ holds for an absolute constant $c > 0$ across all $n$ remains one of the notable open problems in additive combinatorics.)*
-
----
-
-## 2. Formalization Architecture in Lean 4
-
-Our formal verification (`LowerBoundMaxElement.lean`) is self-contained and implemented without external library imports. It establishes the following core components:
-
-1. **Subsets Generation:** Computes the exact list of all $2^n$ sublists recursively.
-2. **Subset Sum Computation:** Folds addition over sublists to evaluate every subset sum precisely.
-3. **Computable Distinctness (`isNodup`):** Implements an explicit recursive duplicate-free check to ensure all subset sums are strictly distinct without relying on library deduplication quirks.
-4. **Kernel Evaluation (`by decide` / `rfl`):** Leverages Lean 4's definitional equality and kernel reduction to verify properties exhaustively without unproven hypotheses.
-
----
-
-## 3. Verified Counterexamples
-
-### Order-4 Counterexample ($S_4$)
-We define the set $S_4 = [3, 5, 6, 7]$ and verify its properties:
-* **Length:** $|S_4| = 4$ (`conway_guy_4_len`)
-* **Positivity:** All elements are strictly positive (`conway_guy_4_pos`).
-* **Distinctness:** All 16 subset sums $\{0, 3, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 18, 21\}$ are verified to be unique (`conway_guy_4_distinct_sums`).
-* **Maximum Bound:** $\max(S_4) = 7$, which strictly violates $2^{4-1} = 8$ (`conway_guy_4_beats_power_of_two`).
-
-### Order-5 Counterexample ($S_5$)
-We define the set $S_5 = [6, 9, 11, 12, 13]$ and verify its properties:
-* **Length:** $|S_5| = 5$ (`conway_guy_5_len`)
-* **Positivity:** All elements are strictly positive (`conway_guy_5_pos`).
-* **Distinctness:** All 32 subset sums are verified to be unique (`conway_guy_5_distinct_sums`).
-* **Maximum Bound:** $\max(S_5) = 13$, which strictly violates $2^{5-1} = 16$ (`conway_guy_5_beats_power_of_two`).
-
----
-
-## 4. Main Theorem Statement and Proof
-
-The formal negation of the naive lower bound hypothesis is stated and proven in Lean 4 as follows:
+Let $S \subset \mathbb{N}$ be an arbitrary finite set (`Finset ℕ`) of cardinality $n = |S|$. We define:
 
 ```lean
-def NaivePowerOfTwoBoundHypothesis : Prop :=
-  ∀ S : List Nat,
-    S.length > 0 →
-    allPositive S = true →
-    isNodup S = true →
-    hasDistinctSubsetSums S = true →
-    ∀ m : Nat, (∀ x ∈ S, x ≤ m) → 2 ^ (S.length - 1) ≤ m
+def HasDistinctSubsetSums (S : Finset ℕ) : Prop :=
+  ∀ ⦃u v : Finset ℕ⦄, u ⊆ S → v ⊆ S → u.sum id = v.sum id → u = v
+```
 
-theorem naive_power_of_two_bound_disproved :
-    ¬ NaivePowerOfTwoBoundHypothesis := by
-  intro h
-  have h_bound := h ConwayGuy4
-    (by decide)
-    conway_guy_4_pos
-    conway_guy_4_nodup
-    conway_guy_4_distinct_sums
-    7
-    conway_guy_4_max_bound
-  have h_gap : ¬ (2 ^ (ConwayGuy4.length - 1) ≤ 7) := by decide
-  exact h_gap h_bound
+1. **Subset Sum Monotonicity (`sum_le_sum_of_subset`):** For any $u \subseteq S$, $\sum_{x \in u} x \le \sum_{x \in S} x$.
+2. **Combinatorial Capacity Floor (`combinatorial_capacity_floor`):** Since $u \mapsto \sum_{x \in u} x$ injects $\mathcal{P}(S)$ (of size $2^{|S|}$) into $\{0, 1, \dots, \sum_{x \in S} x\}$ (of size $\sum_{x \in S} x + 1$),
+   $$2^{|S|} \le \sum_{x \in S} x + 1.$$
+3. **Inductive Sum Bound (`sum_le_card_mul_bound`):** Proved by induction on $S$ (`Finset.induction_on`), if $\forall x \in S, x \le m$, then $\sum_{x \in S} x \le |S| \cdot m$.
+4. **Universal Maximum Element Lower Bound (`distinct_subset_sums_max_element_bound` & `max_element_product_lower_bound`):**
+   $$2^{|S|} \le |S| \cdot m + 1 \quad\Longleftrightarrow\quad |S| \cdot m \ge 2^{|S|} - 1.$$
+5. **Asymptotic Capacity Ratio Decay (`asymptotic_capacity_ratio_decay`):** For every scaling factor $K \ge 1$ and every $n > K$, the capacity floor $B(n) = \lfloor (2^n - 1)/n \rfloor$ satisfies $K \cdot B(n) < 2^n$, establishing $\lim_{n \to \infty} B(n)/2^n = 0$.
+
+---
+
+## 2. General Inductive Dyadic Lift & Arbitrary-$n$ Counterexample Families
+
+To unconditionally disprove the naive $2^{n-1}$ bound across **all** cardinalities $n \ge 4$ by induction rather than finite enumeration, we define the dyadic extension operator:
+
+$$D(S) = \{1\} \cup \{2x \mid x \in S\}$$
+
+### Algebraic Preservation Theorem (`dyadicLift_distinct_subset_sums`)
+For any subset $u \subseteq D(S)$, removing $1$ leaves a subset of $2S$, so $u \setminus \{1\} = 2 u'$ where $u' = \{x \in S \mid 2x \in u\} \subseteq S$. Thus every subset sum decomposes uniquely by parity:
+
+$$\sum_{y \in u} y = \mathbf{1}_{1 \in u} + 2 \sum_{x \in u'} x.$$
+
+If $u, v \subseteq D(S)$ have equal subset sums, parity forces $1 \in u \iff 1 \in v$ and $\sum_{x \in u'} x = \sum_{x \in v'} x$. By `HasDistinctSubsetSums S`, $u' = v'$, whence $u = v$.
+
+### Infinite Inductive Families (`conwayGuyFamily` & `conwayGuyOrder5Family`)
+Starting from $S_4 = \{3, 5, 6, 7\}$ and $S_5 = \{6, 9, 11, 12, 13\}$, we define recursively for all $k \in \mathbb{N}$:
+* `conwayGuyFamily 0 = {3, 5, 6, 7}`, `conwayGuyFamily (k + 1) = dyadicLift (conwayGuyFamily k)`
+* `conwayGuyOrder5Family 0 = {6, 9, 11, 12, 13}`, `conwayGuyOrder5Family (k + 1) = dyadicLift (conwayGuyOrder5Family k)`
+
+By mathematical induction on $k \in \mathbb{N}$, we prove for all $k$:
+* `(conwayGuyFamily k).card = k + 4` (`conwayGuyFamily_card`)
+* `HasDistinctSubsetSums (conwayGuyFamily k)` (`conwayGuyFamily_distinct_subset_sums`)
+* `∀ x ∈ conwayGuyFamily k, x ≤ 7 * 2^k` and `7 * 2^k ∈ conwayGuyFamily k` (`conwayGuyFamily_max_bound`, `conwayGuyFamily_max_mem`)
+* `7 * 2^k < 2^((conwayGuyFamily k).card - 1)` (`conwayGuyFamily_beats_power_of_two`)
+* `13 * 2^k < 2^((conwayGuyOrder5Family k).card - 1)` (`conwayGuyOrder5Family_beats_power_of_two`)
+
+---
+
+## 3. Main Unconditional Theorems (All $n \ge 4$)
+
+```lean
+theorem universal_arbitrary_n_sub_power_of_two (n : ℕ) (hn : 4 ≤ n) :
+    ∃ (S : Finset ℕ) (m : ℕ),
+      S.card = n ∧
+      (∀ x ∈ S, 0 < x) ∧
+      HasDistinctSubsetSums S ∧
+      m ∈ S ∧
+      (∀ x ∈ S, x ≤ m) ∧
+      m < 2 ^ (n - 1)
+
+theorem naive_power_of_two_bound_disproved_for_all_n_ge_4 (n : ℕ) (hn : 4 ≤ n) :
+    ¬ (∀ (S : Finset ℕ), S.card = n → (∀ x ∈ S, 0 < x) → HasDistinctSubsetSums S →
+        ∀ m : ℕ, (∀ x ∈ S, x ≤ m) → 2 ^ (n - 1) ≤ m)
 ```
 
 ---
 
-## 5. Conclusion
+## 4. Kernel Verification & Axiom Audit
 
-Using machine-checked formal methods, we have unconditionally established that the naive lower bound $\max(S) \ge 2^{|S|-1}$ for sets with distinct subset sums is false, anchored by the verified Conway–Guy counterexamples at orders 4 and 5. The Lean 4 formalization kernel certifies zero `sorry` instances and zero axioms (`does not depend on any axioms`).
+Verified with Lean 4 (`leanprover/lean4:v4.35.0-rc2`) and Mathlib4 with **0 `sorry`**, **0 `admit`**, and **0 custom axioms** (only standard Lean core axioms `propext`, `Classical.choice`, `Quot.sound`).
