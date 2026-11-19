@@ -14,6 +14,9 @@ Every Lean 4 module in [`bountysolves/`](bountysolves/) compiles cleanly under *
 
 | JSP ID | Erdős # | Problem Summary | Mathematical Solver(s) | Lean 4 Module (`bountysolves/`) | Formal Paper (`papers/`) | Axioms |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **JSP-000078** | #65 | Every finite graph with at most `k` distinct odd cycle lengths satisfies `χ(G) ≤ 2k + 2` (sharp via `K_{2k+2}`) | András Gyárfás (1992) | [`JSP_000078_GyarfasOddCycleLengths.lean`](bountysolves/JSP_000078_GyarfasOddCycleLengths.lean) | [`JSP-000078-Gyarfas-Odd-Cycle-Lengths.md`](papers/JSP-000078-Gyarfas-Odd-Cycle-Lengths.md) | `[propext, Classical.choice, Quot.sound]` |
+| **JSP-000183** | #193 | Explicit infinite small-step `ℤ³` walk (`[-2,2]² × [1,7]`) with no three collinear points in `ℤ³` or `ℝ³` | Stijn Cambie & Eero Kälviäinen (2026, `arXiv:2609.01766`) | [`JSP_000183_SmallStepZ3WalkNoCollinear.lean`](bountysolves/JSP_000183_SmallStepZ3WalkNoCollinear.lean) | [`JSP-000183-Small-Step-Z3-Walk-No-Collinear-Triple.md`](papers/JSP-000183-Small-Step-Z3-Walk-No-Collinear-Triple.md) | `[propext, Classical.choice, Quot.sound]` |
+| **JSP-000288** | #346 | Disproof: minimal stably complete sequence with uniform ratio gap whose ratios fail to converge to `φ` (`≥ 165/100 > φ` infinitely often) | GPT Pro / Liam Price | [`JSP_000288_StablyCompleteGoldenRatio.lean`](bountysolves/JSP_000288_StablyCompleteGoldenRatio.lean) | [`JSP-000288-Stably-Complete-Golden-Ratio-Counterexample.md`](papers/JSP-000288-Stably-Complete-Golden-Ratio-Counterexample.md) | `[propext, Classical.choice, Quot.sound]` |
 | **JSP-000301** | #365 | Disproof: consecutive powerful integers need not include a perfect square (`12167, 12168`) | Solomon W. Golomb (1970) | [`JSP_000301_GolombPowerful.lean`](bountysolves/JSP_000301_GolombPowerful.lean) | [`JSP-000301-Golomb-Powerful-Numbers.md`](papers/JSP-000301-Golomb-Powerful-Numbers.md) | `[propext, Classical.choice, Quot.sound]` |
 | **JSP-000490** | #603 | No uniform cardinal bound on chromatic number of countable families avoiding pairwise intersection size `2` | GPT-5.4 Pro / Przemyslaw Chojecki | [`JSP_000490_Erdos603_ForbiddenIntersectionTwo.lean`](bountysolves/JSP_000490_Erdos603_ForbiddenIntersectionTwo.lean) | [`JSP-000490-Erdos-603-Forbidden-Intersection-Two.md`](papers/JSP-000490-Erdos-603-Forbidden-Intersection-Two.md) | `[propext, Classical.choice, Quot.sound]` |
 | **JSP-000690** | #834 | Explicit 7-regular, 21-edge, 3-uniform, 3-chromatic-critical hypergraph on 9 vertices | Ruiliang Li (2025, `arXiv:2512.24850`) | [`JSP_000690_ErdosLovasz_3CriticalHypergraph.lean`](bountysolves/JSP_000690_ErdosLovasz_3CriticalHypergraph.lean) | [`JSP-000690-Erdos-Lovasz-3Critical-Hypergraph.md`](papers/JSP-000690-Erdos-Lovasz-3Critical-Hypergraph.md) | `[propext, Classical.choice, Quot.sound]` |
@@ -33,6 +36,9 @@ Every Lean 4 module in [`bountysolves/`](bountysolves/) compiles cleanly under *
 ├── verify.bat                                                    # Windows full build & verification script
 │
 ├── bountysolves/                                                 # Kernel-verified Lean 4 formalizations
+│   ├── JSP_000078_GyarfasOddCycleLengths.lean
+│   ├── JSP_000183_SmallStepZ3WalkNoCollinear.lean
+│   ├── JSP_000288_StablyCompleteGoldenRatio.lean
 │   ├── JSP_000301_GolombPowerful.lean
 │   ├── JSP_000490_Erdos603_ForbiddenIntersectionTwo.lean
 │   ├── JSP_000690_ErdosLovasz_3CriticalHypergraph.lean
@@ -40,6 +46,9 @@ Every Lean 4 module in [`bountysolves/`](bountysolves/) compiles cleanly under *
 │   └── JSP_000746_TriangleFreeSchurTriple.lean
 │
 └── papers/                                                       # Formal mathematical papers & proof expositions
+    ├── JSP-000078-Gyarfas-Odd-Cycle-Lengths.md
+    ├── JSP-000183-Small-Step-Z3-Walk-No-Collinear-Triple.md
+    ├── JSP-000288-Stably-Complete-Golden-Ratio-Counterexample.md
     ├── JSP-000301-Golomb-Powerful-Numbers.md
     ├── JSP-000490-Erdos-603-Forbidden-Intersection-Two.md
     ├── JSP-000690-Erdos-Lovasz-3Critical-Hypergraph.md
@@ -65,6 +74,9 @@ lake build
 
 Individual file checks (with `#check` and `#print axioms` executed at the end of each file):
 ```bash
+lake env lean -DautoImplicit=false bountysolves/JSP_000078_GyarfasOddCycleLengths.lean
+lake env lean -DautoImplicit=false bountysolves/JSP_000183_SmallStepZ3WalkNoCollinear.lean
+lake env lean -DautoImplicit=false bountysolves/JSP_000288_StablyCompleteGoldenRatio.lean
 lake env lean -DautoImplicit=false bountysolves/JSP_000301_GolombPowerful.lean
 lake env lean -DautoImplicit=false bountysolves/JSP_000490_Erdos603_ForbiddenIntersectionTwo.lean
 lake env lean -DautoImplicit=false bountysolves/JSP_000690_ErdosLovasz_3CriticalHypergraph.lean
@@ -75,6 +87,35 @@ lake env lean -DautoImplicit=false bountysolves/JSP_000746_TriangleFreeSchurTrip
 ---
 
 ## Verified Axiom Audit Output & SHA-256 Digests
+
+### `JSP-000078` (`SHA-256: 282D0F85D27E3B75F9553AAFF3244BFF74F09D79CD179BF2478CF052277DDEAC`)
+```text
+'JSP_000078.exists_dfsTree' depends on axioms: [propext, Classical.choice, Quot.sound]
+'JSP_000078.gyarfas_colorable_of_oddCycleLengths_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'JSP_000078.gyarfas_chromaticNumber_le_of_oddCycleLengths_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'JSP_000078.gyarfas_chromaticNumber_le_of_ncard_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'JSP_000078.completeGraph_sharpness' depends on axioms: [propext, Classical.choice, Quot.sound]
+```
+
+### `JSP-000183` (`SHA-256: 8AA29B30557927F603F821C44762950A32F94CEE9358ABDEC23BE4E57F649C45`)
+```text
+'JSP_000183.v2_sqNorm_zWalk_diff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'JSP_000183.v2_sqNorm_wWalk_diff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'JSP_000183.jsp_000183_small_step_z3_walk_no_collinear_triple' depends on axioms: [propext, Classical.choice, Quot.sound]
+'JSP_000183.jsp_000183_no_collinear_triple_euclidean' depends on axioms: [propext, Classical.choice, Quot.sound]
+```
+
+### `JSP-000288` (`SHA-256: D70DD7D6672FA15D257CE8F2ADCC8A07C2B93E003156747AF5CEFCB8B1D9FEAD`)
+```text
+'JSP_000288.masterSeq_strictMono' depends on axioms: [propext, Classical.choice, Quot.sound]
+'JSP_000288.masterSeq_hasUniformRatioGap' depends on axioms: [propext, Classical.choice, Quot.sound]
+'JSP_000288.masterSeq_finiteDeletionComplete' depends on axioms: [propext, Classical.choice, Quot.sound]
+'JSP_000288.masterSeq_valueFiniteDeletionComplete' depends on axioms: [propext, Classical.choice, Quot.sound]
+'JSP_000288.masterSeq_infiniteDeletionIncomplete' depends on axioms: [propext, Classical.choice, Quot.sound]
+'JSP_000288.masterSeq_valueInfiniteDeletionIncomplete' depends on axioms: [propext, Classical.choice, Quot.sound]
+'JSP_000288.masterSeq_not_tendsto_goldenRatio' depends on axioms: [propext, Classical.choice, Quot.sound]
+'JSP_000288.jsp_000288_disproof' depends on axioms: [propext, Classical.choice, Quot.sound]
+```
 
 ### `JSP-000301` (`SHA-256: 53374438EBD064CBD4126EF37993ADB250C9497C64F2C13E3970DC7AAD2062B3`)
 ```text

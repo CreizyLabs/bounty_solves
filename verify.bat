@@ -11,7 +11,7 @@ echo [1/2] Fetching Mathlib build cache (if available)...
 call lake exe cache get
 
 echo.
-echo [2/2] Building and verifying all 5 Lean 4 libraries...
+echo [2/2] Building and verifying all 8 Lean 4 libraries...
 call lake build
 if errorlevel 1 (
     echo.
@@ -21,5 +21,5 @@ if errorlevel 1 (
 
 echo.
 echo ======================================================
-echo [SUCCESS] All 5 libraries compiled and verified cleanly!
+echo [SUCCESS] All 8 libraries compiled and verified cleanly!
 echo ======================================================
